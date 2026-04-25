@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.ViewCollectionsView">
+
+	<ScrollViewer VerticalScrollBarVisibility="Auto"><Panel>
+
+		<!-- View Collection -->
+		<StackPanel 
+		x:Name="ViewCollection"
+		VerticalAlignment="Stretch" 
+		HorizontalAlignment="Center">
+
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<TextBox 
+					x:Name="NameTextBox" 
+					Margin="0,0,10,0"
+					TextChanged="OnNameChange"/>
+				<Button
+					MinWidth= "50"
+					Click="ChangeName">
+					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Change Name"/>
+				</Button>
+			</StackPanel>
+			
+
+			<WrapPanel 
+			Orientation="Horizontal" 
+			HorizontalAlignment="Stretch" 
+			x:Name="CollectionsListe"/>
+
+		</StackPanel>
+
+		<!-- Add Collection -->
+		<StackPanel 
+			x:Name="AddCollection"
+			Orientation="Vertical" 
+			HorizontalAlignment="Center"
+			IsVisible="False">
+
+			<Button
+				MinWidth= "50"
+				HorizontalAlignment= "Center"
+				Click="RetunWiewCollection">
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
+			</Button>
+
+			<StackPanel  x:Name="Serched" Margin="0 10 10 0" Orientation="Horizontal" HorizontalAlignment="Center"/>
+
+			<StackPanel x:Name="PaginationPanelTop"
+					Orientation="Horizontal"
+					HorizontalAlignment="Center"/>
+
+			<WrapPanel x:Name="GridPost"/>
+			
+			<StackPanel x:Name="PaginationPanelDown"
+					Orientation="Horizontal"
+					HorizontalAlignment="Center"
+					Margin="0,10"/>
+			<Button
+				MinWidth= "50"
+				HorizontalAlignment= "Center"
+				Click="RetunWiewCollection">
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
+			</Button>
+
+		</StackPanel>
+
+
+	</Panel></ScrollViewer>
+
+</UserControl>

@@ -1,0 +1,82 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+        xmlns:rootvm="using:CsharpBooru.ViewModels"
+        xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+
+        xmlns:rootviews="using:CsharpBooru.Views"
+        xmlns:views="using:CsharpBooru.Views.Pages"
+
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+
+        x:Class="CsharpBooru.Views.MainWindow"
+        x:DataType="rootvm:MainWindowViewModel"
+        Icon="/Resources/Logo/Logo.ico"
+        Title="C#Booru">
+
+
+    <!--Window.DataTemplates>
+
+        <DataTemplate DataType="rootvm:TopBarViewModel">
+            <rootviews:TopBarView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:HomeViewModel">
+            <views:HomeView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:TagsListViewModel">
+            <views:TagsListView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:ViewPostViewModel">
+            <views:ViewPostView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:PostGridViewModel">
+            <views:PostGridView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:CollectionsListViewModel">
+            <views:CollectionsListView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:ViewCollectionsViewModel">
+            <views:ViewCollectionsView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:EditPostViewModel">
+            <views:EditPostView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:SettingViewModel">
+            <views:SettingView />
+        </DataTemplate>
+
+    </Window.DataTemplates-->
+
+    <Panel> 
+        <!-- Start page -->
+        <Panel x:Name="FirstStart">
+            <TextBlock 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" 
+                Text="Select an existing folder or a new folder to create the Booru."/>
+            <Button
+			    HorizontalAlignment= "Center"
+                Margin="0 50 0 0"
+			    Click="SelectFolder">
+                Select a Folder
+            </Button>
+        </Panel>
+        <!-- Main page -->
+        <Panel x:Name="Start">
+            <ContentControl Content="{Binding TopBar}" />
+            <ContentControl Content="{Binding CurrentPage}" Margin="0,40,0,0" />
+            <!--ContentPresenter Content="{Binding CurrentPage}" Margin="0,40,0,0" /-->
+        </Panel> 
+    </Panel>
+
+</Window>

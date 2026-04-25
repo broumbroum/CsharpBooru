@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.TagsListView"
+			 x:DataType="vm:TagsListViewModel">
+
+	<StackPanel
+		Orientation="Vertical"
+		VerticalAlignment="Top">
+
+		<TextBlock 
+		Margin="25 0 25 0"
+		TextAlignment="Center"
+		Text="{Binding Titre}" />
+
+		<TextBox x:Name="SearchBox"
+             PlaceholderText="Search..."
+             Margin="25 10 25 0"
+             TextChanged="OnSearchChanged"/>
+		
+		<StackPanel x:Name="PaginationTop" Orientation="Horizontal" HorizontalAlignment="Center"/>
+
+		<ScrollViewer VerticalScrollBarVisibility="Auto">
+			<DataGrid 
+				x:Name="DataGridControl"
+				MaxHeight="500"
+				Margin="25 10 25 25"
+				AutoGenerateColumns="False"
+				IsReadOnly="True"
+				GridLinesVisibility="All"
+				CanUserResizeColumns="True"
+				VerticalAlignment="Stretch"/>
+		</ScrollViewer>
+
+		<StackPanel x:Name="PaginationDown" Orientation="Horizontal" HorizontalAlignment="Center"/>
+
+	</StackPanel>
+
+</UserControl>

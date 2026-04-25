@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.SettingView">
+
+	<UserControl.Styles>
+		<Style Selector="ToggleSwitch /template/ Border#PART_Knob">
+			<Setter Property="Background" Value="#C8BFE7"/> <!-- Knob ON -->
+		</Style>
+	</UserControl.Styles>
+
+	<StackPanel 
+		VerticalAlignment="Top" 
+		HorizontalAlignment="Stretch"
+		Margin="10, 10, 10, 10">
+
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+			<TextBlock Text="Post Per Page" FontWeight="Bold" Margin="10,0,10,0"/>
+			<ScrollBar x:Name="PostPerPageScroll" 
+				Orientation="Horizontal"
+				MinWidth="250" Height="25" 
+				HorizontalAlignment="Stretch"
+				Value="20" Minimum="10" Maximum="100"
+				SmallChange="1" LargeChange="1"
+				Margin="0,0,10,0"/>
+			<TextBlock x:Name="PostPerPageText" Text="V 10"/>
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="10">
+			<TextBlock Text="Fill Thumbnail Post" FontWeight="Bold" Margin="10,0,10,0" TextAlignment="Center"/>
+			<ToggleSwitch x:Name="FillThumbnailPostToggle" Margin="0,0,10,0" 
+						  OnContent="True" OffContent="False"/>
+		</StackPanel>
+
+
+	</StackPanel>
+</UserControl>

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.HomeView"
+			 x:DataType="vm:HomeViewModel">
+
+	<UserControl.DataContext> 
+		<vm:HomeViewModel /> 
+	</UserControl.DataContext>
+
+	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Spacing="10"> 
+		
+		<Image Source="avares://CsharpBooru/Resources/Logo/Logo.png" Width="399" Height="379"/>
+		<!--TextBlock Text="{Binding Titre}" VerticalAlignment="Center" /-->
+	   
+		<StackPanel
+			Orientation="Horizontal" HorizontalAlignment="Center"
+			x:Name="SearchPanel"/>
+		
+		<StackPanel x:Name="CountPanel" Orientation="Horizontal" HorizontalAlignment="Center"/>
+
+	</StackPanel>
+</UserControl>

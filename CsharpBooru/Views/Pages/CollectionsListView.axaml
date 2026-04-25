@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.CollectionsListView">
+	
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Orientation="Vertical">
+
+			<StackPanel x:Name="PaginationTop" 
+						HorizontalAlignment="Center"
+						Orientation="Horizontal"/>
+
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<Button Margin="20,0,10,0" Width="100" Click="AddCollection">
+					<TextBlock Text="Add" HorizontalAlignment="Center"/>
+				</Button>
+				<TextBox x:Name="TextAddCollection" PlaceholderText="Name new collection" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0,0,20,0"/>
+			</StackPanel>
+
+			<StackPanel x:Name="ListCollections"/>
+
+			<StackPanel x:Name="PaginationDown" 
+						HorizontalAlignment="Center"
+						Orientation="Horizontal"/>
+		</StackPanel>
+	</ScrollViewer>
+
+</UserControl>

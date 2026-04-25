@@ -1,0 +1,177 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.EditPostView">
+
+	<ScrollViewer> <Panel HorizontalAlignment="Stretch">
+		
+		<!--___________ Note ___________-->
+
+		<StackPanel 
+			x:Name="Main"
+			Orientation= "Vertical"
+			IsVisible="True">
+
+		<!-- File -->
+		<TextBlock
+			Margin="25 10 10 0"
+			HorizontalAlignment="Stretch"
+			Foreground="Green"
+			FontWeight="Bold" FontSize="15">File
+		</TextBlock>
+		<Button
+			MinWidth= "50"
+			MinHeight=" 50"
+			HorizontalAlignment= "Center"
+			Margin="25 10 10 0"
+			Click="SelectFile">
+			<TextBlock 
+				HorizontalAlignment="Center" 
+				VerticalAlignment="Center" 
+				FontWeight="Bold" 
+				FontSize="25" 
+				Text="+"/>
+		</Button>
+		<TextBlock x:Name="PathText"
+			HorizontalAlignment="Stretch"
+			Width = "800"
+			Margin="25 10 10 0" 
+			TextWrapping="Wrap"/>
+
+		<!-- Tag -->
+		<TextBlock
+			Margin="25 10 10 0"
+			HorizontalAlignment="Stretch"
+			Foreground="Green"
+			FontWeight="Bold" FontSize="15">Tag
+		</TextBlock>
+		<TextBox x:Name="TagBox"
+				 PlaceholderText= "1girl white_hair"
+				 HorizontalAlignment="Stretch"
+				 VerticalAlignment="Stretch"
+				 Margin="25 10 10 0"
+				 TextWrapping="Wrap"
+				 TextChanged="OnTagChanged"/>
+
+		<!-- Rating -->
+		<TextBlock
+			Margin="25 10 10 0"
+			HorizontalAlignment="Stretch"
+			Foreground="Green"
+			FontWeight="Bold" FontSize="15">Rating
+		</TextBlock>
+		<ComboBox x:Name="RatingBox"
+				  SelectedIndex="0"
+				  HorizontalAlignment="Stretch"
+				  Margin="25 10 10 0">
+			<ComboBoxItem>None</ComboBoxItem>
+			<ComboBoxItem>Safe</ComboBoxItem>
+			<ComboBoxItem>Questionable</ComboBoxItem>
+			<ComboBoxItem>Explicit</ComboBoxItem>
+			<ComboBoxItem>Borderline</ComboBoxItem>
+		</ComboBox>
+		
+		<!-- Source -->
+		<TextBlock
+			HorizontalAlignment="Stretch"
+			Margin="25 10 10 0"
+			Foreground="Green"
+			FontWeight="Bold" FontSize="15"
+			Text="Sources"/>
+		<TextBox x:Name="SourceBox"
+			 AcceptsReturn="True"
+			 TextWrapping="Wrap"
+			 HorizontalAlignment="Stretch"
+			 VerticalAlignment="Stretch"
+			 Margin="25 10 10 0"
+			 PlaceholderText= "Source 1&#x0a;Source 2"
+			 TextChanged="OnSourceChanged"/>
+
+		<!-- Related -->
+		<TextBlock
+			Margin="25 10 10 0"
+			HorizontalAlignment="Stretch"
+			Foreground="Green"
+			FontWeight="Bold" FontSize="15" 
+			Text="Related"/>
+		<TextBlock x:Name="RelatedText" HorizontalAlignment="Stretch" Margin="25 10 10 0"/>
+		<Button
+			MinWidth= "50"
+			HorizontalAlignment="Stretch"
+			Margin="25 10 10 0"
+			Click="GridRelate">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Add Related"/> 
+		</Button>
+
+		<!-- Note -->
+		<TextBlock
+			Margin="25 10 10 0"
+			HorizontalAlignment="Stretch"
+			Foreground="Green"
+			FontWeight="Bold" FontSize="15"
+			Text="Note"/>
+		<TextBox x:Name="NoteText"
+			AcceptsReturn="True"
+			TextWrapping="Wrap"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Margin="25 10 10 0"
+			PlaceholderText= "Note"
+			TextChanged="OnNoteChanged"/>
+		
+
+
+		<!-- Save -->
+		<Button
+			HorizontalAlignment="Stretch"
+			Margin="25 10 10 0"
+			Click="SavePost">
+			<TextBlock HorizontalAlignment="Center">Save</TextBlock>
+		</Button>
+		<TextBlock x:Name="Error"
+			Margin="25 10 10 0"
+			HorizontalAlignment="Stretch"
+			Foreground="Red"
+			FontWeight="Bold" FontSize="15"/>
+
+		</StackPanel>
+
+		<!--________ Related Post ________-->
+
+		<StackPanel x:Name="RelatedPost"
+			Orientation="Vertical" 
+			HorizontalAlignment="Center"
+			IsVisible="False">
+
+			<Button
+				MinWidth= "50"
+				HorizontalAlignment= "Center"
+				Click="RetunMain">
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
+			</Button>
+
+			<StackPanel  x:Name="Serched" Margin="0 10 10 0" Orientation="Horizontal" HorizontalAlignment="Center"/>
+
+			<StackPanel x:Name="PaginationPanelTop"
+					Orientation="Horizontal"
+					HorizontalAlignment="Center"/>
+
+			<WrapPanel x:Name="GridPost"/>
+			
+			<StackPanel x:Name="PaginationPanelDown"
+					Orientation="Horizontal"
+					HorizontalAlignment="Center"/>
+			<Button
+				MinWidth= "50"
+				HorizontalAlignment= "Center"
+				Click="RetunMain">
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
+			</Button>
+
+		</StackPanel>
+
+	</Panel></ScrollViewer>
+
+</UserControl>

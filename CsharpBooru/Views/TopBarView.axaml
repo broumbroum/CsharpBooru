@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
+			 x:Class="CsharpBooru.Views.TopBarView">
+
+	<StackPanel x:Name="TopBar"
+		Orientation="Horizontal"
+		HorizontalAlignment="Stretch" VerticalAlignment="Top"
+		Background="Lavender">
+
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="HomeButtonClick">Home
+		</Button>
+
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="PostsButtonClick">Posts
+		</Button>
+
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="CollectionsButtonClick">Collections
+		</Button>
+
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="AddPostButtonClick">AddPost
+		</Button>
+
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="TagButtonClick">Tag
+		</Button>
+
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="SettingButtonClick">Setting
+		</Button>
+
+	</StackPanel>
+
+</UserControl>

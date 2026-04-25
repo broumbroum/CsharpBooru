@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.PostGridView">
+	
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Orientation="Vertical">
+
+			<!--     Search     -->
+			<StackPanel 
+			Orientation="Horizontal" HorizontalAlignment="Center"
+			x:Name="SearchPanel"/>
+
+			<!--     Pagination Top     -->
+			<StackPanel x:Name="PaginationPanelTop"
+					Orientation="Horizontal"
+					HorizontalAlignment="Center"
+					Margin="0,10"/>
+
+			<!--     Posts Grid     -->
+			<WrapPanel x:Name="GridPost" />
+
+			<!--     Pagination Down     -->
+			<StackPanel x:Name="PaginationPanelDown"
+					Orientation="Horizontal"
+					HorizontalAlignment="Center"
+					Margin="0,10"/>
+
+		</StackPanel>
+	</ScrollViewer>
+
+</UserControl>

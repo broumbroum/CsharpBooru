@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="CsharpBooru.Views.Pages.ViewPostView"
+             xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+             x:DataType="vm:ViewPostViewModel">
+
+    <Panel 
+    Margin="10 0 10 12">
+
+        <!--   Left   -->
+        <ScrollViewer 
+            HorizontalAlignment="Left"
+            VerticalScrollBarVisibility="Auto"
+            Background="#efefef"
+            Width ="400">
+
+            <StackPanel 
+                x:Name="TagStack" 
+                Orientation="Vertical" 
+                Margin="10"/>
+            
+        </ScrollViewer>
+
+        <!--   Midel   -->
+        <ScrollViewer
+            VerticalScrollBarVisibility="Auto"
+            HorizontalAlignment="Stretch"
+            Margin="410,0,0,0">
+            <StackPanel>
+
+                <StackPanel x:Name="Collection" 
+                            IsVisible="False" 
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Center"> 
+                            
+                    <Button x:Name="CollectionPrevious" Margin="0,0,10,10"/>
+                    <TextBlock x:Name="CollectionName" Text="name" Margin="0,0,10,10" FontWeight="Bold" HorizontalAlignment="Stretch"/>
+                    <Button x:Name="CollectionNext" Margin="0,0,10,10"/>
+
+                </StackPanel>
+
+                <Panel x:Name="Post"/>
+                <TextBlock x:Name="NoteTextBlock"/>
+                <TextBlock x:Name="RelatedTextBlock" IsVisible="False" Text="Related" FontSize="15" Foreground="Green" FontWeight="Bold"/>
+                <StackPanel x:Name="Related" Orientation="Horizontal" HorizontalAlignment="Center"/>
+            </StackPanel> 
+        </ScrollViewer>
+
+
+    </Panel>
+
+</UserControl>

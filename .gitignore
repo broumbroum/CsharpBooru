@@ -1,0 +1,61 @@
+# --- .NET / C# ---
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+*.user
+*.suo
+*.userprefs
+*.csproj.user
+*.pidb
+*.svclog
+*.pdb
+
+# --- Visual Studio ---
+.vs/
+*.vcxproj.user
+*.cache
+*.dbmdl
+*.jfm
+
+# --- Visual Studio Code ---
+.vscode/
+.history/
+*.code-workspace
+
+# --- NuGet ---
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.assets.json
+
+# --- Logs ---
+*.log
+
+# --- OS Files ---
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# --- Rider / JetBrains ---
+.idea/
+*.sln.iml
+
+# --- Temporary files ---
+*.tmp
+*.temp
+
+# --- Publish output ---
+publish/
+artifacts/
