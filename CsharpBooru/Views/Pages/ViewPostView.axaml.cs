@@ -267,7 +267,9 @@ public partial class ViewPostView : UserControl {
 		bt.Content = tb;
 
 		bt.Click += (s, e) => {
-			System.Diagnostics.Debug.WriteLine("Rating:" + text);
+			SearchSQL.querySearch = "rating:" + text;
+			MainWindowViewModel.main.PostGrid();
+			//System.Diagnostics.Debug.WriteLine("Rating:" + text);
 		};
 
 		return bt;
