@@ -3,6 +3,7 @@ using CsharpBooru.Component;
 using CsharpBooru.ViewModels;
 using CsharpBooru.SQL;
 using Avalonia.Media;
+using CsharpBooru.ViewModels.Pages;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -12,6 +13,8 @@ public partial class PostGridView : UserControl{
 		_currentPage = 0,
 		_totalPages = 0;
 
+	private PostGridViewModel? Vm => DataContext as PostGridViewModel;
+
 	public PostGridView(){
 
 		InitializeComponent();
@@ -20,8 +23,11 @@ public partial class PostGridView : UserControl{
 			MainWindowViewModel.main.PostGrid();
 		};
 
-		_currentPage = 0;
-		LoadPage();
+		this.DataContextChanged += (_, _) => {
+			_currentPage = Vm?.CurrentPage ?? 0;
+			LoadPage();
+		};
+		
 	}
 
 	private void LoadPage () {

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using CsharpBooru.SQL;
 using System.IO;
+using CsharpBooru.ViewModels.Pages;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -23,10 +24,12 @@ public partial class CollectionsListView : UserControl {
 	public int totalPages = 0;
 	private List<int> CollectionList = [];
 
+	private CollectionsListViewModel Vm => DataContext as CollectionsListViewModel;
+
 	public CollectionsListView() { 
 		InitializeComponent();
 
-		InitializaPage();
+		DataContextChanged += (s, e) => InitializaPage(Vm?.CurrentPage ?? 0);
 
 	}
 
@@ -74,7 +77,7 @@ public partial class CollectionsListView : UserControl {
 		Collection collection = new(0, TextAddCollection.Text ?? "New Collection", []);
 		CollectionsManager.AddCollection(collection);
 
-		InitializaPage();
+		InitializaPage(currentPage);
 
 	}
 
@@ -123,7 +126,7 @@ public partial class CollectionsListView : UserControl {
 		deleteItem.Click += (s, e) => {
 			System.Diagnostics.Debug.WriteLine("Collection " + index + " deleted");
 			CollectionsManager.RemoveCollection(index);
-			InitializaPage();
+			InitializaPage(currentPage);
 		};
 
 		return new ContextMenu {

@@ -32,7 +32,7 @@ public partial class ViewPostView : UserControl {
 	private void OnDataContextChanged (object? sender, EventArgs e) {
 		if (Vm == null) return;
 
-		post = PostsManager.GetPost(Vm.Id); //7 //186 //200
+		post = PostsManager.GetPost(Vm.Id);
 		if (post == null) return;
 
 		path = Path.GetFullPath(DataBase.FilesPath + "\\" + post.Filename);
