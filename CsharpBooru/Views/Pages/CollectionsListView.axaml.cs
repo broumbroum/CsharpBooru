@@ -117,21 +117,22 @@ public partial class CollectionsListView : UserControl {
 		var openItem = new MenuItem {
 			Header = "Open Collection"
 		}; openItem.Click += (_, _) => {
-			var window = this.FindAncestorOfType<Window>();
-			if (window?.DataContext is MainWindowViewModel vm) vm.CollectionsWiew(index);
+			MainWindowViewModel.main.CollectionsWiew(index);
 		};
 		var deleteItem = new MenuItem() { 
-			Header = "Delete Collection" 
+			Header = "Delete Collection",
+			Foreground = Brushes.Red
 		};
 		deleteItem.Click += (s, e) => {
-			System.Diagnostics.Debug.WriteLine("Collection " + index + " deleted");
 			CollectionsManager.RemoveCollection(index);
 			InitializaPage(currentPage);
 		};
 
 		return new ContextMenu {
 			Items = {
-				openItem, deleteItem
+				openItem,
+				new Separator(),
+				deleteItem
 			}
 		};
 	}
