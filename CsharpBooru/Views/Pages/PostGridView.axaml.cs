@@ -38,18 +38,18 @@ public partial class PostGridView : UserControl{
 
 		BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
 			_currentPage = page;
+			MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
 			LoadPage();
 		});
 
 		BuildPagination_Component.Component(PaginationPanelDown, _currentPage, _totalPages, page => {
 			_currentPage = page;
+			MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
 			LoadPage();
 		});
 	}
 
-	private void Click (int index) {
-		MainWindowViewModel.main.ViewImage(index);
-	}
+	private void Click (int index) => MainWindowViewModel.main.ViewImage(index);
 
 	private ContextMenu ContextMenuPost (int index) {
 

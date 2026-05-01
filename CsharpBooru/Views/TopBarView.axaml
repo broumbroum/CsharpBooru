@@ -10,6 +10,18 @@
 		HorizontalAlignment="Stretch" VerticalAlignment="Top"
 		Background="Lavender">
 
+		<Button x:Name="BackButton"
+			Width="30" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="BackButtonClick">
+		</Button>
+
+		<Button x:Name="ForwardButton"
+			Width="30" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="ForwardButtonClick">
+		</Button>
+
 		<Button 
 			Width="100" Height="30"
 			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"

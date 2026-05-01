@@ -42,9 +42,7 @@ public partial class ViewCollectionsView : UserControl {
             
             btnP.Click += (_, _) => {
 				var window = this.FindAncestorOfType<Window>();
-				if (window?.DataContext is MainWindowViewModel main) {
-                    main.ViewImage(viewPostID, collection, positionList);
-                }
+				MainWindowViewModel.main.ViewImage(viewPostID, collection.Id, positionList);
             };
             CollectionsListe.Children.Add(btnP);
         }

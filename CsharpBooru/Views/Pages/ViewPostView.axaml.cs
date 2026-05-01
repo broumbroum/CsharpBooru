@@ -147,19 +147,19 @@ public partial class ViewPostView : UserControl {
 		if (Vm?.Collection == null || Vm.Collection.Posts.Count == 0) return;
 
 		Collection.IsVisible = true;
-		CollectionName.Text = " " + Vm.Collection.Name + "    Pages : " + (Vm.IdCollection + 1) + "/" + Vm.Collection.Posts.Count + " ";
+		CollectionName.Text = " " + Vm.Collection.Name + "    Pages : " + (Vm.index + 1) + "/" + Vm.Collection.Posts.Count + " ";
 		CollectionPrevious.Content = " < ";
 		CollectionPrevious.Click += (_, _) => {
-			if (Vm.IdCollection >= 1) {
+			if (Vm.index >= 1) {
 				var window = this.FindAncestorOfType<Window>();
-				if (window?.DataContext is MainWindowViewModel main) main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.IdCollection - 1]), Vm.Collection, Vm.IdCollection - 1);
+				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.index - 1]), Vm.Collection.Id, Vm.index - 1);
 			}
 		};
 		CollectionNext.Content = " > ";
 		CollectionNext.Click += (_, _) => {
-			if (Vm.IdCollection < Vm.Collection.Posts.Count - 1) {
+			if (Vm.index < Vm.Collection.Posts.Count - 1) {
 				var window = this.FindAncestorOfType<Window>();
-				if (window?.DataContext is MainWindowViewModel main) main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.IdCollection + 1]), Vm.Collection, Vm.IdCollection + 1);
+				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.index + 1]), Vm.Collection.Id, Vm.index + 1);
 			}
 		};
 	}

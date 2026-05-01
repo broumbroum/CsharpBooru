@@ -12,6 +12,9 @@ public partial class MainWindowViewModel : ViewModelBase {
 		main = this;
 	}
 
+	public readonly NavigationHistory navigationHistory = new();
+
+	#region Pages
 	public ViewModelBase
 		topBar = new TopBarViewModel(),
 		currentPage = new HomeViewModel();
@@ -21,19 +24,46 @@ public partial class MainWindowViewModel : ViewModelBase {
 		set => topBar = value;
 	}
 
-
 	public ViewModelBase CurrentPage {
 		get => currentPage;
 		set => this.RaiseAndSetIfChanged(ref currentPage, value);
 	}
+	#endregion
 
 
-	public void HomePage () => CurrentPage = new HomeViewModel();
-	public void TagPage () => CurrentPage = new TagsListViewModel();
-	public void ViewImage (int id, Collection collection = null, int idCollection = -1) => CurrentPage = new ViewPostViewModel(id, collection, idCollection);
-	public void PostGrid (int currenPagePost = 0) => CurrentPage = new PostGridViewModel(currenPagePost);
-	public void CollectionsList () => CurrentPage = new CollectionsListViewModel();
-	public void EditPost (bool editMode = false, int idItem = 0) => CurrentPage = new EditPostViewModel(editMode, idItem);
-	public void CollectionsWiew (int id) => CurrentPage = new ViewCollectionsViewModel(id);
-	public void Setting () => CurrentPage = new SettingViewModel();
+	public void HomePage () {
+		navigationHistory.AddPage("HomePage");
+		CurrentPage = new HomeViewModel(); 
+	}
+	public void TagPage () { 
+		navigationHistory.AddPage("TagPage");
+		CurrentPage = new TagsListViewModel(); 
+	}
+	public void ViewImage (int id, int? idCollection = null, int index = -1) { 
+		Collection? collection = null;
+		if (idCollection != null) collection = CollectionsManager.GetCollection(System.Convert.ToInt32(idCollection?? 0));
+
+		navigationHistory.AddPage("ViewImage&" + id + "&" + idCollection + "&" + index);
+		CurrentPage = new ViewPostViewModel(id, collection, index); 
+	}
+	public void PostGrid (int currenPagePost = 0) {
+		navigationHistory.AddPage("PostGrid&" + currenPagePost + "&" + SearchSQL.querySearch);
+		CurrentPage = new PostGridViewModel(currenPagePost);
+	}
+	public void CollectionsList () {
+		navigationHistory.AddPage("CollectionsList");
+		CurrentPage = new CollectionsListViewModel();
+	}
+	public void EditPost (bool editMode = false, int idItem = 0) { 
+		navigationHistory.AddPage("EditPost&" + editMode.ToString() + "&" + idItem);
+		CurrentPage = new EditPostViewModel(editMode, idItem); 
+	}
+	public void CollectionsWiew (int id) { 
+		navigationHistory.AddPage("CollectionsWiew&" + id);
+		CurrentPage = new ViewCollectionsViewModel(id); 
+	}
+	public void Setting () { 
+		navigationHistory.AddPage("Setting");
+		CurrentPage = new SettingViewModel(); 
+	}
 }
