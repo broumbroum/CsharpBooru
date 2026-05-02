@@ -55,7 +55,7 @@ public class NavigationHistory {
 			MainWindowViewModel.main.PostGrid(Convert.ToInt32(parts[1]));
 			break;
 			case "CollectionsList":
-			MainWindowViewModel.main.CollectionsList();
+			MainWindowViewModel.main.CollectionsList(Convert.ToInt32(parts[1]));
 			break;
 			case "EditPost":
 			MainWindowViewModel.main.EditPost(Convert.ToBoolean(parts[1]), Convert.ToInt32(parts[2]));

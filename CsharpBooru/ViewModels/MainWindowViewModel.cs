@@ -50,9 +50,9 @@ public partial class MainWindowViewModel : ViewModelBase {
 		navigationHistory.AddPage("PostGrid&" + currenPagePost + "&" + SearchSQL.querySearch);
 		CurrentPage = new PostGridViewModel(currenPagePost);
 	}
-	public void CollectionsList () {
-		navigationHistory.AddPage("CollectionsList");
-		CurrentPage = new CollectionsListViewModel();
+	public void CollectionsList (int currenPagePost = 0) {
+		navigationHistory.AddPage("CollectionsList&" + currenPagePost);
+		CurrentPage = new CollectionsListViewModel(currenPagePost);
 	}
 	public void EditPost (bool editMode = false, int idItem = 0) { 
 		navigationHistory.AddPage("EditPost&" + editMode.ToString() + "&" + idItem);

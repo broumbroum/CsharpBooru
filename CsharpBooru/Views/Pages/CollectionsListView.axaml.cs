@@ -63,10 +63,12 @@ public partial class CollectionsListView : UserControl {
 
 		BuildPagination_Component.Component(PaginationTop, currentPage, totalPages, page => {
 			currentPage = page;
+			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsList&" + currentPage);
 			LoadPage();
 		});
 		BuildPagination_Component.Component(PaginationDown, currentPage, totalPages, page => {
 			currentPage = page;
+			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsList&" + currentPage);
 			LoadPage();
 		});
 	}
