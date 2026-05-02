@@ -1,17 +1,19 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.VisualTree;
 using CsharpBooru.Component.ViewsPost;
+using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
+using LibVLCSharp.Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LibVLCSharp.Shared;
-using CsharpBooru.SQL;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -180,7 +182,26 @@ public partial class ViewPostView : UserControl {
 	}
 
 	private void AddTagGroup (string title, Color color, List<string> items) {
-		TagStack.Children.Add(CreateTextBlock(title, true, color));
+		string source = title switch {
+			"Artist" => "avares://CsharpBooru/Resources/Icons/tag/icons8-paint-palette-100.png",
+			"Character" => "avares://CsharpBooru/Resources/Icons/tag/icons8-customer-100.png",
+			"Copyright" => "avares://CsharpBooru/Resources/Icons/tag/icons8-c-100.png",
+			"Species" => "avares://CsharpBooru/Resources/Icons/tag/icons8-lapin-100.png",
+			"Tag" => "avares://CsharpBooru/Resources/Icons/tag/icons8-tag-window-100.png",
+			_ => "avares://CsharpBooru/Resources/Icons/tag/icons8-tag-window-100.png",
+		};
+
+		StackPanel panel = new() { Orientation = Orientation.Horizontal};
+
+		panel.Children.Add(new Image { 
+			Width = 40, Height = 40,
+			Source = new Bitmap(AssetLoader.Open(new Uri(source))),
+			Stretch = Stretch.UniformToFill
+
+		});
+		panel.Children.Add(CreateTextBlock(title, true, color));
+
+		TagStack.Children.Add(panel);
 		foreach (var t in items)
 			TagStack.Children.Add(CreateButtonTag(t, color));
 	}
