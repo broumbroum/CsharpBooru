@@ -48,16 +48,26 @@ internal class SearchSQL {
 		var results = new List<int>();
 
 		foreach (var post in PostsManager.GetAllPosts()) {
-			var postTags = post.Tags; 
+			foreach (var includeId in includeIds) {
+				if (post.Tags.Contains(includeId)) 
+					continue;
+				else
+					goto NextPost;	
+			}
 
-			bool includeOK = !includeIds.All(id => !postTags.Contains(id));
-			bool excludeOK = excludeIds.All(id => !postTags.Contains(id));
-			bool ratingOK = ratingFilters.Count == 0 || ratingFilters.Any(r => post.Rating.Equals(r, StringComparison.OrdinalIgnoreCase));
+			foreach (var excludeId in excludeIds) {
+				if (!post.Tags.Contains(excludeId)) 
+					continue;
+				else
+					goto NextPost;
+			}
 
-			if (includeOK && excludeOK && ratingOK)
+			if (ratingFilters.Count == 0 || ratingFilters.Any(r => post.Rating.Equals(r, StringComparison.OrdinalIgnoreCase)))
 				results.Add(post.Id);
-		}
 
+		NextPost:;
+		}
+		
 		return results;
 	}
 
