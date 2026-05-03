@@ -22,6 +22,8 @@ public partial class ViewPostView : UserControl {
 	private string path = "", infoFile = "";
 	private Post post;
 
+	private const string Resources = "avares://CsharpBooru/Resources/Icons/tag/";
+
 	private ViewPostViewModel? Vm => DataContext as ViewPostViewModel;
 
 	public ViewPostView () {
@@ -110,13 +112,13 @@ public partial class ViewPostView : UserControl {
 		AddTagGroup("Tag", Colors.Blue, groups["Tag"]);
 
 
-		TagStack.Children.Add(CreateTextBlock("Rating", true, Colors.Green));
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Rating", true, Colors.Green), Resources + "icons8-law-100.png"));
 		TagStack.Children.Add(CreateButtonRating(post.Rating));
 
-		TagStack.Children.Add(CreateTextBlock("Sources", true, Colors.Green));
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Sources", true, Colors.Green), Resources + "icons8-website-100.png"));
 		for (int i = 0; i < post.Sources.Count; i++) { TagStack.Children.Add(CreateButtonSources(post.Sources[i])); }
 
-		TagStack.Children.Add(CreateTextBlock("File Info", true, Colors.Green));
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("File Info", true, Colors.Green), Resources + "icons8-view-100.png"));
 		TagStack.Children.Add(CreateTextBlock(infoFile, color: Colors.Black));
 	}
 
@@ -183,27 +185,34 @@ public partial class ViewPostView : UserControl {
 
 	private void AddTagGroup (string title, Color color, List<string> items) {
 		string source = title switch {
-			"Artist" => "avares://CsharpBooru/Resources/Icons/tag/icons8-paint-palette-100.png",
-			"Character" => "avares://CsharpBooru/Resources/Icons/tag/icons8-customer-100.png",
-			"Copyright" => "avares://CsharpBooru/Resources/Icons/tag/icons8-c-100.png",
-			"Species" => "avares://CsharpBooru/Resources/Icons/tag/icons8-lapin-100.png",
-			"Tag" => "avares://CsharpBooru/Resources/Icons/tag/icons8-tag-window-100.png",
-			_ => "avares://CsharpBooru/Resources/Icons/tag/icons8-tag-window-100.png",
+			"Artist" => Resources + "icons8-paint-palette-100.png",
+			"Character" => Resources + "icons8-customer-100.png",
+			"Copyright" => Resources + "icons8-c-100.png",
+			"Species" => Resources + "icons8-lapin-100.png",
+			"Tag" => Resources + "icons8-tag-window-100.png",
+			_ => Resources + "icons8-tag-window-100.png",
 		};
 
-		StackPanel panel = new() { Orientation = Orientation.Horizontal};
+		TagStack.Children.Add(PanelTitle(CreateTextBlock(title, true, color), source));
+		foreach (var t in items)
+			TagStack.Children.Add(CreateButtonTag(t, color));
+	}
 
-		panel.Children.Add(new Image { 
-			Width = 40, Height = 40,
-			Source = new Bitmap(AssetLoader.Open(new Uri(source))),
+	private StackPanel PanelTitle (TextBlock textBlock, string image) {
+		StackPanel panel = new() {
+			Orientation = Orientation.Horizontal,
+		};
+
+		panel.Children.Add(new Image {
+			Width = 40,
+			Height = 40,
+			Source = new Bitmap(AssetLoader.Open(new Uri(image))),
 			Stretch = Stretch.UniformToFill
 
 		});
-		panel.Children.Add(CreateTextBlock(title, true, color));
-
-		TagStack.Children.Add(panel);
-		foreach (var t in items)
-			TagStack.Children.Add(CreateButtonTag(t, color));
+		panel.Children.Add(textBlock)
+			;
+		return panel;
 	}
 
 	private Button CreateButtonRelated (Post post) {
