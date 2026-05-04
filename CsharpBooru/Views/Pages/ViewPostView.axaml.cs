@@ -7,6 +7,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.VisualTree;
 using CsharpBooru.Component.ViewsPost;
+using CsharpBooru.Setting;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
@@ -192,8 +193,22 @@ public partial class ViewPostView : UserControl {
 			"Tag" => Resources + "icons8-tag-window-100.png",
 			_ => Resources + "icons8-tag-window-100.png",
 		};
-
 		TagStack.Children.Add(PanelTitle(CreateTextBlock(title, true, color), source));
+
+		switch (SettingValue.OrderTag) {
+			case "Seizure Order": break;
+			case "Alphabetical Order (ignore upper and lower case letters)":
+				items.Sort(StringComparer.OrdinalIgnoreCase);
+			break;
+			case "Alphabetical Order":
+				items.Sort(StringComparer.Ordinal);
+			break;
+			default:
+				items.Sort(StringComparer.Ordinal);
+			break;
+		}
+
+		
 		foreach (var t in items)
 			TagStack.Children.Add(CreateButtonTag(t, color));
 	}

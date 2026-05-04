@@ -41,6 +41,7 @@ internal static class SettingFile {
 		_values["Path"] = path;
 		_values["PostPerPage"] = "20";
 		_values["FillThumbnailPost"] = "false";
+		_values["OrderTag"] = "Alphabetical Order";
 
 		Save();
 	}

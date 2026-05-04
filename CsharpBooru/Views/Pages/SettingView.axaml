@@ -16,6 +16,7 @@
 		HorizontalAlignment="Stretch"
 		Margin="10, 10, 10, 10">
 
+		<!--____________Post Per Page____________-->
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
 			<TextBlock Text="Post Per Page" FontWeight="Bold" Margin="10,0,10,0"/>
 			<ScrollBar x:Name="PostPerPageScroll" 
@@ -28,12 +29,25 @@
 			<TextBlock x:Name="PostPerPageText" Text="V 10"/>
 		</StackPanel>
 
+		<!--____________Fill Thumbnail Post____________-->
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="10">
 			<TextBlock Text="Fill Thumbnail Post" FontWeight="Bold" Margin="10,0,10,0" TextAlignment="Center"/>
 			<ToggleSwitch x:Name="FillThumbnailPostToggle" Margin="0,0,10,0" 
 						  OnContent="True" OffContent="False"/>
 		</StackPanel>
-
+		
+		<!--____________Order Tag____________-->
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="10">
+			<TextBlock Text="Order Tag" FontWeight="Bold" Margin="10,0,10,0" TextAlignment="Center"/>
+			<ComboBox x:Name="OrderTagBox"
+				  SelectedIndex="0"
+				  HorizontalAlignment="Stretch"
+				  Margin="25 10 10 0">
+				<ComboBoxItem>Alphabetical Order (ignore upper and lower case letters)</ComboBoxItem>
+				<ComboBoxItem>Alphabetical Order</ComboBoxItem>
+				<ComboBoxItem>Seizure Order</ComboBoxItem>
+			</ComboBox>
+		</StackPanel>
 
 	</StackPanel>
 </UserControl>

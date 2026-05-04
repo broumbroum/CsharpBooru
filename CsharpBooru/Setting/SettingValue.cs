@@ -43,4 +43,13 @@ public static class SettingValue {
 			SettingFile._values["FillThumbnailPost"] = value.ToString();
 		}
 	}
+
+	public static string OrderTag {
+		get {
+			SettingFile._values.TryGetValue("OrderTag", out string? value);
+			return value ?? "Alphabetical Order";
+		} set {
+			SettingFile._values["OrderTag"] = value;
+		}
+	}
 }

@@ -19,6 +19,7 @@ public partial class SettingView : UserControl{
 
 		PostPerPage();
 		FillThumbnailPost();
+		OrderTag();
 	}
 
 	private void PostPerPage () {
@@ -43,6 +44,20 @@ public partial class SettingView : UserControl{
 			fillThumbnailPost = FillThumbnailPostToggle.IsChecked ?? false;
 			SettingValue.FillThumbnailPost = fillThumbnailPost;
 			SettingFile.Save();
+		};
+	}
+
+	private void OrderTag () {
+		OrderTagBox.SelectedIndex = SettingValue.OrderTag switch {
+			"Alphabetical Order (ignore upper and lower case letters)" => 0,
+			"Alphabetical Order" => 1,
+			"Seizure Order" => 2,
+			_ => 0,
+		};
+
+		OrderTagBox.SelectionChanged += (_, _) => {
+			var valeur = (OrderTagBox.SelectedItem as ComboBoxItem)?.Content;
+			SettingValue.OrderTag = valeur?.ToString() ?? "Alphabetical Order";
 		};
 	}
 }
