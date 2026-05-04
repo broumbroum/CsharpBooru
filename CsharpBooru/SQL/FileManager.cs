@@ -4,15 +4,16 @@ namespace CsharpBooru.SQL;
 internal static class FileManager {
 
 	public static string SaveFile (string sourcePath) {
-		string fileName = Path.GetFileName(sourcePath);
-		string name = Path.GetFileNameWithoutExtension(fileName);
-		string extension = Path.GetExtension(fileName);
+		string fileName = Path.GetFileName(sourcePath); //(ex: "image.png")
+		string name = Path.GetFileNameWithoutExtension(fileName); //(ex: "image")
+		string extension = Path.GetExtension(fileName); //(ex: "png")
 
-		System.Diagnostics.Debug.WriteLine("Path.GetDirectoryName: " + Path.GetDirectoryName(sourcePath) + " | DataBase.FilesPath: " + DataBase.FilesPath);
-		if (Path.GetDirectoryName(sourcePath) + "\\" == Path.Combine(DataBase.FilesPath)) return fileName;
+		//Avoid copying a file already in the database
+		if (Path.GetDirectoryName(sourcePath) == Path.GetDirectoryName(DataBase.FilesPath)) return fileName;
 
 		string destinationPath = Path.Combine(DataBase.FilesPath, fileName);
 
+		//If a file with the same name already exists → create a unique name
 		if (File.Exists(destinationPath) == true) {
 			int counter = 1;
 			string newFileName = name;
@@ -21,6 +22,7 @@ internal static class FileManager {
 				destinationPath = Path.Combine(DataBase.FilesPath, newFileName + extension);
 				counter++;
 			} while (File.Exists(destinationPath));
+			//Updates the final name
 			name = newFileName;
 		}
 
@@ -36,6 +38,5 @@ internal static class FileManager {
 			ThumbnailsManager.DeleteThumbnail(file);
 		}
 	}
-
 
 }
