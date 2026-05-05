@@ -41,9 +41,12 @@ public partial class MainWindowViewModel : ViewModelBase {
 	}
 	public void ViewImage (int id, int? idCollection = null, int index = -1) { 
 		Collection? collection = null;
-		if (idCollection != null) collection = CollectionsManager.GetCollection(System.Convert.ToInt32(idCollection?? 0));
+		if (idCollection != null) collection = CollectionsManager.GetCollection(System.Convert.ToInt32(idCollection ?? 0));
+		else idCollection = 0;
 
 		navigationHistory.AddPage("ViewImage&" + id + "&" + idCollection + "&" + index);
+		System.Diagnostics.Debug.WriteLine("ViewImage&" + id + "&" + idCollection + "&" + index);
+		
 		CurrentPage = new ViewPostViewModel(id, collection, index); 
 	}
 	public void PostGrid (int currenPagePost = 0) {
