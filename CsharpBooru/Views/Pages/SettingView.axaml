@@ -5,49 +5,48 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="CsharpBooru.Views.Pages.SettingView">
 
-	<UserControl.Styles>
-		<Style Selector="ToggleSwitch /template/ Border#PART_Knob">
-			<Setter Property="Background" Value="#C8BFE7"/> <!-- Knob ON -->
-		</Style>
-	</UserControl.Styles>
-
 	<StackPanel 
 		VerticalAlignment="Top" 
 		HorizontalAlignment="Stretch"
 		Margin="10, 10, 10, 10">
 
 		<!--____________Post Per Page____________-->
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-			<TextBlock Text="Post Per Page" FontWeight="Bold" Margin="10,0,10,0"/>
+		<Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5">
+			<TextBlock Text="Post Per Page" FontWeight="Bold"/>
 			<ScrollBar x:Name="PostPerPageScroll" 
 				Orientation="Horizontal"
-				MinWidth="250" Height="25" 
+				
+				Height="25" Margin="20,0,20,0"
 				HorizontalAlignment="Stretch"
 				Value="20" Minimum="10" Maximum="100"
 				SmallChange="1" LargeChange="1"
-				Margin="0,0,10,0"/>
-			<TextBlock x:Name="PostPerPageText" Text="V 10"/>
-		</StackPanel>
+				Grid.Column="1"
+				/>
+			<TextBlock x:Name="PostPerPageText" Text="V 10" HorizontalAlignment= "Right" Grid.Column="2"/>
+		</Grid>
 
 		<!--____________Fill Thumbnail Post____________-->
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="10">
-			<TextBlock Text="Fill Thumbnail Post" FontWeight="Bold" Margin="10,0,10,0" TextAlignment="Center"/>
-			<ToggleSwitch x:Name="FillThumbnailPostToggle" Margin="0,0,10,0" 
-						  OnContent="True" OffContent="False"/>
-		</StackPanel>
+		<Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5">
+			<TextBlock Text="Fill Thumbnail Post" FontWeight="Bold" TextAlignment="Center"/>
+			<ToggleSwitch x:Name="FillThumbnailPostToggle" 
+						  Margin="20,0,20,0" 
+						  OnContent="True" OffContent="False"
+						  Grid.Column="1" Foreground="Black"/>
+		</Grid>
 		
 		<!--____________Order Tag____________-->
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="10">
-			<TextBlock Text="Order Tag" FontWeight="Bold" Margin="10,0,10,0" TextAlignment="Center"/>
+		<Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5">
+			<TextBlock Text="Order Tag" FontWeight="Bold" TextAlignment="Center"/>
 			<ComboBox x:Name="OrderTagBox"
 				  SelectedIndex="0"
 				  HorizontalAlignment="Stretch"
-				  Margin="25 10 10 0">
+				  Margin="20,0,20,0"
+				  Grid.Column="1">
 				<ComboBoxItem>Alphabetical Order (ignore upper and lower case letters)</ComboBoxItem>
 				<ComboBoxItem>Alphabetical Order</ComboBoxItem>
 				<ComboBoxItem>Seizure Order</ComboBoxItem>
 			</ComboBox>
-		</StackPanel>
+		</Grid>
 
 	</StackPanel>
 </UserControl>
