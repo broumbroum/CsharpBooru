@@ -35,33 +35,33 @@ internal class SearchSQL {
 
 		var includeIds = includeNames
 			.Select(n => TagsManager.GetTagIdByName(n))
-			.Where(id => id != null)
-			.Select(id => id.Value)
 			.ToList();
 
 		var excludeIds = excludeNames
 			.Select(n => TagsManager.GetTagIdByName(n))
-			.Where(id => id != null)
-			.Select(id => id.Value)
 			.ToList();
 
 		var results = new List<int>();
 
 		foreach (var post in PostsManager.GetAllPosts()) {
 			foreach (var includeId in includeIds) {
-				if (post.Tags.Contains(includeId)) 
-					continue;
-				else
-					goto NextPost;	
-			}
-
-			foreach (var excludeId in excludeIds) {
-				if (!post.Tags.Contains(excludeId)) 
+				if (includeId == -1)
+					goto NextPost;
+				else if (post.Tags.Contains(includeId))
 					continue;
 				else
 					goto NextPost;
 			}
 
+			foreach (var excludeId in excludeIds) {
+				if(excludeId == -1)
+					goto NextPost;
+				else if (!post.Tags.Contains(excludeId))
+					continue;
+				else
+					goto NextPost;
+			}
+		
 			if (ratingFilters.Count == 0 || ratingFilters.Any(r => post.Rating.Equals(r, StringComparison.OrdinalIgnoreCase)))
 				results.Add(post.Id);
 

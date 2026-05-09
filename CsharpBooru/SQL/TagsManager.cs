@@ -157,7 +157,7 @@ public static class TagsManager {
 	}
 
 	// 📖 Retrieve a tag's ID from its name
-	public static int? GetTagIdByName (string name) {
+	public static int GetTagIdByName (string name) {
 		using var conn = DataBase.GetConnection();
 		conn.Open();
 
@@ -168,7 +168,7 @@ public static class TagsManager {
 
 		var result = cmd.ExecuteScalar();
 		if (result == null)
-			return null;
+			return -1;
 
 		return Convert.ToInt32(result);
 	}

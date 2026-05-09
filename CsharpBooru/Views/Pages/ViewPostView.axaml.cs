@@ -264,7 +264,7 @@ public partial class ViewPostView : UserControl {
 
 	private Button CreateButtonTag (string text, Color color = default) {
 		int count = 0;
-		int idTag = TagsManager.GetTagIdByName(text) ?? -1;
+		int idTag = TagsManager.GetTagIdByName(text);
 		if (idTag != -1) count = TagsManager.CountTagUsage(idTag);
 
 		Button bt = new() {
