@@ -6,11 +6,11 @@ namespace CsharpBooru.SQL;
 internal class DataBase {
 
     public static string path = "";
-	private const string files = "files\\", thumbnails = "thumbnails\\";
+	private const string files = "files/", thumbnails = "thumbnails/";
 
-	public static string PathBooru { get => Path.Combine(path , "Booru.db"); }
-	public static string FilesPath { get => Path.Combine(path , files); }
-	public static string ThumbnailsPath { get => Path.Combine(path, thumbnails); }
+	public static string PathBooru { get => Path.Combine(path, "Booru.db").Replace("\\", "/"); }
+	public static string FilesPath { get => Path.Combine(path, files).Replace("\\", "/"); }
+	public static string ThumbnailsPath { get => Path.Combine(path, thumbnails).Replace("\\", "/"); }
 
 	internal static SQLiteConnection GetConnection () {
 		if (string.IsNullOrWhiteSpace(path))

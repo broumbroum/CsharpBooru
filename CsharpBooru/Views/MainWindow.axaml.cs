@@ -24,9 +24,8 @@ public partial class MainWindow : Window {
 
 	public async void SelectFolder (object sender, RoutedEventArgs args) {
 		string path;
-		var topLevel = TopLevel.GetTopLevel(this);
 
-		var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+		var folders = await this.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
 			Title = "Select a Folder",
 			AllowMultiple = false,
 		});

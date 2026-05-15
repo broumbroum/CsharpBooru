@@ -99,20 +99,6 @@ public partial class EditPostView : UserControl {
 		this.path = path;
 		PathText.Text = path;
 
-		/*if (topLevel is Window window) {
-			var dialog = new OpenFileDialog {
-				AllowMultiple = false
-			};
-
-			var result = await dialog.ShowAsync(window);
-
-			if (result != null && result.Length > 0) {
-				string path = result[0];
-				this.path = path;
-				PathText.Text = path;
-			}
-		}*/
-
 	}
 
 	private void OnTagChanged (object? sender, TextChangedEventArgs e) {

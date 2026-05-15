@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.VisualTree;
 using CsharpBooru.Component;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
@@ -15,8 +14,7 @@ public partial class HomeView : UserControl{
 		InitializeComponent();
 
 		Search_Component.Component(ref SearchPanel).Click += (_, _) => {
-			var window = this.FindAncestorOfType<Window>();
-			if (window?.DataContext is MainWindowViewModel vm) vm.PostGrid();
+			MainWindowViewModel.main.PostGrid();
 		};
 
 		CountPosts();

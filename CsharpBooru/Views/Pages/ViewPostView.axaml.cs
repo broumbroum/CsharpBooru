@@ -40,7 +40,7 @@ public partial class ViewPostView : UserControl {
 		post = PostsManager.GetPost(Vm.Id);
 		if (post == null) return;
 
-		path = Path.GetFullPath(DataBase.FilesPath + "\\" + post.Filename);
+		path = Path.GetFullPath(DataBase.FilesPath + "/" + post.Filename).Replace("\\", "/");
 
 		DispalyFile();
 		DisplayNote();
@@ -61,7 +61,7 @@ public partial class ViewPostView : UserControl {
 
 		infoFile += path + "\n";
 
-		switch (Path.GetExtension(path)) {
+		switch (Path.GetExtension(path).Replace("\\", "/")) {
 			case ".png" or ".jpg" or ".jpeg" or ".gif" or ".ico" or ".webp" or ".tiff" or ".tif":
 				Image_Component IC = new();
 				Post.Children.Add(IC.Component(ref path));

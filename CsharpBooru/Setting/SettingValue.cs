@@ -14,7 +14,7 @@ public static class SettingValue {
 	public static string? Path {
 		get {
 			SettingFile._values.TryGetValue("Path", out string? value);
-			return value + "\\";
+			return value + "/";
 		}
 	}
 
