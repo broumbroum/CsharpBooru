@@ -23,17 +23,14 @@
 		
 		<StackPanel x:Name="PaginationTop" Orientation="Horizontal" HorizontalAlignment="Center"/>
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
-			<DataGrid 
-				x:Name="DataGridControl"
-				MaxHeight="500"
-				Margin="25 10 25 25"
-				AutoGenerateColumns="False"
-				IsReadOnly="True"
-				GridLinesVisibility="All"
-				CanUserResizeColumns="True"
-				VerticalAlignment="Stretch"/>
-		</ScrollViewer>
+		<DataGrid x:Name="DataGridControl"
+			MaxHeight="500"
+			Margin="25 25 25 25"
+			AutoGenerateColumns="False"
+			IsReadOnly="True"
+			GridLinesVisibility="All"
+			CanUserResizeColumns="True"
+			VerticalAlignment="Stretch"/>
 
 		<StackPanel x:Name="PaginationDown" Orientation="Horizontal" HorizontalAlignment="Center"/>
 

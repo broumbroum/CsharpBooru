@@ -19,32 +19,44 @@
             <StackPanel 
                 x:Name="TagStack" 
                 Orientation="Vertical" 
-                Margin="10"/>
+                Margin="10"
+                MaxWidth="400" MinWidth="400"/>
             
         </ScrollViewer>
 
-        <!--   Midel   -->
+        <!--   Middle   -->
         <ScrollViewer
             VerticalScrollBarVisibility="Auto"
             HorizontalAlignment="Stretch"
             Margin="10,0,0,0">
-
+            
             <StackPanel>
-
+                <!-- Collection -->
                 <StackPanel x:Name="Collection" 
                             IsVisible="False" 
                             Orientation="Horizontal" 
                             HorizontalAlignment="Center"> 
                             
-                    <Button x:Name="CollectionPrevious" Margin="0,0,10,10"/>
-                    <TextBlock x:Name="CollectionName" Text="name" Margin="0,0,10,10" FontWeight="Bold" HorizontalAlignment="Stretch"/>
-                    <Button x:Name="CollectionNext" Margin="0,0,10,10"/>
+                    <Button x:Name="CollectionPrevious" Margin="0,0,10,10" Height="30"/>
+                    <TextBlock x:Name="CollectionName" 
+                        Text="name" FontWeight="Bold" TextAlignment="Center"
+                        Margin="0,0,10,10" Height="20"/>
+                    <Button x:Name="CollectionNext" Margin="0,0,10,10" Height="30"/>
                 </StackPanel>
 
+                <!-- Post -->
                 <Panel x:Name="Post"/>
-                <TextBlock x:Name="NoteTextBlock" Margin="0,10"/>
-                <TextBlock x:Name="RelatedTextBlock" IsVisible="False" Text="Related" FontSize="15" Foreground="Green" FontWeight="Bold" Margin="0,10"/>
-                <StackPanel x:Name="Related" Orientation="Horizontal" HorizontalAlignment="Center"/>
+
+                <!-- Note -->
+                <TextBlock x:Name="NoteTextBlock" TextWrapping="Wrap" Background="#efefef" Margin="0,10" MaxWidth ="800" IsVisible="False"/>
+
+                <!-- Related -->
+                <Panel x:Name="RelatedPanel" Background="#efefef" HorizontalAlignment="Stretch" Margin="0,10" IsVisible="False">
+                    <TextBlock
+                        Text="Related" FontSize="15" FontWeight="Bold" 
+                        Foreground="Green"/>
+                    <StackPanel x:Name="Related" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5,25,5,5"/>
+                </Panel>
 
             </StackPanel> 
         </ScrollViewer>

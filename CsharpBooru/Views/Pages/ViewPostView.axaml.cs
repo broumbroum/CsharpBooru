@@ -126,21 +126,18 @@ public partial class ViewPostView : UserControl {
 	private void DisplayNote () {
 		if (post.Note == null || post.Note == "") return;
 
+		NoteTextBlock.IsVisible = true;
 		NoteTextBlock.Inlines =
 		[
 			new Run { Text = "Note\n\n", FontSize = 15, FontWeight = FontWeight.Bold, Foreground = new SolidColorBrush(Colors.Green) },
 			new Run { Text = post.Note, Foreground = new SolidColorBrush(Colors.Black) },
 		];
-		NoteTextBlock.TextWrapping = TextWrapping.Wrap;
-		NoteTextBlock.Margin = new(0, 50, 10, 0);
-		NoteTextBlock.MaxWidth = 800;
-		NoteTextBlock.Background = new SolidColorBrush(Color.Parse("#efefef"));
 	}
 
 	private void DisplayRelated () {
 		if (post?.Related == null || (post.Related.Count == 0)) return;
 
-		RelatedTextBlock.IsVisible = true;
+		RelatedPanel.IsVisible = true;
 		foreach (var _related in post.Related) {
 			Post p = PostsManager.GetPost(_related);
 			if (p == null) continue;
