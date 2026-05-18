@@ -46,13 +46,10 @@ internal static class ThumbnailsManager {
 	}
 
 	private static async Task VideoThumbnails (string inputPath, string outputPath) {
-		Core.Initialize();
-
 		var libVLC = new LibVLC("--vout=dummy");
 		using var media = new Media(libVLC, inputPath, FromType.FromPath);
 		using var mp = new MediaPlayer(media);
 
-		//mp.Volume = 0;
 		mp.Mute = true;
 
 		var tcs = new TaskCompletionSource<bool>();

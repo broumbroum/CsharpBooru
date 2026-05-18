@@ -11,7 +11,6 @@ using CsharpBooru.Setting;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
-using LibVLCSharp.Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +27,6 @@ public partial class ViewPostView : UserControl {
 	private ViewPostViewModel? Vm => DataContext as ViewPostViewModel;
 
 	public ViewPostView () {
-		Core.Initialize();
 		InitializeComponent();
 
 		this.DataContextChanged += OnDataContextChanged;

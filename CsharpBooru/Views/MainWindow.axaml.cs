@@ -3,6 +3,7 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using CsharpBooru.Setting;
 using CsharpBooru.SQL;
+using LibVLCSharp.Shared;
 using System.IO;
 
 namespace CsharpBooru.Views; 
@@ -10,6 +11,7 @@ public partial class MainWindow : Window {
 	public MainWindow () {
 
 		InitializeComponent();
+		Core.Initialize();//VLC
 
 		if (SettingFile.Load() == false) {
 			FirstStart.IsVisible = true;
