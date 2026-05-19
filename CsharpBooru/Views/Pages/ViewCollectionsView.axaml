@@ -13,23 +13,22 @@
 		VerticalAlignment="Stretch" 
 		HorizontalAlignment="Center">
 
+			<!-- Name Collection -->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBox 
-					x:Name="NameTextBox" 
-					Margin="0,0,10,0"
-					TextChanged="OnNameChange"/>
-				<Button
-					MinWidth= "50"
-					Click="ChangeName">
+				<TextBox x:Name="NameTextBox" Margin="0,0,10,0" TextChanged="OnNameChange"/>
+				<Button MinWidth= "50" Click="ChangeName">
 					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Change Name"/>
 				</Button>
 			</StackPanel>
-			
+
+			<StackPanel x:Name="PaginationWTop" HorizontalAlignment="Center" Orientation="Horizontal"/>
 
 			<WrapPanel 
 			Orientation="Horizontal" 
 			HorizontalAlignment="Stretch" 
 			x:Name="CollectionsListe"/>
+
+			<StackPanel x:Name="PaginationWDown" HorizontalAlignment="Center" Orientation="Horizontal"/>
 
 		</StackPanel>
 

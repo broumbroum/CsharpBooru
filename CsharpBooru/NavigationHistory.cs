@@ -61,7 +61,7 @@ public class NavigationHistory {
 			MainWindowViewModel.main.EditPost(Convert.ToBoolean(parts[1]), Convert.ToInt32(parts[2]));
 			break;
 			case "CollectionsWiew":
-			MainWindowViewModel.main.CollectionsWiew(Convert.ToInt32(parts[1]));
+			MainWindowViewModel.main.CollectionsWiew(Convert.ToInt32(parts[1]), Convert.ToInt32(parts[2]));
 			break;
 			case "Setting":
 			MainWindowViewModel.main.Setting();

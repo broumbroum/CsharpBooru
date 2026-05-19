@@ -61,9 +61,9 @@ public partial class MainWindowViewModel : ViewModelBase {
 		navigationHistory.AddPage("EditPost&" + editMode.ToString() + "&" + idItem);
 		CurrentPage = new EditPostViewModel(editMode, idItem); 
 	}
-	public void CollectionsWiew (int id) { 
-		navigationHistory.AddPage("CollectionsWiew&" + id);
-		CurrentPage = new ViewCollectionsViewModel(id); 
+	public void CollectionsWiew (int id, int currentPage = 0) { 
+		navigationHistory.AddPage("CollectionsWiew&" + id + "&" + currentPage);
+		CurrentPage = new ViewCollectionsViewModel(id, currentPage); 
 	}
 	public void Setting () { 
 		navigationHistory.AddPage("Setting");

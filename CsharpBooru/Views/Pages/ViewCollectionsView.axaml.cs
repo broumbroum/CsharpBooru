@@ -2,135 +2,171 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 using CsharpBooru.Component;
+using CsharpBooru.Setting;
+using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
 using System;
-using CsharpBooru.SQL;
-
+using System.Collections.Generic;
 
 namespace CsharpBooru.Views.Pages;
 
 public partial class ViewCollectionsView : UserControl {
 
-    private ViewCollectionsViewModel? Vm => DataContext as ViewCollectionsViewModel;
-    private Collection collection;
+	private ViewCollectionsViewModel? Vm => DataContext as ViewCollectionsViewModel;
+	private Collection collection;
 
 	public ViewCollectionsView() {
-        InitializeComponent();
-		this.DataContextChanged += DrawCollection;
+		InitializeComponent();
+		DataContextChanged += (s, e) => LoadPageView(Vm?.CurrentPage ?? 0);
 
 		Search_Component.Component(ref Serched).Click += (_, _) => {
 			SearchSQL.SearchPosts(SearchSQL.querySearch);
-			LoadPagePost();
-        };
+			LoadPageAdd();
+		};
 
 	}
 
-    #region VIEW COLLECTION
-    public void DrawCollection(object? sender, EventArgs e) {
-        CollectionsListe.Children.Clear();
-        
-        if (Vm == null) return;
+	#region VIEW COLLECTION
+	private List<Button> listButton = [];
+	private int totalPagesCollection = 0, currentPageCollection = 0;
+
+	public void LoadPageView(int _currentPage = 0) {
+		currentPageCollection = _currentPage;
+		CollectionsListe.Children.Clear();
+		
+		if (Vm == null) return;
 		collection = CollectionsManager.GetCollection(Vm.IdCollection);
-        NameTextBox.Text = collection.Name;
+		NameTextBox.Text = collection.Name;
 
+		LoadCollection();
+
+		BuildPagination_Component.Component(PaginationWTop, currentPageCollection, totalPagesCollection, page => {
+			currentPageCollection = page;
+			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
+			LoadPageView(page);
+		});
+
+		BuildPagination_Component.Component(PaginationWDown, currentPageCollection, totalPagesCollection, page => {
+			currentPageCollection = page;
+			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
+			LoadPageView(page);
+		});
+	}
+
+	public void LoadCollection () {
+		listButton = [];
 		for (int i = 0; i < collection.Posts.Count; i++) {
-            Button btnP = ButtonPost_Component.Component(Convert.ToInt32(collection.Posts[i]));
-            int viewPostID = Convert.ToInt32(collection.Posts[i]), positionList = i;
-            
-            btnP.Click += (_, _) => {
-				var window = this.FindAncestorOfType<Window>();
+			Button btnP = ButtonPost_Component.Component(Convert.ToInt32(collection.Posts[i]));
+			int viewPostID = Convert.ToInt32(collection.Posts[i]), positionList = i;
+
+			btnP.Click += (_, _) => {
 				MainWindowViewModel.main.ViewImage(viewPostID, collection.Id, positionList);
-            };
-            CollectionsListe.Children.Add(btnP);
-        }
+			};
+			listButton.Add(btnP);
+		}
+		listButton.Add(ButtonAdd());
 
-        Button buttonAadd = new() {
-            Content = new TextBlock {
-                Text = "+",
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                FontSize = 24,
-                FontWeight = FontWeight.ExtraBold
-            },
-            Width = 200,
-            Height = 200,
-            Margin = new Thickness(10),
-            Background = Brushes.Transparent,
-        };
+		int pageSize = SettingValue.PostPerPage;
+		totalPagesCollection = (int)Math.Ceiling(listButton.Count / (double)pageSize);
 
-        buttonAadd.Click += (_, _) => {
-            AddCollection.IsVisible = true;
-            ViewCollection.IsVisible = false;
-            LoadPagePost();
-        };
-        CollectionsListe.Children.Add(buttonAadd);
-    }
+		int start = currentPageCollection * pageSize;
+		int end = start + pageSize;
+		if (start < 0) start = 0;
 
-    public void ChangeName (object? sender, RoutedEventArgs e) {
-        if (Vm == null) return;
-        collection.Name = NameTextBox.Text ?? "Collection " + collection.Id;
+		for (int i = start; i < end; i++) {
+			if (i >= listButton.Count) break;
+			CollectionsListe.Children.Add(listButton[i]);
+		}
+	}
+
+	public Button ButtonAdd () {
+		Button buttonAdd = new() {
+			Content = new TextBlock {
+				Text = "+",
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+				FontSize = 24,
+				FontWeight = FontWeight.ExtraBold
+			},
+			Width = 200,
+			Height = 200,
+			Margin = new Thickness(10),
+			Background = Brushes.Transparent,
+		};
+
+		buttonAdd.Click += (_, _) => {
+			AddCollection.IsVisible = true;
+			ViewCollection.IsVisible = false;
+			LoadPageAdd();
+		};
+
+		return buttonAdd;
+	}
+	#endregion
+
+	#region Change Name Collection
+	public void ChangeName (object? sender, RoutedEventArgs e) {
+		if (Vm == null) return;
+		collection.Name = NameTextBox.Text ?? "Collection " + collection.Id;
 		CollectionsManager.UpdateCollection(collection);
-    }
+	}
 
-    public void OnNameChange (object? sender, TextChangedEventArgs e) {
+	public void OnNameChange (object? sender, TextChangedEventArgs e) {
 		string s = NameTextBox.Text ?? "Collection " + collection.Id;
-        collection.Name = s;
+		collection.Name = s;
 	}
 	#endregion
 
 	#region ADD COLLECTION
-	private int
-        currentPage_AddCollection = 0,
-        totalPages_AddCollection = 0;
+	private int currentPage_AddCollection = 0, totalPages_AddCollection = 0;
 
-    private void LoadPagePost () {
+	private void LoadPageAdd () {
 		SearchSQL.SearchPosts(SearchSQL.querySearch);
 
 		PostGridList_Component pgl = new(GridPost, Click, actionButton: ActionButton);
-        pgl.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection);
+		pgl.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection);
 
-        BuildPagination_Component.Component(PaginationPanelTop, currentPage_AddCollection, totalPages_AddCollection, page => {
-            currentPage_AddCollection = page;
-            LoadPagePost();
-        });
+		BuildPagination_Component.Component(PaginationPanelTop, currentPage_AddCollection, totalPages_AddCollection, page => {
+			currentPage_AddCollection = page;
+			LoadPageAdd();
+		});
 
-        BuildPagination_Component.Component(PaginationPanelDown, currentPage_AddCollection, totalPages_AddCollection, page => {
-            currentPage_AddCollection = page;
-            LoadPagePost();
-        });
-    }
+		BuildPagination_Component.Component(PaginationPanelDown, currentPage_AddCollection, totalPages_AddCollection, page => {
+			currentPage_AddCollection = page;
+			LoadPageAdd();
+		});
+	}
 
-    public void Click (int index) {
-        for (int cp = 0; cp < collection.Posts.Count; cp++) {
-            if (collection.Posts[cp] == index) {
+	public void Click (int index) {
+		for (int cp = 0; cp < collection.Posts.Count; cp++) {
+			if (collection.Posts[cp] == index) {
 				collection.Posts.RemoveAt(cp);
-                return;
-            }
-        }
+				return;
+			}
+		}
 		collection.Posts.Add(index);
-    }
+	}
 
-    public void ActionButton (int index, Button btn) {
-        btn.Background = new SolidColorBrush(Colors.Transparent);
+	public void ActionButton (int index, Button btn) {
+		btn.Background = new SolidColorBrush(Colors.Transparent);
 
-        for (int cp = 0; cp < collection.Posts.Count; cp++) {
-            if (collection.Posts[cp] == index) {
-                btn.Background = new SolidColorBrush(Colors.LightBlue);
-                break;
-            }
-        }
-    }
+		for (int cp = 0; cp < collection.Posts.Count; cp++) {
+			if (collection.Posts[cp] == index) {
+				btn.Background = new SolidColorBrush(Colors.LightBlue);
+				break;
+			}
+		}
+	}
 
-    public void RetunWiewCollection(object? sender, RoutedEventArgs e) {
-        AddCollection.IsVisible = false;
-        ViewCollection.IsVisible = true;
+	public void RetunWiewCollection(object? sender, RoutedEventArgs e) {
+		AddCollection.IsVisible = false;
+		ViewCollection.IsVisible = true;
 
-        if (Vm != null) CollectionsManager.UpdateCollection(collection);
+		if (Vm != null) CollectionsManager.UpdateCollection(collection);
 
-        DrawCollection(sender, e);
-    }
-    #endregion
+		LoadPageView();
+	}
+	#endregion
 }
