@@ -1,0 +1,59 @@
+﻿using Avalonia.Controls;
+using System;
+
+namespace CsharpBooru.Component;
+public class GridList_Component {
+
+	private int pageSize = 20;
+
+	private readonly Panel gridPost;
+
+	public event ButtonEventHandler OnCreateButton;
+	public delegate Button ButtonEventHandler (int id);
+
+	public GridList_Component (Panel gridPost) => this.gridPost = gridPost;
+
+	public void Descending (ref int currentPage, ref int totalPages, int totalObject) {
+		gridPost.Children.Clear();
+
+		if (totalObject == 0) return;
+
+		totalPages = (int)Math.Ceiling(totalObject / (double)pageSize);
+
+		if (currentPage < 0) currentPage = 0;
+		if (currentPage >= totalPages) currentPage = totalPages - 1;
+
+		int start = totalObject - ((currentPage + 1) * pageSize),
+			end = totalObject - (currentPage * pageSize);
+
+		if (start < 0) start = 0;
+		if (end > totalObject) end = totalObject;
+
+		for (int i = end - 1; i >= start; i--) {
+			var b = OnCreateButton?.Invoke(i);
+			if (b != null) gridPost.Children.Add(b);
+		}
+	}
+
+	public void Ascending (ref int currentPage, ref int totalPages, int totalObject) {
+		gridPost.Children.Clear();
+
+		if (totalObject == 0) return;
+
+		totalPages = (int)Math.Ceiling(totalObject / (double)pageSize);
+
+		if (currentPage < 0) currentPage = 0;
+		if (currentPage >= totalPages) currentPage = totalPages - 1;
+
+		int start = currentPage * pageSize,
+			end = start + pageSize;
+		
+		if(start < 0) start = 0;
+		if (end > totalPages) end = totalPages;
+
+		for (int i = start; i < end; i++) {
+			var b = OnCreateButton?.Invoke(i);
+			if (b != null) gridPost.Children.Add(b);
+		}
+	}
+}

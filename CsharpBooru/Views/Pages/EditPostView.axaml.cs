@@ -156,10 +156,32 @@ public partial class EditPostView : UserControl {
 		_totalPages = 0;
 
 	private void LoadPagePost () {
-		SearchSQL.SearchPosts(SearchSQL.querySearch);
+		List<int> postList = SearchSQL.SearchPosts(SearchSQL.querySearch);
+		GridList_Component pgl = new(GridPost);
+		
+		pgl.OnCreateButton += (int id) => {
+			int postIndex = postList[id];
+			Button btn = ButtonPost_Component.Component(postIndex);
 
-		PostGridList_Component pgl = new(GridPost, Click, actionButton: ActionButton);
-		pgl.Descending(ref _currentPage, ref _totalPages);
+			btn.Click += (_, _) => {
+				if (Vm?.IdItem == postIndex) return;
+				for (int r = 0; r < relatedsID.Count; r++) {
+					if (relatedsID[r] == postIndex) {
+						relatedsID.RemoveAt(r);
+						goto Exite;
+					}
+				}
+				relatedsID.Add(postIndex);
+			Exite:;
+				RelatedTextUpdate();
+				ActionButton(postIndex, btn);
+			};
+
+			ActionButton(postIndex, btn);
+			return btn;
+		};
+		
+		pgl.Descending(ref _currentPage, ref _totalPages, postList.Count);
 
 		BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
 			_currentPage = page;
@@ -170,21 +192,6 @@ public partial class EditPostView : UserControl {
 			_currentPage = page;
 			LoadPagePost();
 		});
-	}
-
-	private void Click (int index) {
-		if (Vm?.IdItem == index) return;
-
-		for (int r = 0; r < relatedsID.Count; r++) {
-			if (relatedsID[r] == index) {
-				relatedsID.RemoveAt(r);
-				goto Exite;
-			}
-		}
-		relatedsID.Add(index);
-	Exite:;
-		RelatedTextUpdate();
-
 	}
 
 	private void ActionButton (int index, Button btn) {

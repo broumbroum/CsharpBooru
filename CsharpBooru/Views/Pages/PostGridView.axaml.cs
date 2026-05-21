@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
-using CsharpBooru.Component;
-using CsharpBooru.ViewModels;
-using CsharpBooru.SQL;
 using Avalonia.Media;
+using CsharpBooru.Component;
+using CsharpBooru.SQL;
+using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
+
+using System.Collections.Generic;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -31,9 +33,18 @@ public partial class PostGridView : UserControl{
 	}
 
 	private void LoadPage () {
+		GridList_Component pgl = new(GridPost);
+		List<int> postList = SearchSQL.SearchPosts(SearchSQL.querySearch);
+		
+		pgl.OnCreateButton += (int id) => {
+			int postIndex = postList[id];
+			Button btnP = ButtonPost_Component.Component(postIndex);
+			btnP.Click += (_, _) => MainWindowViewModel.main.ViewImage(postIndex);
+			btnP.ContextMenu = ContextMenuPost(postIndex);
+			return btnP;
+		};
 
-		PostGridList_Component pgl = new(GridPost, Click, ContextMenuPost);
-		pgl.Descending(ref _currentPage, ref _totalPages);
+		pgl.Descending(ref _currentPage, ref _totalPages, postList.Count);
 
 
 		BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
@@ -48,8 +59,6 @@ public partial class PostGridView : UserControl{
 			LoadPage();
 		});
 	}
-
-	private void Click (int index) => MainWindowViewModel.main.ViewImage(index);
 
 	private ContextMenu ContextMenuPost (int index) {
 

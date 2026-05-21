@@ -47,19 +47,10 @@ public partial class CollectionsListView : UserControl {
 		ListCollections.Children.Clear();
 
 		pageSize = SettingValue.PostPerPage;
-		if (CollectionList.Count == 0) return;
-		
-		int totalCollections = CollectionList.Count;
-		totalPages = (int)Math.Ceiling(totalCollections / (double)pageSize);
+		GridList_Component pgl = new (ListCollections);
 
-		int start = currentPage * pageSize;
-		int end = start + pageSize;
-		if (start < 0) start = 0;
-
-		for (int i = start; i < end ; i++) {
-			if (i >= totalCollections) break;
-			ListCollections.Children.Add(ButtonListCollections(CollectionList[i]));
-		}
+		pgl.OnCreateButton += (int id) => ButtonListCollections(CollectionList[id]);
+		pgl.Ascending(ref currentPage, ref totalPages, CollectionList.Count);
 
 		BuildPagination_Component.Component(PaginationTop, currentPage, totalPages, page => {
 			currentPage = page;

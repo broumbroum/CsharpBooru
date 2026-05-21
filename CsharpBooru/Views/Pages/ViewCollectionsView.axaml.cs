@@ -123,10 +123,28 @@ public partial class ViewCollectionsView : UserControl {
 	private int currentPage_AddCollection = 0, totalPages_AddCollection = 0;
 
 	private void LoadPageAdd () {
-		SearchSQL.SearchPosts(SearchSQL.querySearch);
+		List<int> postList = SearchSQL.SearchPosts(SearchSQL.querySearch);
+		GridList_Component pgl = new(GridPost);
+		
+		pgl.OnCreateButton += (int id) => {
+			int postIndex = postList[id];
+			Button btn = ButtonPost_Component.Component(postIndex);
 
-		PostGridList_Component pgl = new(GridPost, Click, actionButton: ActionButton);
-		pgl.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection);
+			btn.Click += (_, _) => {
+				for (int cp = 0; cp < collection.Posts.Count; cp++) {
+					if (collection.Posts[cp] == postIndex) {
+						collection.Posts.RemoveAt(cp);
+						return;
+					}
+				}
+				collection.Posts.Add(postIndex);
+				ActionButton(postIndex, btn);
+			};
+			ActionButton(postIndex, btn);
+			return btn;
+		};
+
+		pgl.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection, postList.Count);
 
 		BuildPagination_Component.Component(PaginationPanelTop, currentPage_AddCollection, totalPages_AddCollection, page => {
 			currentPage_AddCollection = page;
@@ -137,16 +155,6 @@ public partial class ViewCollectionsView : UserControl {
 			currentPage_AddCollection = page;
 			LoadPageAdd();
 		});
-	}
-
-	public void Click (int index) {
-		for (int cp = 0; cp < collection.Posts.Count; cp++) {
-			if (collection.Posts[cp] == index) {
-				collection.Posts.RemoveAt(cp);
-				return;
-			}
-		}
-		collection.Posts.Add(index);
 	}
 
 	public void ActionButton (int index, Button btn) {
