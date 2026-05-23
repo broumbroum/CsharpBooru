@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
+using Avalonia.Input.Platform;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -14,6 +15,7 @@ using CsharpBooru.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -333,11 +335,40 @@ public partial class ViewPostView : UserControl {
 		bt.Content = tb;
 
 		bt.Click += (s, e) => {
-			System.Diagnostics.Debug.WriteLine("Sources:" + text);
+			_ = OpenWebPage(bt, text);
+		};
+
+		MenuItem 
+			web = new () { Header = "Open in Browser"}, 
+			clipboard = new() { Header = "Copy" };
+
+		web.Click += (s, e) => { _ = OpenWebPage(bt, text); };
+		clipboard.Click += (s, e) => { _ = CopyToClipboard(bt, text); };
+
+		bt.ContextMenu = new ContextMenu {
+			Items = {
+				web,
+				clipboard
+			}
 		};
 
 		return bt;
 	}
-	
+
 	#endregion
+
+	public static async Task OpenWebPage (Control control, string url) {
+		var topLevel = TopLevel.GetTopLevel(control);
+		
+		if (!url.StartsWith("http")) url = "https://" + url;
+		if (topLevel?.Launcher != null) await topLevel.Launcher.LaunchUriAsync(new Uri(url));
+	}
+
+	public static async Task CopyToClipboard (Control control, string text) {
+		var top = TopLevel.GetTopLevel(control);
+		var clipboard = top?.Clipboard;
+
+		if (clipboard != null) await clipboard.SetTextAsync(text);
+	}
+
 }
