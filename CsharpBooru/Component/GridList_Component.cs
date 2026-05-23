@@ -3,15 +3,14 @@ using CsharpBooru.Setting;
 using System;
 
 namespace CsharpBooru.Component;
-public class GridList_Component {
+public class GridList_Component (Panel gridPost = null!) {
 
-	private readonly Panel gridPost;
+	private readonly Panel gridPost = gridPost;
 
-	public event ButtonEventHandler OnCreateButton;
+	public event ButtonEventHandler? OnCreateButton;
 	public delegate Button ButtonEventHandler (int id);
 
-	public GridList_Component (Panel gridPost) => this.gridPost = gridPost;
-
+	// Display items in descending order
 	public void Descending (ref int currentPage, ref int totalPages, int totalObject) {
 		int pageSize = SettingValue.PostPerPage;
 		gridPost.Children.Clear();
@@ -35,6 +34,7 @@ public class GridList_Component {
 		}
 	}
 
+	// Display items in ascending order
 	public void Ascending (ref int currentPage, ref int totalPages, int totalObject) {
 		int pageSize = SettingValue.PostPerPage;
 		gridPost.Children.Clear();
@@ -50,7 +50,7 @@ public class GridList_Component {
 			end = start + pageSize;
 		
 		if(start < 0) start = 0;
-		if (end > totalPages) end = totalPages;
+		if (end > totalObject) end = totalObject;
 
 		for (int i = start; i < end; i++) {
 			var b = OnCreateButton?.Invoke(i);

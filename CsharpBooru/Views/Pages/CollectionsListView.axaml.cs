@@ -7,7 +7,6 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using CsharpBooru.Component;
-using CsharpBooru.Setting;
 using CsharpBooru.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,6 @@ namespace CsharpBooru.Views.Pages;
 public partial class CollectionsListView : UserControl {
 
 	public int currentPage = 0;
-	public int pageSize = 20;
 	public int totalPages = 0;
 	private List<int> CollectionList = [];
 
@@ -46,11 +44,9 @@ public partial class CollectionsListView : UserControl {
 	private void LoadPage () {
 		ListCollections.Children.Clear();
 
-		pageSize = SettingValue.PostPerPage;
 		GridList_Component pgl = new (ListCollections);
-
 		pgl.OnCreateButton += (int id) => ButtonListCollections(CollectionList[id]);
-		pgl.Ascending(ref currentPage, ref totalPages, CollectionList.Count);
+		pgl.Ascending(ref currentPage, ref totalPages, CollectionsManager.GetCount());
 
 		BuildPagination_Component.Component(PaginationTop, currentPage, totalPages, page => {
 			currentPage = page;
