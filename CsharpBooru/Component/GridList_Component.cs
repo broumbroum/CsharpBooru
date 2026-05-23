@@ -1,10 +1,9 @@
 ﻿using Avalonia.Controls;
+using CsharpBooru.Setting;
 using System;
 
 namespace CsharpBooru.Component;
 public class GridList_Component {
-
-	private int pageSize = 20;
 
 	private readonly Panel gridPost;
 
@@ -14,6 +13,7 @@ public class GridList_Component {
 	public GridList_Component (Panel gridPost) => this.gridPost = gridPost;
 
 	public void Descending (ref int currentPage, ref int totalPages, int totalObject) {
+		int pageSize = SettingValue.PostPerPage;
 		gridPost.Children.Clear();
 
 		if (totalObject == 0) return;
@@ -36,6 +36,7 @@ public class GridList_Component {
 	}
 
 	public void Ascending (ref int currentPage, ref int totalPages, int totalObject) {
+		int pageSize = SettingValue.PostPerPage;
 		gridPost.Children.Clear();
 
 		if (totalObject == 0) return;
