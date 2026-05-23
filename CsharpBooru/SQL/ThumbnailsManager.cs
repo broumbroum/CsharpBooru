@@ -36,11 +36,22 @@ internal static class ThumbnailsManager {
 		if (bitmap == null)
 			return;
 
+		// Calculate new dimensions while maintaining aspect ratio
+		int
+			newWidth = bitmap.Width / 2, 
+			newHeight = bitmap.Height / 2;
+		var sampling = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
+
+		using var resized = bitmap.Resize(new SKImageInfo(newWidth, newHeight), sampling);
+
+		// Ensure the output directory exists
 		Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
 
-		using var image = SKImage.FromBitmap(bitmap);
+		// Encode the resized image to JPEG format with 80% quality
+		using var image = SKImage.FromBitmap(resized);
 		using var data = image.Encode(SKEncodedImageFormat.Jpeg, 80);
 
+		// Save the encoded image to the output path
 		using var output = File.OpenWrite(outputPath);
 		data.SaveTo(output);
 	}

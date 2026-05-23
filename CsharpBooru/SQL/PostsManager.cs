@@ -193,6 +193,25 @@ public static class PostsManager {
 		return list;
 	}
 
+	// 📖 Retrieve all post IDs
+	public static List<int> GetAllPostIds () {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		const string sql = "SELECT id FROM Posts";
+
+		using var cmd = new SQLiteCommand(sql, conn);
+		using var reader = cmd.ExecuteReader();
+
+		var list = new List<int>();
+
+		while (reader.Read()) {
+			list.Add(Convert.ToInt32(reader["id"]));
+		}
+
+		return list;
+	}
+
 	// 🔍 Check if a filename already exists
 	public static bool FilenameExists (string filename) {
 		using var conn = DataBase.GetConnection();

@@ -43,7 +43,9 @@ internal class SearchSQL {
 
 		var results = new List<int>();
 
-		foreach (var post in PostsManager.GetAllPosts()) {
+		Post post;
+		foreach (var idP in PostsManager.GetAllPostIds()) {
+			post = PostsManager.GetPost(idP);
 			foreach (var includeId in includeIds) {
 				if (includeId == -1)
 					goto NextPost;
@@ -61,11 +63,11 @@ internal class SearchSQL {
 				else
 					goto NextPost;
 			}
-		
+
 			if (ratingFilters.Count == 0 || ratingFilters.Any(r => post.Rating.Equals(r, StringComparison.OrdinalIgnoreCase)))
 				results.Add(post.Id);
-
-		NextPost:;
+			
+			NextPost:;
 		}
 		
 		return results;
