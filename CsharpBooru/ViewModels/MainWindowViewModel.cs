@@ -69,4 +69,8 @@ public partial class MainWindowViewModel : ViewModelBase {
 		navigationHistory.AddPage("Setting");
 		CurrentPage = new SettingViewModel(); 
 	}
+	public void About () { 
+		navigationHistory.AddPage("About");
+		CurrentPage = new AboutViewModel();
+	}
 }

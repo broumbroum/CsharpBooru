@@ -66,6 +66,9 @@ public class NavigationHistory {
 			case "Setting":
 			MainWindowViewModel.main.Setting();
 			break;
+			case "About":
+			MainWindowViewModel.main.About();
+			break;
 			default:
 			MainWindowViewModel.main.HomePage();
 			break;

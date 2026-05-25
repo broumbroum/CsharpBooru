@@ -33,4 +33,5 @@ public partial class TopBarView : UserControl {
 	private void AddPostButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.EditPost();
 	private void CollectionsButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.CollectionsList();
 	private void SettingButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.Setting();
+	private void AboutButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.About();
 }

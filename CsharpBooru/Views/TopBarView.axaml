@@ -58,6 +58,12 @@
 			Click="SettingButtonClick">Setting
 		</Button>
 
+		<Button 
+			Width="100" Height="30"
+			HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+			Click="AboutButtonClick">About
+		</Button>
+
 	</StackPanel>
 
 </UserControl>
