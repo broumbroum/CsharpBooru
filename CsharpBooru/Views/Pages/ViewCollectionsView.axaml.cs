@@ -64,6 +64,7 @@ public partial class ViewCollectionsView : UserControl {
 			btnP.Click += (_, _) => {
 				MainWindowViewModel.main.ViewImage(viewPostID, collection.Id, positionList);
 			};
+			btnP.ContextMenu = ContextMenuPost(viewPostID, positionList);
 			listButton.Add(btnP);
 		}
 		listButton.Add(ButtonAdd());
@@ -79,6 +80,51 @@ public partial class ViewCollectionsView : UserControl {
 			if (i >= listButton.Count) break;
 			CollectionsListe.Children.Add(listButton[i]);
 		}
+	}
+
+	public ContextMenu ContextMenuPost (int id, int positionList) {
+		MenuItem openItem = new () { Header = "Open Post"}; 
+		openItem.Click += (_, _) => {
+			MainWindowViewModel.main.ViewImage(id);
+		};
+
+		MenuItem MoveLeft = new() { Header = "Move Left" };
+		MoveLeft.Click += (_, _) => {
+			if(Vm == null) return;
+			collection = CollectionsManager.GetCollection(Vm.IdCollection);
+
+			if(positionList <= 0 || positionList >= collection.Posts.Count) return;
+			(collection.Posts[positionList - 1], collection.Posts[positionList]) = (collection.Posts[positionList], collection.Posts[positionList - 1]);
+			
+			CollectionsManager.UpdateCollection(collection);
+			MainWindowViewModel.main.CollectionsWiew(Vm.IdCollection);
+		};
+
+		MenuItem MoveRight = new() { Header = "Move Right" };
+		MoveRight.Click += (_, _) => {
+			if(Vm == null) return;
+			collection = CollectionsManager.GetCollection(Vm.IdCollection);
+
+			if(positionList < 0 || positionList >= collection.Posts.Count - 1) return;
+			(collection.Posts[positionList + 1], collection.Posts[positionList]) = (collection.Posts[positionList], collection.Posts[positionList + 1]);
+			
+			CollectionsManager.UpdateCollection(collection);
+			MainWindowViewModel.main.CollectionsWiew(Vm.IdCollection);
+		};
+
+		MenuItem regenerateThumbnailsItem = new() { Header = "Regenerate Thumbnails" };
+		regenerateThumbnailsItem.Click += (_, _) => {
+			ThumbnailsManager.RegenerateThumbnails(id);
+			MainWindowViewModel.main.CollectionsWiew(Vm?.IdCollection ?? 0);
+		};
+
+		return new() {
+			Items = {
+				openItem,
+				new Separator(),
+				MoveLeft,MoveRight,regenerateThumbnailsItem
+			}
+		};
 	}
 
 	public Button ButtonAdd () {
