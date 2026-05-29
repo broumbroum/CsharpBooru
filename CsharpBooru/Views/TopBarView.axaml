@@ -5,8 +5,7 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
 			 x:Class="CsharpBooru.Views.TopBarView">
 
-	<StackPanel x:Name="TopBar"
-		Orientation="Horizontal"
+	<WrapPanel x:Name="TopBar"
 		HorizontalAlignment="Stretch" VerticalAlignment="Top"
 		Background="Lavender">
 
@@ -64,6 +63,6 @@
 			Click="AboutButtonClick">About
 		</Button>
 
-	</StackPanel>
+	</WrapPanel>
 
 </UserControl>

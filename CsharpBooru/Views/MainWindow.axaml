@@ -16,47 +16,6 @@
         Icon="/Resources/Logo/Logo.ico"
         Title="C#Booru">
 
-
-    <!--Window.DataTemplates>
-
-        <DataTemplate DataType="rootvm:TopBarViewModel">
-            <rootviews:TopBarView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:HomeViewModel">
-            <views:HomeView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:TagsListViewModel">
-            <views:TagsListView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:ViewPostViewModel">
-            <views:ViewPostView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:PostGridViewModel">
-            <views:PostGridView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:CollectionsListViewModel">
-            <views:CollectionsListView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:ViewCollectionsViewModel">
-            <views:ViewCollectionsView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:EditPostViewModel">
-            <views:EditPostView />
-        </DataTemplate>
-
-        <DataTemplate DataType="vm:SettingViewModel">
-            <views:SettingView />
-        </DataTemplate>
-
-    </Window.DataTemplates-->
-
     <Panel> 
         <!-- Start page -->
         <Panel x:Name="FirstStart">
@@ -72,11 +31,10 @@
             </Button>
         </Panel>
         <!-- Main page -->
-        <Panel x:Name="Start">
-            <ContentControl Content="{Binding TopBar}" />
-            <ContentControl Content="{Binding CurrentPage}" Margin="0,40,0,0" />
-            <!--ContentPresenter Content="{Binding CurrentPage}" Margin="0,40,0,0" /-->
-        </Panel> 
+        <DockPanel x:Name="Start">
+            <ContentControl Content="{Binding TopBar}" DockPanel.Dock="Top"/>
+            <ContentControl Content="{Binding CurrentPage}" Margin="0,10,0,0" DockPanel.Dock="Bottom"/>
+        </DockPanel> 
     </Panel>
 
 </Window>
