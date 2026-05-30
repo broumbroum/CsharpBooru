@@ -9,7 +9,7 @@ public static class BuildPagination_Component {
 
 	private static int size = 5;
 
-	public static void Component (StackPanel pagination, int currentPage, int totalPages, Action<int> onPageSelected) {
+	public static void Component (Panel pagination, int currentPage, int totalPages, Action<int> onPageSelected) {
 		if (pagination == null) return;
 
 		pagination.Children.Clear();

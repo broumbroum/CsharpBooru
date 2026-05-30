@@ -154,13 +154,13 @@
 
 			<StackPanel  x:Name="Serched" Margin="0 10 10 0" Orientation="Horizontal" HorizontalAlignment="Center"/>
 
-			<StackPanel x:Name="PaginationPanelTop"
+			<WrapPanel x:Name="PaginationPanelTop"
 					Orientation="Horizontal"
 					HorizontalAlignment="Center"/>
 
 			<WrapPanel x:Name="GridPost"/>
 			
-			<StackPanel x:Name="PaginationPanelDown"
+			<WrapPanel x:Name="PaginationPanelDown"
 					Orientation="Horizontal"
 					HorizontalAlignment="Center"/>
 			<Button

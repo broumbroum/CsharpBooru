@@ -8,7 +8,7 @@
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Orientation="Vertical">
 
-			<StackPanel x:Name="PaginationTop" 
+			<WrapPanel x:Name="PaginationTop" 
 						HorizontalAlignment="Center"
 						Orientation="Horizontal"/>
 
@@ -21,7 +21,7 @@
 
 			<StackPanel x:Name="ListCollections"/>
 
-			<StackPanel x:Name="PaginationDown" 
+			<WrapPanel x:Name="PaginationDown" 
 						HorizontalAlignment="Center"
 						Orientation="Horizontal"/>
 		</StackPanel>
