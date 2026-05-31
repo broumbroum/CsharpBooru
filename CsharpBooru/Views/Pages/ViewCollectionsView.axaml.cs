@@ -21,7 +21,7 @@ public partial class ViewCollectionsView : UserControl {
 		InitializeComponent();
 		DataContextChanged += (s, e) => LoadPageView(Vm?.CurrentPage ?? 0);
 
-		Search_Component.Component(ref Serched).Click += (_, _) => {
+		Search_Component.Component(Serched).Click += (_, _) => {
 			SearchSQL.SearchPosts(SearchSQL.querySearch);
 			LoadPageAdd();
 		};

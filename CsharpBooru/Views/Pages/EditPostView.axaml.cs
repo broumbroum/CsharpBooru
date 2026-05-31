@@ -32,7 +32,7 @@ public partial class EditPostView : UserControl {
 			System.Diagnostics.Debug.WriteLine($"Sélection : {valeur}");
 		};
 
-		Search_Component.Component(ref Serched).Click += (_,_) => {
+		Search_Component.Component(Serched).Click += (_,_) => {
 			LoadPagePost();
 			SearchSQL.SearchPosts(SearchSQL.querySearch);
 		};

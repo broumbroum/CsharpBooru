@@ -6,13 +6,23 @@ using CsharpBooru.SQL;
 namespace CsharpBooru.Component;
 public static class Search_Component {
 
-	public static Button Component(ref StackPanel sp) {
+	public static Button Component(Grid grid) {
 
 		TextBox tb = TextBox_Component();
 		Button btn = Button_Component();
 
-		sp.Children.Add(tb);
-		sp.Children.Add(btn);
+		grid.MaxWidth = 910;
+		if (grid.ColumnDefinitions.Count == 0) {
+			grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+			grid.ColumnSpacing = 10;
+			grid.ColumnDefinitions.Add(new ColumnDefinition(100d, GridUnitType.Pixel));
+		}
+
+		Grid.SetColumn(tb, 0);
+		Grid.SetColumn(btn, 1);
+
+		grid.Children.Add(tb);
+		grid.Children.Add(btn);
 
 		return btn;
 	}
@@ -23,12 +33,11 @@ public static class Search_Component {
 			Text = SearchSQL.querySearch,
 
 			MinWidth = 200, MinHeight = 30,
-			Width = 800, Height = 30,
-			MaxHeight = 30,
+			Height = 30,
+			MaxWidth = 800, MaxHeight = 30,
+			
 
 			HorizontalAlignment = HorizontalAlignment.Stretch,
-
-			Margin = new Thickness(0, 10, 10, 0),
 
 		};
 
@@ -46,17 +55,11 @@ public static class Search_Component {
 
 	private static Button Button_Component () {
 		Button btn = new() {
-			MaxWidth = 100, MaxHeight = 40,
 			Width = 100, Height = 40,
-			MinWidth = 100, MinHeight = 40,
-			
-			Margin = new Thickness(10, 10, 10, 0),
-
 			HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center,
 			
 			Content = new TextBlock {
 				Text = "Search",
-
 				HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
 			}
 		};

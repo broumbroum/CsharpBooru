@@ -41,7 +41,7 @@
 				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
 			</Button>
 
-			<StackPanel x:Name="Serched" Margin="0 10 10 0" Orientation="Horizontal" HorizontalAlignment="Center"/>
+			<Grid x:Name="Serched" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 			<WrapPanel x:Name="PaginationPanelTop" Orientation="Horizontal" HorizontalAlignment="Center"/>
 			<WrapPanel x:Name="GridPost"/>
 			<WrapPanel x:Name="PaginationPanelDown" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10"/>
