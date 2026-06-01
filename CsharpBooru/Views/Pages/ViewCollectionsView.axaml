@@ -8,18 +8,20 @@
 	<ScrollViewer VerticalScrollBarVisibility="Auto"><Panel>
 
 		<!-- View Collection -->
-		<StackPanel 
-		x:Name="ViewCollection"
-		VerticalAlignment="Stretch" 
-		HorizontalAlignment="Center">
+		<StackPanel x:Name="ViewCollection" VerticalAlignment="Stretch" HorizontalAlignment="Center">
 
 			<!-- Name Collection -->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBox x:Name="NameTextBox" Margin="0,0,10,0" TextChanged="OnNameChange"/>
-				<Button MinWidth= "50" Click="ChangeName">
+			<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxWidth="935" ColumnSpacing="10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<TextBox x:Name="NameTextBox" Grid.Column="0" TextChanged="OnNameChange" MaxWidth="800" MinWidth="200"/>
+				<Button Grid.Column="1" Width="125" Click="ChangeName">
 					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Change Name"/>
 				</Button>
-			</StackPanel>
+			</Grid>
 
 			<WrapPanel x:Name="PaginationWTop" HorizontalAlignment="Center" Orientation="Horizontal"/>
 			<WrapPanel Orientation="Horizontal" HorizontalAlignment="Stretch" x:Name="CollectionsListe"/>
