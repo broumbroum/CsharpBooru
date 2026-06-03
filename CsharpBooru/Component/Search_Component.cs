@@ -1,5 +1,5 @@
 ﻿using Avalonia.Controls;
-using Avalonia;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using CsharpBooru.SQL;
 
@@ -10,6 +10,7 @@ public static class Search_Component {
 
 		TextBox tb = TextBox_Component();
 		Button btn = Button_Component();
+		btn.Click += (_, e) => OnSearchChanged(tb, e);
 
 		grid.MaxWidth = 910;
 		if (grid.ColumnDefinitions.Count == 0) {
@@ -41,12 +42,10 @@ public static class Search_Component {
 
 		};
 
-		tb.TextChanged += OnSearchChanged;
-
 		return tb;
 	}
 
-	private static void OnSearchChanged (object? sender, TextChangedEventArgs e) {
+	private static void OnSearchChanged (object? sender, RoutedEventArgs e) {
 		if (sender is TextBox tb) {
 			SearchSQL.querySearch = tb.Text ?? "";
 			SearchSQL.SearchPosts(SearchSQL.querySearch);
