@@ -7,33 +7,33 @@
 			 x:Class="CsharpBooru.Views.Pages.TagsListView"
 			 x:DataType="vm:TagsListViewModel">
 
-	<StackPanel
-		Orientation="Vertical"
-		VerticalAlignment="Top">
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+	<StackPanel Orientation="Vertical" VerticalAlignment="Top">
 
 		<TextBlock 
-		Margin="25 0 25 0"
-		TextAlignment="Center"
-		Text="{Binding Titre}" />
+			Margin="25 0 25 0"
+			TextAlignment="Center"
+			Text="{Binding Titre}"/>
 
 		<TextBox x:Name="SearchBox"
-             PlaceholderText="Search..."
-             Margin="25 10 25 0"
-             TextChanged="OnSearchChanged"/>
+			 PlaceholderText="Search..."
+			 Margin="25 10 25 0"
+			 TextChanged="OnSearchChanged"/>
 		
-		<StackPanel x:Name="PaginationTop" Orientation="Horizontal" HorizontalAlignment="Center"/>
+		<WrapPanel x:Name="PaginationTop" Orientation="Horizontal" HorizontalAlignment="Center"/>
 
 		<DataGrid x:Name="DataGridControl"
-			MaxHeight="500"
+			MaxHeight="5000"
 			Margin="25 25 25 25"
 			AutoGenerateColumns="False"
 			IsReadOnly="True"
 			GridLinesVisibility="All"
 			CanUserResizeColumns="True"
-			VerticalAlignment="Stretch"/>
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+			HorizontalScrollBarVisibility="Auto"/>
 
-		<StackPanel x:Name="PaginationDown" Orientation="Horizontal" HorizontalAlignment="Center"/>
+		<WrapPanel x:Name="PaginationDown" Margin="0,0,0,25" Orientation="Horizontal" HorizontalAlignment="Center"/>
 
-	</StackPanel>
+	</StackPanel></ScrollViewer>
 
 </UserControl>

@@ -1,28 +1,27 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Media;
+using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
+using CsharpBooru.Component;
+using CsharpBooru.SQL;
+using CsharpBooru.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CsharpBooru.ViewModels;
-using Avalonia;
-using CsharpBooru.SQL;
-using Avalonia.Data;
-using System.Collections.Generic;
-using CsharpBooru.Component;
 
 namespace CsharpBooru.Views.Pages;
 
 public partial class TagsListView : UserControl {
 
-	public ObservableCollection<Tag> AllTags { get; set; } = new();
-	public ObservableCollection<Tag> FilteredTags { get; set; } = new();
+	public ObservableCollection<Tag> AllTags { get; set; } = [];
+	public ObservableCollection<Tag> FilteredTags { get; set; } = [];
 
 	private const int PageSize = 100;
-	private int currentPage = 0;
-	private int totalPages = 1;
-	private List<Tag> currentResults = new();
+	private int currentPage = 0, totalPages = 1;
+	private List<Tag> currentResults = [];
 
 	public TagsListView () {
 		InitializeComponent();
@@ -42,6 +41,7 @@ public partial class TagsListView : UserControl {
 	private void SetupColumns () {
 		if (DataGridControl.Columns.Count > 0) return;
 
+		//Id
 		DataGridTemplateColumn idColumn = new() {
 			Header = "ID",
 			CanUserResize = true,
@@ -88,6 +88,8 @@ public partial class TagsListView : UserControl {
 				Path = "SpecificTags"
 			}
 		};
+
+		//Count
 		DataGridTemplateColumn countColumn = new() {
 			Header = "Count",
 			CanUserResize = true,
@@ -148,8 +150,6 @@ public partial class TagsListView : UserControl {
 				return sp;
 			})
 		};
-
-
 		
 		DataGridControl.Columns.Add(idColumn);
 		DataGridControl.Columns.Add(nameColumn);
