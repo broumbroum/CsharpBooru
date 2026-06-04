@@ -46,18 +46,28 @@ public partial class PostGridView : UserControl{
 
 		pgl.Descending(ref _currentPage, ref _totalPages, postList.Count);
 
+		if (postList.Count == 0) {
+			TextBlock tb = new() {
+				Text = "\n\n\n\n\n No posts found.",
+				HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+				FontSize = 16, FontWeight = FontWeight.Bold,
+				Foreground = Brushes.Red,
+			};
+			GridPost.Children.Add(tb);
+		} else {
+			BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
+				_currentPage = page;
+				MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
+				LoadPage();
+			});
 
-		BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
-			_currentPage = page;
-			MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
-			LoadPage();
-		});
-
-		BuildPagination_Component.Component(PaginationPanelDown, _currentPage, _totalPages, page => {
-			_currentPage = page;
-			MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
-			LoadPage();
-		});
+			BuildPagination_Component.Component(PaginationPanelDown, _currentPage, _totalPages, page => {
+				_currentPage = page;
+				MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
+				LoadPage();
+			});
+		}
 	}
 
 	private ContextMenu ContextMenuPost (int index) {
