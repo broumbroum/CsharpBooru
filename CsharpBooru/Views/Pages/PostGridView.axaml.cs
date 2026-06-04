@@ -56,13 +56,7 @@ public partial class PostGridView : UserControl{
 			};
 			GridPost.Children.Add(tb);
 		} else {
-			BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
-				_currentPage = page;
-				MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
-				LoadPage();
-			});
-
-			BuildPagination_Component.Component(PaginationPanelDown, _currentPage, _totalPages, page => {
+			BuildPagination_Component.Component([PaginationPanelTop, PaginationPanelDown], _currentPage, _totalPages, page => {
 				_currentPage = page;
 				MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
 				LoadPage();

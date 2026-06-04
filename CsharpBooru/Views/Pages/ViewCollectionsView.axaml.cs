@@ -42,13 +42,7 @@ public partial class ViewCollectionsView : UserControl {
 
 		LoadCollection();
 
-		BuildPagination_Component.Component(PaginationWTop, currentPageCollection, totalPagesCollection, page => {
-			currentPageCollection = page;
-			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
-			LoadPageView(page);
-		});
-
-		BuildPagination_Component.Component(PaginationWDown, currentPageCollection, totalPagesCollection, page => {
+		BuildPagination_Component.Component([PaginationWTop, PaginationWDown], currentPageCollection, totalPagesCollection, page => {
 			currentPageCollection = page;
 			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
 			LoadPageView(page);
@@ -192,12 +186,7 @@ public partial class ViewCollectionsView : UserControl {
 
 		pgl.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection, postList.Count);
 
-		BuildPagination_Component.Component(PaginationPanelTop, currentPage_AddCollection, totalPages_AddCollection, page => {
-			currentPage_AddCollection = page;
-			LoadPageAdd();
-		});
-
-		BuildPagination_Component.Component(PaginationPanelDown, currentPage_AddCollection, totalPages_AddCollection, page => {
+		BuildPagination_Component.Component([PaginationPanelTop, PaginationPanelDown], currentPage_AddCollection, totalPages_AddCollection, page => {
 			currentPage_AddCollection = page;
 			LoadPageAdd();
 		});

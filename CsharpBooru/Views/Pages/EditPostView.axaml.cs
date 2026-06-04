@@ -183,12 +183,7 @@ public partial class EditPostView : UserControl {
 		
 		pgl.Descending(ref _currentPage, ref _totalPages, postList.Count);
 
-		BuildPagination_Component.Component(PaginationPanelTop, _currentPage, _totalPages, page => {
-			_currentPage = page;
-			LoadPagePost();
-		});
-
-		BuildPagination_Component.Component(PaginationPanelDown, _currentPage, _totalPages, page => {
+		BuildPagination_Component.Component([PaginationPanelTop, PaginationPanelDown], _currentPage, _totalPages, page => {
 			_currentPage = page;
 			LoadPagePost();
 		});

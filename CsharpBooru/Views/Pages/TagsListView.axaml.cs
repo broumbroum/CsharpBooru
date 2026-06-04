@@ -162,7 +162,7 @@ public partial class TagsListView : UserControl {
 		FilteredTags.Clear();
 
 		if (currentResults.Count == 0) {
-			BuildPagination_Component.Component(PaginationTop, currentPage, totalPages, page => {
+			BuildPagination_Component.Component([PaginationTop, PaginationDown], currentPage, totalPages, page => {
 				currentPage = page;
 				LoadPage();
 			});
@@ -180,12 +180,7 @@ public partial class TagsListView : UserControl {
 			if (i >= currentResults.Count) break;
 			FilteredTags.Add(currentResults[i]);
 		}
-
-		BuildPagination_Component.Component(PaginationTop, currentPage, totalPages, page => {
-			currentPage = page;
-			LoadPage();
-		});
-		BuildPagination_Component.Component(PaginationDown, currentPage, totalPages, page => {
+		BuildPagination_Component.Component([PaginationTop, PaginationDown], currentPage, totalPages, page => {
 			currentPage = page;
 			LoadPage();
 		});

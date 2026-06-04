@@ -48,12 +48,7 @@ public partial class CollectionsListView : UserControl {
 		pgl.OnCreateButton += (int id) => ButtonListCollections(CollectionList[id]);
 		pgl.Ascending(ref currentPage, ref totalPages, CollectionsManager.GetCount());
 
-		BuildPagination_Component.Component(PaginationTop, currentPage, totalPages, page => {
-			currentPage = page;
-			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsList&" + currentPage);
-			LoadPage();
-		});
-		BuildPagination_Component.Component(PaginationDown, currentPage, totalPages, page => {
+		BuildPagination_Component.Component([PaginationTop, PaginationDown], currentPage, totalPages, page => {
 			currentPage = page;
 			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsList&" + currentPage);
 			LoadPage();
