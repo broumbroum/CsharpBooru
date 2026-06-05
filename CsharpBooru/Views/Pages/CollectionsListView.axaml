@@ -8,20 +8,20 @@
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Orientation="Vertical">
 
-			<WrapPanel x:Name="PaginationTop" 
+			<WrapPanel x:Name="PaginationTopPanel" 
 						HorizontalAlignment="Center"
 						Orientation="Horizontal"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-				<Button Margin="20,0,10,0" Width="100" Click="AddCollection">
+				<Button Margin="20,0,10,0" Width="100" Click="OnAddCollectionClicked">
 					<TextBlock Text="Add" HorizontalAlignment="Center"/>
 				</Button>
-				<TextBox x:Name="TextAddCollection" PlaceholderText="Name new collection" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0,0,20,0"/>
+				<TextBox x:Name="NewCollectionTextBox" PlaceholderText="Name new collection" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0,0,20,0"/>
 			</StackPanel>
 
-			<StackPanel x:Name="ListCollections"/>
+			<StackPanel x:Name="CollectionsPanel"/>
 
-			<WrapPanel x:Name="PaginationDown" 
+			<WrapPanel x:Name="PaginationBottomPanel" 
 						HorizontalAlignment="Center"
 						Orientation="Horizontal"/>
 		</StackPanel>

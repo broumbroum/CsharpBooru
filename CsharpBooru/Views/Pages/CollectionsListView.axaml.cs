@@ -7,126 +7,131 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using CsharpBooru.Component;
+using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
+using CsharpBooru.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
-using CsharpBooru.SQL;
 using System.IO;
-using CsharpBooru.ViewModels.Pages;
 
 namespace CsharpBooru.Views.Pages;
 
 public partial class CollectionsListView : UserControl {
 
-	public int currentPage = 0;
-	public int totalPages = 0;
-	private List<int> CollectionList = [];
+	public int currentPage = 0,totalPages = 0;
+	private readonly List<int> CollectionIds = [];
 
-	private CollectionsListViewModel Vm => DataContext as CollectionsListViewModel;
+	private CollectionsListViewModel? Vm => DataContext as CollectionsListViewModel;
 
 	public CollectionsListView() { 
 		InitializeComponent();
 
-		DataContextChanged += (s, e) => InitializaPage(Vm?.CurrentPage ?? 0);
+		DataContextChanged += (s, e) => InitializePage(Vm?.CurrentPage ?? 0);
 
 	}
 
-	private void InitializaPage (int _currentPage = 0) {
-		CollectionList.Clear();
+	//Initializes the page by rebuilding the collection list and loading the first page
+	private void InitializePage (int pageIndex = 0) {
+		CollectionIds.Clear();
 		for (int i = 1; i < CollectionsManager.GetCount() +1; i++) {
-			CollectionList.Add(i);
+			CollectionIds.Add(i);
 		}
-		currentPage = _currentPage;
+		currentPage = pageIndex;
 
-		LoadPage();
+		LoadCurrentPage();
 	}
 
-	private void LoadPage () {
-		ListCollections.Children.Clear();
+	// Loads the current page: clears UI, builds buttons, and sets up pagination
+	private void LoadCurrentPage () {
+		CollectionsPanel.Children.Clear();
 
-		GridList_Component pgl = new (ListCollections);
-		pgl.OnCreateButton += (int id) => ButtonListCollections(CollectionList[id]);
-		pgl.Ascending(ref currentPage, ref totalPages, CollectionsManager.GetCount());
+		GridList_Component gridList = new (CollectionsPanel);
+		gridList.OnCreateButton += id => CreateCollectionButton(CollectionIds[id]);
+		gridList.Ascending(ref currentPage, ref totalPages, CollectionsManager.GetCount());
 
-		BuildPagination_Component.Component([PaginationTop, PaginationDown], currentPage, totalPages, page => {
+		BuildPagination_Component.Component([PaginationTopPanel, PaginationBottomPanel], currentPage, totalPages, page => {
 			currentPage = page;
 			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsList&" + currentPage);
-			LoadPage();
+			LoadCurrentPage();
 		});
 	}
 
-	private void AddCollection (object? sender, RoutedEventArgs e) {
-		if (TextAddCollection.Text == "") return;
+	// Adds a new collection using the text input
+	private void OnAddCollectionClicked (object? sender, RoutedEventArgs e) {
+		if (NewCollectionTextBox.Text == "") return;
 
-		Collection collection = new(0, TextAddCollection.Text ?? "New Collection", []);
+		Collection collection = new(0, NewCollectionTextBox.Text ?? "New Collection", []);
 		CollectionsManager.AddCollection(collection);
 
-		InitializaPage(currentPage);
+		InitializePage(currentPage);
 
 	}
 
-	private Button ButtonListCollections (int idCollections) {
-		Collection collection = CollectionsManager.GetCollection(idCollections);
+	#region Create UI
+	// Creates a button representing a collection entry
+	private Button CreateCollectionButton (int collectionId) {
+		Collection collection = CollectionsManager.GetCollection(collectionId);
 
-		StackPanel sp_all = new() {
+		StackPanel contentPanel = new() {
 			Orientation = Orientation.Horizontal
 		};
-		sp_all.Children.Add(Miniature(ref collection));
-		sp_all.Children.Add(Text(ref collection));
+		contentPanel.Children.Add(CreateThumbnailImage(collection));
+		contentPanel.Children.Add(CreateCollectionTextBlock(collection));
 
 		Button btn = new() {
-			//Width = 800,
 			HorizontalAlignment = HorizontalAlignment.Stretch,
 			Height = 105,
 
 			Margin = new Thickness(20, 5, 20, 0),
 
-			Content = sp_all
+			Content = contentPanel
 		};
 
 		btn.Click += (s, e) => {
 			var window = this.FindAncestorOfType<Window>();
 
-			if (window?.DataContext is MainWindowViewModel vm) vm.CollectionsWiew(idCollections);
+			if (window?.DataContext is MainWindowViewModel vm) vm.CollectionsWiew(collectionId);
 		};
 
-		btn.ContextMenu = ContextMenuCollections(idCollections);
+		btn.ContextMenu = CreateCollectionContextMenu(collectionId);
 
 		return btn;
 	}
-
-	private ContextMenu ContextMenuCollections (int index) {
+	
+	// Builds the context menu for each button collection
+	private ContextMenu CreateCollectionContextMenu (int collectionId) {
 		ContextMenu contextMenu = new();
 
-		var openItem = new MenuItem {
+		var openMenuItem = new MenuItem {
 			Header = "Open Collection"
-		}; openItem.Click += (_, _) => {
-			MainWindowViewModel.main.CollectionsWiew(index);
+		}; openMenuItem.Click += (_, _) => {
+			MainWindowViewModel.main.CollectionsWiew(collectionId);
 		};
-		var deleteItem = new MenuItem() { 
+		var deleteMenuItem = new MenuItem() { 
 			Header = "Delete Collection",
 			Foreground = Brushes.Red
 		};
-		deleteItem.Click += (s, e) => {
-			CollectionsManager.RemoveCollection(index);
-			InitializaPage(currentPage);
+		deleteMenuItem.Click += (s, e) => {
+			CollectionsManager.RemoveCollection(collectionId);
+			InitializePage(currentPage);
 		};
 
 		return new ContextMenu {
 			Items = {
-				openItem,
+				openMenuItem,
 				new Separator(),
-				deleteItem
+				deleteMenuItem
 			}
 		};
 	}
-
-	private static Image Miniature (ref Collection collection) {
+	
+	// Returns the thumbnail image of the first post in the collection
+	private static Image CreateThumbnailImage (Collection collection) {
 		if(collection == null || collection.Posts.Count == 0) return new Image();
 
-		int id0 = Convert.ToInt32(collection.Posts[0]);
+		int firstPostId = Convert.ToInt32(collection.Posts[0]);
 
-		Post post = PostsManager.GetPost(id0);
+		Post post = PostsManager.GetPost(firstPostId);
 		if (post == null) return new Image();
 
 		string pathImage = ThumbnailsManager.GetThumbnailPath(post.Filename);
@@ -139,7 +144,8 @@ public partial class CollectionsListView : UserControl {
 		};
 	}
 
-	private static TextBlock Text (ref Collection collection) {
+	// Builds the text block containing collection name, ID, and number of posts
+	private static TextBlock CreateCollectionTextBlock (Collection collection) {
 		TextBlock tb = new() {
 			Inlines = [],
 			Height = 100,
@@ -166,4 +172,5 @@ public partial class CollectionsListView : UserControl {
 
 		return tb;
 	}
+	#endregion
 }
