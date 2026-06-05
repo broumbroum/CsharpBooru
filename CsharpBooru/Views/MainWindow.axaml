@@ -13,8 +13,8 @@
 
         x:Class="CsharpBooru.Views.MainWindow"
         x:DataType="rootvm:MainWindowViewModel"
-        Icon="/Resources/Logo/Logo.ico"
-        Title="C#Booru">
+        Icon="/Resources/Logo/Logo.ico" Title="C#Booru"
+        MinWidth="450" MinHeight="600">
 
     <Panel> 
         <!-- Start page -->
