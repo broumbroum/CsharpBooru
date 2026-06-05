@@ -12,12 +12,12 @@
 						HorizontalAlignment="Center"
 						Orientation="Horizontal"/>
 
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-				<Button Margin="20,0,10,0" Width="100" Click="OnAddCollectionClicked">
+			<Grid ColumnDefinitions="100, *" ColumnSpacing="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,0,20,0">
+				<Button Grid.Column="0" Width="100" Click="OnAddCollectionClicked">
 					<TextBlock Text="Add" HorizontalAlignment="Center"/>
 				</Button>
-				<TextBox x:Name="NewCollectionTextBox" PlaceholderText="Name new collection" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0,0,20,0"/>
-			</StackPanel>
+				<TextBox x:Name="NewCollectionTextBox" Grid.Column="1" PlaceholderText="Name new collection" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+			</Grid>
 
 			<StackPanel x:Name="CollectionsPanel"/>
 
