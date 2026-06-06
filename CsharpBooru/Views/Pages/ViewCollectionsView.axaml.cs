@@ -15,75 +15,82 @@ namespace CsharpBooru.Views.Pages;
 public partial class ViewCollectionsView : UserControl {
 
 	private ViewCollectionsViewModel? Vm => DataContext as ViewCollectionsViewModel;
-	private Collection collection;
+	private Collection? collection;
 
-	public ViewCollectionsView() {
+	public ViewCollectionsView () {
 		InitializeComponent();
-		DataContextChanged += (s, e) => LoadPageView(Vm?.CurrentPage ?? 0);
+
+		// Reload the page when the DataContext changes
+		DataContextChanged += (s, e) => LoadCollectionPage(Vm?.CurrentPage ?? 0);
 
 		Search_Component.Component(Serched).Click += (_, _) => {
 			SearchSQL.SearchPosts(SearchSQL.querySearch);
-			LoadPageAdd();
+			LoadAddCollectionPage();
 		};
 
 	}
 
 	#region VIEW COLLECTION
-	private List<Button> listButton = [];
-	private int totalPagesCollection = 0, currentPageCollection = 0;
+	private List<Button> _postButtons = [];
+	private int _totalPages = 0, _currentPage = 0;
 
-	public void LoadPageView(int _currentPage = 0) {
-		currentPageCollection = _currentPage;
+	// Load the main collection view page
+	public void LoadCollectionPage(int _currentPage = 0) {
+		this._currentPage = _currentPage;
 		CollectionsListe.Children.Clear();
 		
 		if (Vm == null) return;
 		collection = CollectionsManager.GetCollection(Vm.IdCollection);
 		NameTextBox.Text = collection.Name;
 
-		LoadCollection();
+		BuildCollectionButtons();
 
-		BuildPagination_Component.Component([PaginationWTop, PaginationWDown], currentPageCollection, totalPagesCollection, page => {
-			currentPageCollection = page;
+		BuildPagination_Component.Component([PaginationWTop, PaginationWDown], this._currentPage, _totalPages, page => {
+			this._currentPage = page;
 			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
-			LoadPageView(page);
+			LoadCollectionPage(page);
 		});
 	}
 
-	public void LoadCollection () {
-		listButton = [];
-		for (int i = 0; i < collection.Posts.Count; i++) {
-			Button btnP = ButtonPost_Component.Component(Convert.ToInt32(collection.Posts[i]));
-			int viewPostID = Convert.ToInt32(collection.Posts[i]), positionList = i;
+	// Build the list of post buttons for the current collection
+	public void BuildCollectionButtons () {
+		if(collection == null) return;
 
-			btnP.Click += (_, _) => {
-				MainWindowViewModel.main.ViewImage(viewPostID, collection.Id, positionList);
+		_postButtons = [];
+		for (int i = 0; i < collection.Posts.Count; i++) {
+			Button postButton = ButtonPost_Component.Component(Convert.ToInt32(collection.Posts[i]));
+			int postId = Convert.ToInt32(collection.Posts[i]), postIndex = i;
+
+			postButton.Click += (_, _) => {
+				MainWindowViewModel.main.ViewImage(postId, collection.Id, postIndex);
 			};
-			btnP.ContextMenu = ContextMenuPost(viewPostID, positionList);
-			listButton.Add(btnP);
+			postButton.ContextMenu = CreatePostContextMenu(postId, postIndex);
+			_postButtons.Add(postButton);
 		}
-		listButton.Add(ButtonAdd());
+		_postButtons.Add(CreateAddButton());
 
 		int pageSize = SettingValue.PostPerPage;
-		totalPagesCollection = (int)Math.Ceiling(listButton.Count / (double)pageSize);
+		_totalPages = (int)Math.Ceiling(_postButtons.Count / (double)pageSize);
 
-		int start = currentPageCollection * pageSize;
+		int start = _currentPage * pageSize;
 		int end = start + pageSize;
 		if (start < 0) start = 0;
 
 		for (int i = start; i < end; i++) {
-			if (i >= listButton.Count) break;
-			CollectionsListe.Children.Add(listButton[i]);
+			if (i >= _postButtons.Count) break;
+			CollectionsListe.Children.Add(_postButtons[i]);
 		}
 	}
 
-	public ContextMenu ContextMenuPost (int id, int positionList) {
+	// Context menu for each post inside the collection
+	public ContextMenu CreatePostContextMenu (int id, int positionList) {
 		MenuItem openItem = new () { Header = "Open Post"}; 
 		openItem.Click += (_, _) => {
 			MainWindowViewModel.main.ViewImage(id);
 		};
 
-		MenuItem MoveLeft = new() { Header = "Move Left" };
-		MoveLeft.Click += (_, _) => {
+		MenuItem moveLeftItem = new() { Header = "Move Left" };
+		moveLeftItem.Click += (_, _) => {
 			if(Vm == null) return;
 			collection = CollectionsManager.GetCollection(Vm.IdCollection);
 
@@ -94,8 +101,8 @@ public partial class ViewCollectionsView : UserControl {
 			MainWindowViewModel.main.CollectionsWiew(Vm.IdCollection);
 		};
 
-		MenuItem MoveRight = new() { Header = "Move Right" };
-		MoveRight.Click += (_, _) => {
+		MenuItem moveRightItem = new() { Header = "Move Right" };
+		moveRightItem.Click += (_, _) => {
 			if(Vm == null) return;
 			collection = CollectionsManager.GetCollection(Vm.IdCollection);
 
@@ -106,8 +113,8 @@ public partial class ViewCollectionsView : UserControl {
 			MainWindowViewModel.main.CollectionsWiew(Vm.IdCollection);
 		};
 
-		MenuItem regenerateThumbnailsItem = new() { Header = "Regenerate Thumbnails" };
-		regenerateThumbnailsItem.Click += (_, _) => {
+		MenuItem regenThumbsItem = new() { Header = "Regenerate Thumbnails" };
+		regenThumbsItem.Click += (_, _) => {
 			ThumbnailsManager.RegenerateThumbnails(id);
 			MainWindowViewModel.main.CollectionsWiew(Vm?.IdCollection ?? 0);
 		};
@@ -116,13 +123,30 @@ public partial class ViewCollectionsView : UserControl {
 			Items = {
 				openItem,
 				new Separator(),
-				MoveLeft,MoveRight,regenerateThumbnailsItem
+				moveLeftItem,moveRightItem,regenThumbsItem
 			}
 		};
 	}
 
-	public Button ButtonAdd () {
-		Button buttonAdd = new() {
+	// Save the new name when the user confirms
+	public void OnChangeNameClicked (object? sender, RoutedEventArgs e) {
+		if (Vm == null || collection == null) return;
+		collection.Name = NameTextBox.Text ?? "Collection " + collection.Id;
+		CollectionsManager.UpdateCollection(collection);
+	}
+
+	// Update the name live as the user types
+	public void OnChangeNameTextBox (object? sender, TextChangedEventArgs e) {
+		if (collection == null) return;
+
+		string newName = NameTextBox.Text ?? "Collection " + collection.Id;
+		collection.Name = newName;
+	}
+	#endregion
+
+	// Button used to add posts to the collection
+	public Button CreateAddButton () {
+		Button addButton = new() {
 			Content = new TextBlock {
 				Text = "+",
 				VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
@@ -136,37 +160,26 @@ public partial class ViewCollectionsView : UserControl {
 			Background = Brushes.Transparent,
 		};
 
-		buttonAdd.Click += (_, _) => {
+		addButton.Click += (_, _) => {
 			AddCollection.IsVisible = true;
 			ViewCollection.IsVisible = false;
-			LoadPageAdd();
+			LoadAddCollectionPage();
 		};
 
-		return buttonAdd;
+		return addButton;
 	}
-	#endregion
-
-	#region Change Name Collection
-	public void ChangeName (object? sender, RoutedEventArgs e) {
-		if (Vm == null) return;
-		collection.Name = NameTextBox.Text ?? "Collection " + collection.Id;
-		CollectionsManager.UpdateCollection(collection);
-	}
-
-	public void OnNameChange (object? sender, TextChangedEventArgs e) {
-		string s = NameTextBox.Text ?? "Collection " + collection.Id;
-		collection.Name = s;
-	}
-	#endregion
 
 	#region ADD COLLECTION
 	private int currentPage_AddCollection = 0, totalPages_AddCollection = 0;
 
-	private void LoadPageAdd () {
+	// Load the Add Collection page (list of all posts)
+	private void LoadAddCollectionPage () {
+		if (collection == null) return;
+
 		List<int> postList = SearchSQL.SearchPosts(SearchSQL.querySearch);
-		GridList_Component pgl = new(GridPost);
+		GridList_Component gridList = new(GridPost);
 		
-		pgl.OnCreateButton += (int id) => {
+		gridList.OnCreateButton += id => {
 			int postIndex = postList[id];
 			Button btn = ButtonPost_Component.Component(postIndex);
 
@@ -174,42 +187,50 @@ public partial class ViewCollectionsView : UserControl {
 				for (int cp = 0; cp < collection.Posts.Count; cp++) {
 					if (collection.Posts[cp] == postIndex) {
 						collection.Posts.RemoveAt(cp);
+						UpdatePostButtonState(postIndex, btn);
 						return;
 					}
 				}
 				collection.Posts.Add(postIndex);
-				ActionButton(postIndex, btn);
+				UpdatePostButtonState(postIndex, btn);
 			};
-			ActionButton(postIndex, btn);
+
+			UpdatePostButtonState(postIndex, btn);
 			return btn;
 		};
 
-		pgl.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection, postList.Count);
+		gridList.Descending(ref currentPage_AddCollection, ref totalPages_AddCollection, postList.Count);
 
 		BuildPagination_Component.Component([PaginationPanelTop, PaginationPanelDown], currentPage_AddCollection, totalPages_AddCollection, page => {
 			currentPage_AddCollection = page;
-			LoadPageAdd();
+			LoadAddCollectionPage();
 		});
 	}
 
-	public void ActionButton (int index, Button btn) {
+	// Highlight the button if the post is already part of the collection
+	public void UpdatePostButtonState (int index, Button btn) {
+		if (collection == null) return;
+
 		btn.Background = new SolidColorBrush(Colors.Transparent);
 
 		for (int cp = 0; cp < collection.Posts.Count; cp++) {
 			if (collection.Posts[cp] == index) {
 				btn.Background = new SolidColorBrush(Colors.LightBlue);
-				break;
+				return;
 			}
 		}
 	}
 
-	public void RetunWiewCollection(object? sender, RoutedEventArgs e) {
+	// Return to the main collection view
+	public void OnReturnToCollectionViewClicked (object? sender, RoutedEventArgs e) {
+		if (collection == null) return;
+
 		AddCollection.IsVisible = false;
 		ViewCollection.IsVisible = true;
 
 		if (Vm != null) CollectionsManager.UpdateCollection(collection);
 
-		LoadPageView();
+		LoadCollectionPage();
 	}
 	#endregion
 }

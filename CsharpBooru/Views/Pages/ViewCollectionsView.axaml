@@ -17,8 +17,8 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
-				<TextBox x:Name="NameTextBox" Grid.Column="0" TextChanged="OnNameChange" MaxWidth="800" MinWidth="200"/>
-				<Button Grid.Column="1" Width="125" Click="ChangeName">
+				<TextBox x:Name="NameTextBox" Grid.Column="0" TextChanged="OnChangeNameTextBox" MaxWidth="800" MinWidth="200"/>
+				<Button Grid.Column="1" Width="125" Click="OnChangeNameClicked">
 					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Change Name"/>
 				</Button>
 			</Grid>
@@ -39,7 +39,7 @@
 			<Button
 				MinWidth= "50"
 				HorizontalAlignment= "Center"
-				Click="RetunWiewCollection">
+				Click="OnReturnToCollectionViewClicked">
 				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
 			</Button>
 
@@ -51,7 +51,7 @@
 			<Button
 				MinWidth= "50"
 				HorizontalAlignment= "Center"
-				Click="RetunWiewCollection">
+				Click="OnReturnToCollectionViewClicked">
 				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Applique</TextBlock>
 			</Button>
 
