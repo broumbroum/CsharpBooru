@@ -170,7 +170,7 @@ public partial class ViewPostView : UserControl {
 
 	#region UI
 
-	private TextBlock CreateTextBlock (string text, bool title = false, Color color = default) {
+	private static TextBlock CreateTextBlock (string text, bool title = false, Color color = default) {
 		return new TextBlock {
 			Text = text,
 			FontSize = title ? 15 : 12,
@@ -227,7 +227,7 @@ public partial class ViewPostView : UserControl {
 		return panel;
 	}
 
-	private Button CreateButtonRelated (Post post) {
+	private static Button CreateButtonRelated (Post post) {
 		string image = ThumbnailsManager.GetThumbnailPath(post.Filename);
 		Button bt = new();
 
@@ -259,7 +259,7 @@ public partial class ViewPostView : UserControl {
 		return bt;
 	}
 
-	private Button CreateButtonTag (string text, Color color = default) {
+	private static Button CreateButtonTag (string text, Color color = default) {
 		int count = 0;
 		int idTag = TagsManager.GetTagIdByName(text);
 		if (idTag != -1) count = TagsManager.CountTagUsage(idTag);
@@ -280,6 +280,7 @@ public partial class ViewPostView : UserControl {
 			Foreground = new SolidColorBrush(color),
 			FontSize = 12,
 			ClipToBounds = false,
+			TextWrapping = TextWrapping.Wrap,
 		};
 		bt.Content = tb;
 
@@ -291,7 +292,7 @@ public partial class ViewPostView : UserControl {
 		return bt;
 	}
 
-	private Button CreateButtonRating (string text) {
+	private static Button CreateButtonRating (string text) {
 		Button bt = new() {
 			MaxHeight = 20,
 			Height = 20,
@@ -305,6 +306,7 @@ public partial class ViewPostView : UserControl {
 			Foreground = new SolidColorBrush(Colors.Black),
 			FontSize = 12,
 			ClipToBounds = false,
+			TextWrapping = TextWrapping.Wrap,
 		};
 		bt.Content = tb;
 
@@ -317,7 +319,7 @@ public partial class ViewPostView : UserControl {
 		return bt;
 	}
 
-	private Button CreateButtonSources (string text) {
+	private static Button CreateButtonSources (string text) {
 		Button bt = new() {
 			MaxHeight = 20,
 			Height = 20,
@@ -331,6 +333,7 @@ public partial class ViewPostView : UserControl {
 			Foreground = new SolidColorBrush(Colors.Black),
 			FontSize = 12,
 			ClipToBounds = false,
+			TextWrapping = TextWrapping.Wrap,
 		};
 		bt.Content = tb;
 
