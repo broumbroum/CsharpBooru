@@ -25,6 +25,21 @@
 			<TextBlock x:Name="PostPerPageText" Text="V 10" HorizontalAlignment= "Right" Grid.Column="2"/>
 		</Grid>
 
+		<!--____________Pagination Limit____________-->
+		<Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5">
+			<TextBlock Text="Pagination Limit" FontWeight="Bold"/>
+			<ScrollBar x:Name="PaginationLimitScroll" 
+				Orientation="Horizontal"
+				
+				Height="25" Margin="20,0,20,0"
+				HorizontalAlignment="Stretch"
+				Value="5" Minimum="2" Maximum="20"
+				SmallChange="1" LargeChange="1"
+				Grid.Column="1"
+				/>
+			<TextBlock x:Name="PaginationLimitText" Text="V 05" HorizontalAlignment= "Right" Grid.Column="2"/>
+		</Grid>
+
 		<!--____________Fill Thumbnail Post____________-->
 		<Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5">
 			<TextBlock Text="Fill Thumbnail Post" FontWeight="Bold" TextAlignment="Center"/>

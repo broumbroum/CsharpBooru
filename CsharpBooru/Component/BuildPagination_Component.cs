@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using CsharpBooru.Setting;
 using System;
 using System.Collections.Generic;
 
@@ -8,9 +9,9 @@ namespace CsharpBooru.Component;
 
 public static class BuildPagination_Component {
 
-	private static int size = 5;
-
 	public static void Component (List<Panel> paginationList, int currentPage, int totalPages, Action<int> onPageSelected) {
+		int size = SettingValue.PaginationLimit;
+
 		foreach (var pagination in paginationList) {
 			if (pagination == null) continue;
 

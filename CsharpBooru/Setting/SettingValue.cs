@@ -31,6 +31,19 @@ public static class SettingValue {
 		}
 	}
 
+	public static int PaginationLimit {
+		get {
+			SettingFile._values.TryGetValue("PaginationLimit", out string? value);
+			if (value == null) {
+				SettingFile._values["PaginationLimit"] = "5";
+				return 5;
+			}
+			return Convert.ToInt32(value);
+		}set {
+			SettingFile._values["PaginationLimit"] = value.ToString();
+		}
+	}
+
 	public static bool FillThumbnailPost {
 		get {
 			SettingFile._values.TryGetValue("FillThumbnailPost", out string? value);

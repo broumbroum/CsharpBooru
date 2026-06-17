@@ -1,4 +1,3 @@
 ﻿namespace CsharpBooru.ViewModels.Pages;
-public class SettingViewModel : ViewModelBase{
-}
+public class SettingViewModel : ViewModelBase;
 

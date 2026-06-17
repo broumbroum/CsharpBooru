@@ -40,6 +40,7 @@ internal static class SettingFile {
 		_values["Version"] = "1";
 		_values["Path"] = path;
 		_values["PostPerPage"] = "20";
+		_values["PaginationLimit"] = "5";
 		_values["FillThumbnailPost"] = "false";
 		_values["OrderTag"] = "Alphabetical Order";
 

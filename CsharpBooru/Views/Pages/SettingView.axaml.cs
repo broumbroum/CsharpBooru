@@ -8,6 +8,7 @@ namespace CsharpBooru.Views.Pages;
 public partial class SettingView : UserControl{
 
 	private int postPerPage = 20;
+	private int paginationLimit = 5;
 	private bool fillThumbnailPost = false; 
 
 
@@ -18,6 +19,7 @@ public partial class SettingView : UserControl{
 
 
 		PostPerPage();
+		PaginationLimit();
 		FillThumbnailPost();
 		OrderTag();
 	}
@@ -32,6 +34,20 @@ public partial class SettingView : UserControl{
 			postPerPage = (int)args.NewValue;
 			PostPerPageText.Text = "Post : " + postPerPage;
 			SettingValue.PostPerPage = postPerPage;
+			SettingFile.Save();
+		};
+	}
+
+	private void PaginationLimit () {
+		paginationLimit = SettingValue.PaginationLimit;
+		PaginationLimitText.Text = "Post : " + paginationLimit;
+
+		PaginationLimitScroll.Background = SolidColorBrush.Parse("#C8BFE7");
+		PaginationLimitScroll.Value = (double)paginationLimit;
+		PaginationLimitScroll.ValueChanged += (source, args) => {
+			paginationLimit = (int)args.NewValue;
+			PaginationLimitText.Text = "Post : " + paginationLimit;
+			SettingValue.PaginationLimit = paginationLimit;
 			SettingFile.Save();
 		};
 	}
