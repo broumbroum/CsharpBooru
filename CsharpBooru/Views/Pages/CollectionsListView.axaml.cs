@@ -72,9 +72,7 @@ public partial class CollectionsListView : UserControl {
 	private Button CreateCollectionButton (int collectionId) {
 		Collection collection = CollectionsManager.GetCollection(collectionId);
 
-		StackPanel contentPanel = new() {
-			Orientation = Orientation.Horizontal
-		};
+		DockPanel contentPanel = new();
 		contentPanel.Children.Add(CreateThumbnailImage(collection));
 		contentPanel.Children.Add(CreateCollectionTextBlock(collection));
 
@@ -87,12 +85,7 @@ public partial class CollectionsListView : UserControl {
 			Content = contentPanel
 		};
 
-		btn.Click += (s, e) => {
-			var window = this.FindAncestorOfType<Window>();
-
-			if (window?.DataContext is MainWindowViewModel vm) vm.CollectionsWiew(collectionId);
-		};
-
+		btn.Click += (s, e) => MainWindowViewModel.main.CollectionsWiew(collectionId);
 		btn.ContextMenu = CreateCollectionContextMenu(collectionId);
 
 		return btn;
@@ -167,7 +160,7 @@ public partial class CollectionsListView : UserControl {
 			FontWeight = FontWeight.Normal
 		});
 
-		tb.Margin = new(10, 10, 10, 10);
+		tb.Margin = new(10);
 		tb.TextWrapping = TextWrapping.Wrap;
 
 		return tb;
