@@ -1,66 +1,52 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="CsharpBooru.Views.Pages.ViewPostView"
-             xmlns:vm="using:CsharpBooru.ViewModels.Pages"
-             x:DataType="vm:ViewPostViewModel">
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="CsharpBooru.Views.Pages.ViewPostView"
+			 xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+			 x:DataType="vm:ViewPostViewModel">
 
-    <DockPanel Margin="10 0 10 12">
+	<ScrollViewer><WrapPanel Orientation="Horizontal" ItemSpacing="75" LineSpacing="20" Margin="10 0 10 12">
+	
+		<!--   Left   -->
+			<StackPanel 
+				x:Name="TagStack" 
+				Orientation="Vertical" 
+				Margin="10"
+				MaxWidth="400" MinWidth="400"
+				Background="#efefef"/>
 
-        <!--   Left   -->
-        <ScrollViewer 
-            HorizontalAlignment="Left"
-            VerticalScrollBarVisibility="Auto"
-            Background="#efefef">
+		<!--   Middle   -->
+			<StackPanel>
+				<!-- Collection -->
+				<WrapPanel x:Name="Collection" 
+							IsVisible="False" 
+							Orientation="Horizontal" 
+							HorizontalAlignment="Center"> 
+							
+					<Button x:Name="CollectionPrevious" Margin="0,0,10,10" Height="30"/>
+					<TextBlock x:Name="CollectionName" 
+						Text="name" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"
+						Margin="0,0,10,10" Height="20"/>
+					<Button x:Name="CollectionNext" Margin="0,0,10,10" Height="30"/>
+				</WrapPanel>
 
-            <StackPanel 
-                x:Name="TagStack" 
-                Orientation="Vertical" 
-                Margin="10"
-                MaxWidth="400" MinWidth="400"/>
-            
-        </ScrollViewer>
+				<!-- Post -->
+				<Panel x:Name="Post"/>
 
-        <!--   Middle   -->
-        <ScrollViewer
-            VerticalScrollBarVisibility="Auto"
-            HorizontalAlignment="Stretch"
-            Margin="10,0,0,0">
-            
-            <StackPanel>
-                <!-- Collection -->
-                <StackPanel x:Name="Collection" 
-                            IsVisible="False" 
-                            Orientation="Horizontal" 
-                            HorizontalAlignment="Center"> 
-                            
-                    <Button x:Name="CollectionPrevious" Margin="0,0,10,10" Height="30"/>
-                    <TextBlock x:Name="CollectionName" 
-                        Text="name" FontWeight="Bold" TextAlignment="Center"
-                        Margin="0,0,10,10" Height="20"/>
-                    <Button x:Name="CollectionNext" Margin="0,0,10,10" Height="30"/>
-                </StackPanel>
+				<!-- Note -->
+				<TextBlock x:Name="NoteTextBlock" TextWrapping="Wrap" Background="#efefef" Margin="0,10" MaxWidth ="800" IsVisible="False"/>
 
-                <!-- Post -->
-                <Panel x:Name="Post"/>
+				<!-- Related -->
+				<Panel x:Name="RelatedPanel" Background="#efefef" HorizontalAlignment="Stretch" Margin="0,10" IsVisible="False" MaxWidth="800">
+					<TextBlock Text="Related" FontSize="15" FontWeight="Bold" Foreground="Green"/>
+					<WrapPanel x:Name="Related" HorizontalAlignment="Stretch" Margin="5,25,5,5"/>
+				</Panel>
 
-                <!-- Note -->
-                <TextBlock x:Name="NoteTextBlock" TextWrapping="Wrap" Background="#efefef" Margin="0,10" MaxWidth ="800" IsVisible="False"/>
+			</StackPanel> 
 
-                <!-- Related -->
-                <Panel x:Name="RelatedPanel" Background="#efefef" HorizontalAlignment="Stretch" Margin="0,10" IsVisible="False">
-                    <TextBlock
-                        Text="Related" FontSize="15" FontWeight="Bold" 
-                        Foreground="Green"/>
-                    <StackPanel x:Name="Related" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5,25,5,5"/>
-                </Panel>
-
-            </StackPanel> 
-        </ScrollViewer>
-
-
-    </DockPanel>
+	
+	</WrapPanel></ScrollViewer>
 </UserControl>

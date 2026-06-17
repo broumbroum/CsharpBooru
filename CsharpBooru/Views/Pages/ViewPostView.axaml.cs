@@ -24,7 +24,7 @@ public partial class ViewPostView : UserControl {
 	private string path = "", infoFile = "";
 	private Post post;
 
-	private const string Resources = "avares://CsharpBooru/Resources/Icons/tag/";
+	private const string Icons = "avares://CsharpBooru/Resources/Icons/tag/";
 
 	private ViewPostViewModel? Vm => DataContext as ViewPostViewModel;
 
@@ -113,13 +113,13 @@ public partial class ViewPostView : UserControl {
 		AddTagGroup("Tag", Colors.Blue, groups["Tag"]);
 
 
-		TagStack.Children.Add(PanelTitle(CreateTextBlock("Rating", true, Colors.Green), Resources + "icons8-law-100.png"));
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Rating", true, Colors.Green), Icons + "icons8-law-100.png"));
 		TagStack.Children.Add(CreateButtonRating(post.Rating));
 
-		TagStack.Children.Add(PanelTitle(CreateTextBlock("Sources", true, Colors.Green), Resources + "icons8-website-100.png"));
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Sources", true, Colors.Green), Icons + "icons8-website-100.png"));
 		for (int i = 0; i < post.Sources.Count; i++) { TagStack.Children.Add(CreateButtonSources(post.Sources[i])); }
 
-		TagStack.Children.Add(PanelTitle(CreateTextBlock("File Info", true, Colors.Green), Resources + "icons8-view-100.png"));
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("File Info", true, Colors.Green), Icons + "icons8-view-100.png"));
 		TagStack.Children.Add(CreateTextBlock(infoFile, color: Colors.Black));
 	}
 
@@ -149,19 +149,19 @@ public partial class ViewPostView : UserControl {
 		if (Vm?.Collection == null || Vm.Collection.Posts.Count == 0) return;
 
 		Collection.IsVisible = true;
-		CollectionName.Text = " " + Vm.Collection.Name + "    Pages : " + (Vm.index + 1) + "/" + Vm.Collection.Posts.Count + " ";
+		CollectionName.Text = " " + Vm.Collection.Name + "    Pages : " + (Vm.Index + 1) + "/" + Vm.Collection.Posts.Count + " ";
 		CollectionPrevious.Content = " < ";
 		CollectionPrevious.Click += (_, _) => {
-			if (Vm.index >= 1) {
+			if (Vm.Index >= 1) {
 				var window = this.FindAncestorOfType<Window>();
-				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.index - 1]), Vm.Collection.Id, Vm.index - 1);
+				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index - 1]), Vm.Collection.Id, Vm.Index - 1);
 			}
 		};
 		CollectionNext.Content = " > ";
 		CollectionNext.Click += (_, _) => {
-			if (Vm.index < Vm.Collection.Posts.Count - 1) {
+			if (Vm.Index < Vm.Collection.Posts.Count - 1) {
 				var window = this.FindAncestorOfType<Window>();
-				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.index + 1]), Vm.Collection.Id, Vm.index + 1);
+				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index + 1]), Vm.Collection.Id, Vm.Index + 1);
 			}
 		};
 	}
@@ -183,12 +183,12 @@ public partial class ViewPostView : UserControl {
 
 	private void AddTagGroup (string title, Color color, List<string> items) {
 		string source = title switch {
-			"Artist" => Resources + "icons8-paint-palette-100.png",
-			"Character" => Resources + "icons8-customer-100.png",
-			"Copyright" => Resources + "icons8-c-100.png",
-			"Species" => Resources + "icons8-lapin-100.png",
-			"Tag" => Resources + "icons8-tag-window-100.png",
-			_ => Resources + "icons8-tag-window-100.png",
+			"Artist" => Icons + "icons8-paint-palette-100.png",
+			"Character" => Icons + "icons8-customer-100.png",
+			"Copyright" => Icons + "icons8-c-100.png",
+			"Species" => Icons + "icons8-lapin-100.png",
+			"Tag" => Icons + "icons8-tag-window-100.png",
+			_ => Icons + "icons8-tag-window-100.png",
 		};
 		TagStack.Children.Add(PanelTitle(CreateTextBlock(title, true, color), source));
 
@@ -210,7 +210,7 @@ public partial class ViewPostView : UserControl {
 			TagStack.Children.Add(CreateButtonTag(t, color));
 	}
 
-	private StackPanel PanelTitle (TextBlock textBlock, string image) {
+	private static StackPanel PanelTitle (TextBlock textBlock, string image) {
 		StackPanel panel = new() {
 			Orientation = Orientation.Horizontal,
 		};
@@ -250,7 +250,7 @@ public partial class ViewPostView : UserControl {
 			bt.Content = tbE;
 		}
 		bt.MaxWidth = 150; bt.MaxHeight = 150;
-		bt.Height = 150;
+		bt.Margin = new Thickness(5);
 
 		bt.Click += (s, e) => {
 			MainWindowViewModel.main.ViewImage(Convert.ToInt32(post.Id.ToString()));
