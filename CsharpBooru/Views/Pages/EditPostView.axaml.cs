@@ -8,7 +8,6 @@ using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace CsharpBooru.Views.Pages;
@@ -24,12 +23,11 @@ public partial class EditPostView : UserControl {
 	public EditPostView () { 
 		InitializeComponent();
 
-		this.DataContextChanged += InitializeVariable;
+		DataContextChanged += OnDataContextChanged;
 
 		RatingBox.SelectionChanged += (_, _) => {
 			var valeur = (RatingBox.SelectedItem as ComboBoxItem)?.Content;
 			rating = valeur?.ToString()?.ToLower() ?? "none";
-			System.Diagnostics.Debug.WriteLine($"Sélection : {valeur}");
 		};
 
 		Search_Component.Component(Serched).Click += (_,_) => {
@@ -39,7 +37,9 @@ public partial class EditPostView : UserControl {
 
 	}
 
-	private void InitializeVariable (object? sender, EventArgs e) {
+	//Initializes UI fields when editing an existing post.
+	//Called automatically when DataContext changes.
+	private void OnDataContextChanged (object? sender, EventArgs e) {
 		if (Vm == null) {
 			return;
 		} else if (Vm.EditMod == true) {
@@ -81,7 +81,8 @@ public partial class EditPostView : UserControl {
 		}
 	}
 
-	private async void SelectFile (object? sender, RoutedEventArgs e) {
+	//Opens a file picker to select a new image/file for the post.
+	private async void OnSelectFileClick (object? sender, RoutedEventArgs e) {
 
 		var topLevel = TopLevel.GetTopLevel(this);
 		if (topLevel == null) return;
@@ -91,8 +92,7 @@ public partial class EditPostView : UserControl {
 			Title = "Select a File"
 		});
 
-		if (files.Count == 0)
-			return;
+		if (files.Count == 0) return;
 
 		string path = files[0].Path.LocalPath;
 
@@ -101,26 +101,32 @@ public partial class EditPostView : UserControl {
 
 	}
 
+	//Updates tag string when user edits the TagBox.
 	private void OnTagChanged (object? sender, TextChangedEventArgs e) {
 		if (sender is TextBox tb) tag = tb.Text ?? "";
 	}
-
+	
+	//Updates the list of sources when user edits the SourceBox.
+	//Each line becomes one source entry.
 	private void OnSourceChanged (object? sender, TextChangedEventArgs e) {
 		string s = SourceBox.Text ?? "";
-		sources = s.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => l.Length > 0).ToList();
+		sources = [.. s.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => l.Length > 0)];
 	}
 
+	//Updates the note string when user edits the NoteText.
 	private void OnNoteChanged (object? sender, TextChangedEventArgs e) {
 		if (sender is TextBox tb) note = tb.Text ?? "";
 	}
 
-	private void GridRelate (object? sender, RoutedEventArgs e) {
+	//Switches to the "related posts" selection grid
+	private void OnRelateClick (object? sender, RoutedEventArgs e) {
 		RelatedPost.IsVisible = true;
 		Main.IsVisible = false;
 		LoadPagePost();
 	}
 
-	private void SavePost (object? sender, RoutedEventArgs e) {
+	//Saves the post (new or edited) into the database.
+	private void OnSavePostClick (object? sender, RoutedEventArgs e) {
 		if (Vm == null) return;
 
 		if (path == null || path == "") {
@@ -132,9 +138,7 @@ public partial class EditPostView : UserControl {
 			return;
 		}
 
-		string file = Path.GetFileName(path);
-
-		List<int> TagID = new();
+		List<int> TagID = [];
 		foreach (string t in tag.Split(' ', StringSplitOptions.RemoveEmptyEntries)) {
 			TagID.Add(TagsManager.GetOrCreateTag(t));
 		}
@@ -155,11 +159,12 @@ public partial class EditPostView : UserControl {
 		_currentPage = 0,
 		_totalPages = 0;
 
+	//Loads the paginated list of posts for selecting related posts.
 	private void LoadPagePost () {
 		List<int> postList = SearchSQL.SearchPosts(SearchSQL.querySearch);
 		GridList_Component pgl = new(GridPost);
 		
-		pgl.OnCreateButton += (int id) => {
+		pgl.OnCreateButton += id => {
 			int postIndex = postList[id];
 			Button btn = ButtonPost_Component.Component(postIndex);
 
@@ -189,6 +194,7 @@ public partial class EditPostView : UserControl {
 		});
 	}
 
+	//L'arrière-plan du bouton est mis à jour en fonction de l'état de sélection
 	private void ActionButton (int index, Button btn) {
 		btn.Background = new SolidColorBrush(Colors.Transparent);
 
@@ -198,7 +204,6 @@ public partial class EditPostView : UserControl {
 		}
 
 		for (int a = 0; a < relatedsID.Count; a++) {
-			//System.Diagnostics.Debug.WriteLine("relateds[a] : " + relateds[a] + " Index : " + index);
 			if (relatedsID[a] == index) {
 				btn.Background = new SolidColorBrush(Colors.LightBlue);
 				break;
@@ -206,11 +211,13 @@ public partial class EditPostView : UserControl {
 		}
 	}
 
+	//Returns to the main edit screen.
 	private void RetunMain (object? sender, RoutedEventArgs e) {
 		RelatedPost.IsVisible = false;
 		Main.IsVisible = true;
 	}
 
+	//Updates the text showing selected related post IDs.
 	private void RelatedTextUpdate () {
 		string str = "";
 		for (int i = 0; i < relatedsID.Count; i++) {

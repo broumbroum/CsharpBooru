@@ -26,7 +26,7 @@
 			MinHeight=" 50"
 			HorizontalAlignment= "Center"
 			Margin="25 10 10 0"
-			Click="SelectFile">
+			Click="OnSelectFileClick">
 			<TextBlock 
 				HorizontalAlignment="Center" 
 				VerticalAlignment="Center" 
@@ -101,7 +101,7 @@
 			MinWidth= "50"
 			HorizontalAlignment="Stretch"
 			Margin="25 10 10 0"
-			Click="GridRelate">
+			Click="OnRelateClick">
 			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Add Related"/> 
 		</Button>
 
@@ -127,7 +127,7 @@
 		<Button
 			HorizontalAlignment="Stretch"
 			Margin="25 10 10 0"
-			Click="SavePost">
+			Click="OnSavePostClick">
 			<TextBlock HorizontalAlignment="Center">Save</TextBlock>
 		</Button>
 		<TextBlock x:Name="Error"
