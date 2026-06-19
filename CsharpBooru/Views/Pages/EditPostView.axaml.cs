@@ -151,7 +151,7 @@ public partial class EditPostView : UserControl {
 			PostsManager.UpdatePost(_post);
 		}
 
-		MainWindowViewModel.main.HomePage();
+		MainWindowViewModel.Main?.HomePage();
 	}
 
 	#region GridRelated
@@ -194,7 +194,7 @@ public partial class EditPostView : UserControl {
 		});
 	}
 
-	//L'arrière-plan du bouton est mis à jour en fonction de l'état de sélection
+	//L'arriï¿½re-plan du bouton est mis ï¿½ jour en fonction de l'ï¿½tat de sï¿½lection
 	private void ActionButton (int index, Button btn) {
 		btn.Background = new SolidColorBrush(Colors.Transparent);
 

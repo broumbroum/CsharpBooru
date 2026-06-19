@@ -74,7 +74,7 @@ public partial class TagsListView : UserControl {
 				};
 				bt.Click += (_, _) => {
 					SearchSQL.querySearch = tag.Name;
-					MainWindowViewModel.main.PostGrid();
+					MainWindowViewModel.Main?.PostGrid();
 				};
 				return bt;
 			})
@@ -115,27 +115,27 @@ public partial class TagsListView : UserControl {
 				Button tagB = ButtonChangeCategory("Tag");
 				tagB.Click += (_, _) => {
 					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Tag"));
-					MainWindowViewModel.main.TagPage();
+					MainWindowViewModel.Main?.TagPage();
 				};
 				Button artistB = ButtonChangeCategory("Artist");
 				artistB.Click += (_, _) => {
 					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Artist"));
-					MainWindowViewModel.main.TagPage();
+					MainWindowViewModel.Main?.TagPage();
 				};
 				Button characterB = ButtonChangeCategory("Character");
 				characterB.Click += (_, _) => {
 					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Character"));
-					MainWindowViewModel.main.TagPage();
+					MainWindowViewModel.Main?.TagPage();
 				};
 				Button copyrightB = ButtonChangeCategory("Copyright");
 				copyrightB.Click += (_, _) => {
 					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Copyright"));
-					MainWindowViewModel.main.TagPage();
+					MainWindowViewModel.Main?.TagPage();
 				};
 				Button speciesB = ButtonChangeCategory("Species");
 				speciesB.Click += (_, _) => {
 					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Species"));
-					MainWindowViewModel.main.TagPage();
+					MainWindowViewModel.Main?.TagPage();
 				};
 
 				StackPanel sp = new() {

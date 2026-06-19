@@ -42,35 +42,35 @@ public class NavigationHistory {
 
 		switch (parts[0]) {
 			case "HomePage":
-			MainWindowViewModel.main.HomePage();
+			MainWindowViewModel.Main?.HomePage();
 			break;
 			case "TagPage":
-			MainWindowViewModel.main.TagPage();
+			MainWindowViewModel.Main?.TagPage();
 			break;
 			case "ViewImage":
-			MainWindowViewModel.main.ViewImage(Convert.ToInt32(parts[1]), Convert.ToInt32(parts[2]), Convert.ToInt32(parts[3]));
+			MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(parts[1]), Convert.ToInt32(parts[2]), Convert.ToInt32(parts[3]));
 			break;
 			case "PostGrid":
 			SQL.SearchSQL.querySearch = parts[2];
-			MainWindowViewModel.main.PostGrid(Convert.ToInt32(parts[1]));
+			MainWindowViewModel.Main?.PostGrid(Convert.ToInt32(parts[1]));
 			break;
 			case "CollectionsList":
-			MainWindowViewModel.main.CollectionsList(Convert.ToInt32(parts[1]));
+			MainWindowViewModel.Main?.CollectionsList(Convert.ToInt32(parts[1]));
 			break;
 			case "EditPost":
-			MainWindowViewModel.main.EditPost(Convert.ToBoolean(parts[1]), Convert.ToInt32(parts[2]));
+			MainWindowViewModel.Main?.EditPost(Convert.ToBoolean(parts[1]), Convert.ToInt32(parts[2]));
 			break;
 			case "CollectionsWiew":
-			MainWindowViewModel.main.CollectionsWiew(Convert.ToInt32(parts[1]), Convert.ToInt32(parts[2]));
+			MainWindowViewModel.Main?.CollectionsWiew(Convert.ToInt32(parts[1]), Convert.ToInt32(parts[2]));
 			break;
 			case "Setting":
-			MainWindowViewModel.main.Setting();
+			MainWindowViewModel.Main?.Setting();
 			break;
 			case "About":
-			MainWindowViewModel.main.About();
+			MainWindowViewModel.Main?.About();
 			break;
 			default:
-			MainWindowViewModel.main.HomePage();
+			MainWindowViewModel.Main?.HomePage();
 			break;
 		}
 	}

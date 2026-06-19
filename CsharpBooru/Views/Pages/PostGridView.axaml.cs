@@ -22,7 +22,7 @@ public partial class PostGridView : UserControl{
 		InitializeComponent();
 
 		Search_Component.Component(SearchPanel).Click += (_, _) => {
-			MainWindowViewModel.main.PostGrid();
+			MainWindowViewModel.Main?.PostGrid();
 		};
 
 		this.DataContextChanged += (_, _) => {
@@ -39,7 +39,7 @@ public partial class PostGridView : UserControl{
 		pgl.OnCreateButton += (int id) => {
 			int postIndex = postList[id];
 			Button btnP = ButtonPost_Component.Component(postIndex);
-			btnP.Click += (_, _) => MainWindowViewModel.main.ViewImage(postIndex);
+			btnP.Click += (_, _) => MainWindowViewModel.Main?.ViewImage(postIndex);
 			btnP.ContextMenu = ContextMenuPost(postIndex);
 			return btnP;
 		};
@@ -58,7 +58,7 @@ public partial class PostGridView : UserControl{
 		} else {
 			BuildPagination_Component.Component([PaginationPanelTop, PaginationPanelDown], _currentPage, _totalPages, page => {
 				_currentPage = page;
-				MainWindowViewModel.main.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
+				MainWindowViewModel.Main?.navigationHistory.AddPage("PostGrid&" + _currentPage + "&" + SearchSQL.querySearch);
 				LoadPage();
 			});
 		}
@@ -69,13 +69,13 @@ public partial class PostGridView : UserControl{
 		var openItem = new MenuItem {
 			Header = "Open Post"
 		}; openItem.Click += (_, _) => {
-			MainWindowViewModel.main.ViewImage(index);
+			MainWindowViewModel.Main?.ViewImage(index);
 		};
 
 		var editItem = new MenuItem {
 			Header = "Edit Post"
 		}; editItem.Click += (_, _) => {
-			MainWindowViewModel.main.EditPost(true, index);
+			MainWindowViewModel.Main?.EditPost(true, index);
 		};
 
 		var deleteItem = new MenuItem {
@@ -85,14 +85,14 @@ public partial class PostGridView : UserControl{
 			}
 		}; deleteItem.Click += (_, _) => {
 			PostsManager.RemovePost(index);
-			MainWindowViewModel.main.PostGrid();
+			MainWindowViewModel.Main?.PostGrid();
 		};
 
 		var regenerateThumbnailsItem = new MenuItem {
 			Header = "Regenerate Thumbnails"
 		}; regenerateThumbnailsItem.Click += (_, _) => {
 			ThumbnailsManager.RegenerateThumbnails(index);
-			MainWindowViewModel.main.PostGrid();
+			MainWindowViewModel.Main?.PostGrid();
 		};
 
 		return new ContextMenu {

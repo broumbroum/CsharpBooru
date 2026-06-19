@@ -38,7 +38,7 @@ public partial class ViewPostView : UserControl {
 		if (Vm == null) return;
 
 		post = PostsManager.GetPost(Vm.Id);
-		if (post == null) return;
+		if (post == null) return; 
 
 		path = Path.GetFullPath(DataBase.FilesPath + "/" + post.Filename).Replace("\\", "/");
 
@@ -154,14 +154,14 @@ public partial class ViewPostView : UserControl {
 		CollectionPrevious.Click += (_, _) => {
 			if (Vm.Index >= 1) {
 				var window = this.FindAncestorOfType<Window>();
-				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index - 1]), Vm.Collection.Id, Vm.Index - 1);
+				MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index - 1]), Vm.Collection.Id, Vm.Index - 1);
 			}
 		};
 		CollectionNext.Content = " > ";
 		CollectionNext.Click += (_, _) => {
 			if (Vm.Index < Vm.Collection.Posts.Count - 1) {
 				var window = this.FindAncestorOfType<Window>();
-				MainWindowViewModel.main.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index + 1]), Vm.Collection.Id, Vm.Index + 1);
+				MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index + 1]), Vm.Collection.Id, Vm.Index + 1);
 			}
 		};
 	}
@@ -252,9 +252,7 @@ public partial class ViewPostView : UserControl {
 		bt.MaxWidth = 150; bt.MaxHeight = 150;
 		bt.Margin = new Thickness(5);
 
-		bt.Click += (s, e) => {
-			MainWindowViewModel.main.ViewImage(Convert.ToInt32(post.Id.ToString()));
-		};
+		bt.Click += (s, e) => MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(post.Id.ToString()));
 
 		return bt;
 	}
@@ -286,7 +284,7 @@ public partial class ViewPostView : UserControl {
 
 		bt.Click += (s, e) => {
 			SearchSQL.querySearch = text;
-			MainWindowViewModel.main.PostGrid();	
+			MainWindowViewModel.Main?.PostGrid();	
 		};
 
 		return bt;
@@ -312,8 +310,7 @@ public partial class ViewPostView : UserControl {
 
 		bt.Click += (s, e) => {
 			SearchSQL.querySearch = "rating:" + text;
-			MainWindowViewModel.main.PostGrid();
-			//System.Diagnostics.Debug.WriteLine("Rating:" + text);
+			MainWindowViewModel.Main?.PostGrid();
 		};
 
 		return bt;

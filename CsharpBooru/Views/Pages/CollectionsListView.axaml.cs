@@ -51,7 +51,7 @@ public partial class CollectionsListView : UserControl {
 
 		BuildPagination_Component.Component([PaginationTopPanel, PaginationBottomPanel], currentPage, totalPages, page => {
 			currentPage = page;
-			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsList&" + currentPage);
+			MainWindowViewModel.Main?.navigationHistory.AddPage("CollectionsList&" + currentPage);
 			LoadCurrentPage();
 		});
 	}
@@ -85,7 +85,7 @@ public partial class CollectionsListView : UserControl {
 			Content = contentPanel
 		};
 
-		btn.Click += (s, e) => MainWindowViewModel.main.CollectionsWiew(collectionId);
+		btn.Click += (s, e) => MainWindowViewModel.Main?.CollectionsWiew(collectionId);
 		btn.ContextMenu = CreateCollectionContextMenu(collectionId);
 
 		return btn;
@@ -97,9 +97,7 @@ public partial class CollectionsListView : UserControl {
 
 		var openMenuItem = new MenuItem {
 			Header = "Open Collection"
-		}; openMenuItem.Click += (_, _) => {
-			MainWindowViewModel.main.CollectionsWiew(collectionId);
-		};
+		}; openMenuItem.Click += (_, _) => MainWindowViewModel.Main?.CollectionsWiew(collectionId);
 		var deleteMenuItem = new MenuItem() { 
 			Header = "Delete Collection",
 			Foreground = Brushes.Red

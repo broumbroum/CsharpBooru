@@ -13,9 +13,7 @@ public partial class HomeView : UserControl{
 	public HomeView () {
 		InitializeComponent();
 
-		Search_Component.Component(SearchPanel).Click += (_, _) => {
-			MainWindowViewModel.main.PostGrid();
-		};
+		Search_Component.Component(SearchPanel).Click += (_, _) => MainWindowViewModel.Main?.PostGrid();
 
 		CountPosts();
 	}

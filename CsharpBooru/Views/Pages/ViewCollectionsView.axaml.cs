@@ -47,7 +47,7 @@ public partial class ViewCollectionsView : UserControl {
 
 		BuildPagination_Component.Component([PaginationWTop, PaginationWDown], this._currentPage, _totalPages, page => {
 			this._currentPage = page;
-			MainWindowViewModel.main.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
+			MainWindowViewModel.Main?.navigationHistory.AddPage("CollectionsWiew&" + collection.Id + "&" + page);
 			LoadCollectionPage(page);
 		});
 	}
@@ -62,7 +62,7 @@ public partial class ViewCollectionsView : UserControl {
 			int postId = Convert.ToInt32(collection.Posts[i]), postIndex = i;
 
 			postButton.Click += (_, _) => {
-				MainWindowViewModel.main.ViewImage(postId, collection.Id, postIndex);
+				MainWindowViewModel.Main?.ViewImage(postId, collection.Id, postIndex);
 			};
 			postButton.ContextMenu = CreatePostContextMenu(postId, postIndex);
 			_postButtons.Add(postButton);
@@ -86,7 +86,7 @@ public partial class ViewCollectionsView : UserControl {
 	public ContextMenu CreatePostContextMenu (int id, int positionList) {
 		MenuItem openItem = new () { Header = "Open Post"}; 
 		openItem.Click += (_, _) => {
-			MainWindowViewModel.main.ViewImage(id);
+			MainWindowViewModel.Main?.ViewImage(id);
 		};
 
 		MenuItem moveLeftItem = new() { Header = "Move Left" };
@@ -98,7 +98,7 @@ public partial class ViewCollectionsView : UserControl {
 			(collection.Posts[positionList - 1], collection.Posts[positionList]) = (collection.Posts[positionList], collection.Posts[positionList - 1]);
 			
 			CollectionsManager.UpdateCollection(collection);
-			MainWindowViewModel.main.CollectionsWiew(Vm.IdCollection);
+			MainWindowViewModel.Main?.CollectionsWiew(Vm.IdCollection);
 		};
 
 		MenuItem moveRightItem = new() { Header = "Move Right" };
@@ -110,13 +110,13 @@ public partial class ViewCollectionsView : UserControl {
 			(collection.Posts[positionList + 1], collection.Posts[positionList]) = (collection.Posts[positionList], collection.Posts[positionList + 1]);
 			
 			CollectionsManager.UpdateCollection(collection);
-			MainWindowViewModel.main.CollectionsWiew(Vm.IdCollection);
+			MainWindowViewModel.Main?.CollectionsWiew(Vm.IdCollection);
 		};
 
 		MenuItem regenThumbsItem = new() { Header = "Regenerate Thumbnails" };
 		regenThumbsItem.Click += (_, _) => {
 			ThumbnailsManager.RegenerateThumbnails(id);
-			MainWindowViewModel.main.CollectionsWiew(Vm?.IdCollection ?? 0);
+			MainWindowViewModel.Main?.CollectionsWiew(Vm?.IdCollection ?? 0);
 		};
 
 		return new() {

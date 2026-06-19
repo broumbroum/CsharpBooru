@@ -1,21 +1,19 @@
-﻿using CsharpBooru.ViewModels.Pages;
+﻿using CsharpBooru.SQL;
+using CsharpBooru.ViewModels.Pages;
 using ReactiveUI;
-using CsharpBooru.SQL;
 
 namespace CsharpBooru.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
 
-	public static MainWindowViewModel main;
+	public static MainWindowViewModel? Main { get; private set; } 
 
-	public MainWindowViewModel () {
-		main = this;
-	}
+	public MainWindowViewModel () => Main = this;
 
 	public readonly NavigationHistory navigationHistory = new();
 
 	#region Pages
-	public ViewModelBase
+	private ViewModelBase
 		topBar = new TopBarViewModel(),
 		currentPage = new HomeViewModel();
 
@@ -29,7 +27,6 @@ public partial class MainWindowViewModel : ViewModelBase {
 		set => this.RaiseAndSetIfChanged(ref currentPage, value);
 	}
 	#endregion
-
 
 	public void HomePage () {
 		navigationHistory.AddPage("HomePage");
@@ -47,7 +44,7 @@ public partial class MainWindowViewModel : ViewModelBase {
 		navigationHistory.AddPage("ViewImage&" + id + "&" + idCollection + "&" + index);
 		System.Diagnostics.Debug.WriteLine("ViewImage&" + id + "&" + idCollection + "&" + index);
 		
-		CurrentPage = new ViewPostViewModel(id, collection, index); 
+		CurrentPage = new ViewPostViewModel(id, collection, index);
 	}
 	public void PostGrid (int currenPagePost = 0) {
 		navigationHistory.AddPage("PostGrid&" + currenPagePost + "&" + SearchSQL.querySearch);

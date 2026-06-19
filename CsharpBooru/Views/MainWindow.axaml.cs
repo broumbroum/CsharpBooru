@@ -20,7 +20,7 @@ public partial class MainWindow : Window {
 			FirstStart.IsVisible = false;
 			Start.IsVisible = true;
 
-			DataBase.path = Path.Combine(SettingValue.Path);
+			DataBase.path = Path.Combine(SettingValue.Path ?? "");
 		}
 	}
 

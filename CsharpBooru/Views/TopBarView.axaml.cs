@@ -19,19 +19,19 @@ public partial class TopBarView : UserControl {
 			Width = 30, Height = 30 
 		};
 		ForwardButton.Content = new Image {
-			Source = new Bitmap(AssetLoader.Open(new Uri("avares://CsharpBooru/Resources/Icons/arrow/icons8-flèche-64.png"))),
+			Source = new Bitmap(AssetLoader.Open(new Uri("avares://CsharpBooru/Resources/Icons/arrow/icons8-flÃ¨che-64.png"))),
 			Width = 30, Height = 30 
 		};
 	}
 
-	private void BackButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.navigationHistory.Back();
-	private void ForwardButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.navigationHistory.Forward();
+	private void BackButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.navigationHistory.Back();
+	private void ForwardButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.navigationHistory.Forward();
 
-	private void HomeButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.HomePage();
-	private void TagButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.TagPage();
-	private void PostsButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.PostGrid();
-	private void AddPostButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.EditPost();
-	private void CollectionsButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.CollectionsList();
-	private void SettingButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.Setting();
-	private void AboutButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.main.About();
+	private void HomeButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.HomePage();
+	private void TagButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.TagPage();
+	private void PostsButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.PostGrid();
+	private void AddPostButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.EditPost();
+	private void CollectionsButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.CollectionsList();
+	private void SettingButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.Setting();
+	private void AboutButtonClick (object sender, RoutedEventArgs args) => MainWindowViewModel.Main?.About();
 }
