@@ -54,7 +54,7 @@ public static class CollectionsManager {
 		cmd.Parameters.AddWithValue("@id", id);
 		cmd.ExecuteNonQuery();
 
-		// Réorganiser les IDs
+		// Reorganize IDs
 		ReorderCollectionsAfterDelete(id);
 	}
 
@@ -74,7 +74,7 @@ public static class CollectionsManager {
 		using var conn = DataBase.GetConnection();
 		conn.Open();
 
-		// Décaler tous les IDs supérieurs
+		// Shift all higher IDs
 		string sql = @"
         UPDATE Collections
         SET id = id - 1
@@ -101,10 +101,10 @@ public static class CollectionsManager {
 
 			var list = ConvertUtils.StringToIntList(postsStr);
 
-			// Retirer l'ID supprimé
+			// Remove the deleted ID
 			list.Remove(deletedPostId);
 
-			// Décrémenter les IDs supérieurs
+			// Decrement higher IDs
 			for (int i = 0; i < list.Count; i++) {
 				if (list[i] > deletedPostId)
 					list[i]--;
@@ -113,7 +113,7 @@ public static class CollectionsManager {
 			updates.Add((collectionId, ConvertUtils.IntListToString(list)));
 		}
 
-		// Appliquer les mises à jour
+		// Apply updates
 		foreach (var u in updates) {
 			string updateSql = "UPDATE Collections SET posts = @posts WHERE id = @id";
 			using var updateCmd = new SQLiteCommand(updateSql, conn);
@@ -136,12 +136,12 @@ public static class CollectionsManager {
 		using var reader = cmd.ExecuteReader();
 
 		if (!reader.Read())
-			return null;
+			return null!;
 
 		return new Collection(
 			Convert.ToInt32(reader["id"]), 
-			reader["name"].ToString(), 
-			ConvertUtils.StringToIntList(reader["posts"].ToString())
+			reader["name"].ToString() ?? "Collection", 
+			ConvertUtils.StringToIntList(reader["posts"].ToString()!)
 			);
 	}
 
@@ -160,8 +160,8 @@ public static class CollectionsManager {
 		while (reader.Read()) {
 			list.Add(new
 				(Convert.ToInt32(reader["id"]), 
-				reader["name"].ToString(),
-				ConvertUtils.StringToIntList(reader["posts"].ToString()))
+				reader["name"].ToString() ?? "Collection",
+				ConvertUtils.StringToIntList(reader["posts"].ToString()!))
 				);
 		}
 

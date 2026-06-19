@@ -27,7 +27,7 @@ public static class TagsManager {
 		using SQLiteConnection? conn = DataBase.GetConnection();
 		conn.Open();
 
-		// 1. Vérifier si le tag existe déjà
+		// 1. Check if the tag already exists.
 		string checkSql = "SELECT id FROM Tags WHERE name = @name";
 
 		using (var checkCmd = new SQLiteCommand(checkSql, conn)) {
@@ -39,7 +39,7 @@ public static class TagsManager {
 			}
 		}
 
-		// 2. Le tag n'existe pas → on le crée avec specificTags = "Tag"
+		// 2. The tag does not exist → create it with specificTags = "Tag"
 		string sql = @"
 			INSERT INTO Tags (name, specificTags)
 			VALUES (@name, @specificTags);
@@ -51,7 +51,7 @@ public static class TagsManager {
 
 		cmd.ExecuteNonQuery();
 
-		// 3. Récupérer l'ID du nouveau tag
+		// 3. Retrieve the ID of the new tag
 		string idSql = "SELECT last_insert_rowid();";
 
 		using (var idCmd = new SQLiteCommand(idSql, conn)) {
@@ -127,10 +127,9 @@ public static class TagsManager {
 
 		using var reader = cmd.ExecuteReader();
 
-		if (!reader.Read())
-			return null;
+		if (!reader.Read()) return null!;
 
-		return new Tag(id, reader["name"].ToString(), reader["specificTags"].ToString());
+		return new Tag(id, reader["name"].ToString() ?? "Tag", reader["specificTags"].ToString() ?? "Tag");
 	}
 
 	// 📖 Retrieve all tags
@@ -148,8 +147,8 @@ public static class TagsManager {
 		while (reader.Read()) {
 			list.Add(new Tag (
 				Convert.ToInt32(reader["id"]), 
-				reader["name"].ToString(), 
-				reader["specificTags"].ToString())
+				reader["name"].ToString() ?? "Tag", 
+				reader["specificTags"].ToString() ?? "Tag")
 			);
 		}
 

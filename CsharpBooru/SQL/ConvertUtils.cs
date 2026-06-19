@@ -8,14 +8,12 @@ public static class ConvertUtils {
 
 	public static List<int> StringToIntList (string s)
 		=> string.IsNullOrWhiteSpace(s)
-			? new List<int>()
-			: s.Split(' ').Select(int.Parse).ToList();
+			? [] : [.. s.Split(' ').Select(int.Parse)];
 
 	public static string StringListToString (List<string> list)
 		=> list == null || list.Count == 0 ? "" : string.Join(" ", list);
 
 	public static List<string> StringToStringList (string s)
 		=> string.IsNullOrWhiteSpace(s)
-			? new List<string>()
-			: s.Split(' ').ToList();
+			? [] : [.. s.Split(' ')];
 }

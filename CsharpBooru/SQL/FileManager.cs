@@ -16,7 +16,7 @@ internal static class FileManager {
 		//If a file with the same name already exists → create a unique name
 		if (File.Exists(destinationPath) == true) {
 			int counter = 1;
-			string newFileName = name;
+			string newFileName;
 			do {
 				newFileName = $"{name} ({counter})";
 				destinationPath = Path.Combine(DataBase.FilesPath, newFileName + extension);

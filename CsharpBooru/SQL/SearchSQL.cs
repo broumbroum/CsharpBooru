@@ -8,19 +8,20 @@ internal class SearchSQL {
 	public static string querySearch = "";
 
 	public static (List<string> include, List<string> exclude, List<string> ratings) ParseSearch (string input) {
-		var include = new List<string>();
-		var exclude = new List<string>();
-		var ratings = new List<string>();
+		List<string>? 
+			include = [],
+			exclude = [],
+			ratings = [];
 
 		var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (var p in parts) {
 			if (p.StartsWith("rating:", StringComparison.OrdinalIgnoreCase)) {
-				var r = p.Substring("rating:".Length).Trim();
+				var r = p["rating:".Length..].Trim();
 				if (!string.IsNullOrWhiteSpace(r))
 					ratings.Add(r);
-			} else if (p.StartsWith("-"))
-				exclude.Add(p.Substring(1));
+			} else if (p.StartsWith('-'))
+				exclude.Add(p[1..]);
 			else
 				include.Add(p);
 		}

@@ -5,6 +5,8 @@ using SkiaSharp;
 
 namespace CsharpBooru.SQL;
 internal static class ThumbnailsManager {
+
+	// ➕ Create Thumbnails
 	public static void CreateThumbnails (string inputPath, string outputPath) {
 		switch (Path.GetExtension(inputPath).ToLower()) {
 			case ".png" or ".jpg" or ".jpeg" or ".gif" or ".ico" or ".webp" or ".tiff" or ".tif":
@@ -16,6 +18,7 @@ internal static class ThumbnailsManager {
 		}
 	}
 
+	// 🔄 Regenerate Thumbnails by its Name
 	public static void RegenerateThumbnails (string filename) {
 		if (File.Exists(DataBase.ThumbnailsPath + filename + ".jpg")) {
 			DeleteThumbnail(filename);
@@ -23,12 +26,14 @@ internal static class ThumbnailsManager {
 		CreateThumbnails(DataBase.FilesPath + filename, DataBase.ThumbnailsPath + filename + ".jpg");
 	}
 
+	// 🔄 Regenerate Thumbnails by its ID
 	public static void RegenerateThumbnails (int id) {
 		Post post = PostsManager.GetPost(id);
 		if (post == null) return;
 		RegenerateThumbnails(post.Filename);
 	}
 
+	// 📷 Picture Thumbnails
 	private static void PictureThumbnails (string inputPath, string outputPath) {
 		using var input = File.OpenRead(inputPath);
 		using var bitmap = SKBitmap.Decode(input);
@@ -56,6 +61,7 @@ internal static class ThumbnailsManager {
 		data.SaveTo(output);
 	}
 
+	//📽️ Video Thumbnails
 	private static async Task VideoThumbnails (string inputPath, string outputPath) {
 		var libVLC = new LibVLC("--vout=dummy");
 		using var media = new Media(libVLC, inputPath, FromType.FromPath);
@@ -77,16 +83,16 @@ internal static class ThumbnailsManager {
 		await tcs.Task;
 
 		// Take a snapshot
-		Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+		Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
 		mp.TakeSnapshot(0, outputPath, 0, 0);
 
 		mp.Stop();
 	}
 
-	public static string GetThumbnailPath (string filename) {
-		return Path.Combine(DataBase.ThumbnailsPath + filename + ".jpg");
-	}
+	// 📖 Get the Thumbnail path
+	public static string GetThumbnailPath (string filename) => Path.Combine(DataBase.ThumbnailsPath + filename + ".jpg");
 
+	//➖ Delete the Thunbnail
 	public static void DeleteThumbnail (string filename) {
 		string thumbnail = GetThumbnailPath(filename + ".jpg");
 		File.Delete(thumbnail);

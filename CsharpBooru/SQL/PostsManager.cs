@@ -35,20 +35,20 @@ public static class PostsManager {
 
 		using var transaction = conn.BeginTransaction();
 
-		// 1. Supprimer le post
+		// 1. Delete the post
 		string deleteSql = "DELETE FROM Posts WHERE id = @id";
 		using (var deleteCmd = new SQLiteCommand(deleteSql, conn)) {
 			deleteCmd.Parameters.AddWithValue("@id", id);
 			deleteCmd.ExecuteNonQuery();
 		}
 
-		// 2. Mettre à jour les related dans Posts
+		// 2. Update related posts in Posts
 		UpdateRelatedAfterPostDelete(conn, id);
 
-		// 3. Mettre à jour les Collections (colonne Posts)
+		// 3. Update Collections (Posts column)
 		CollectionsManager.UpdateCollectionsAfterPostDelete(conn, id);
 
-		// 4. Réordonner les IDs des Posts
+		// 4. Reorder post IDs
 		string reorderSql = @"
         UPDATE Posts
         SET id = id - 1
@@ -80,10 +80,10 @@ public static class PostsManager {
 
 			var list = ConvertUtils.StringToIntList(relatedStr);
 
-			// 1. Retirer l'ID supprimé
+			// 1. Remove the deleted ID
 			list.Remove(deletedPostId);
 
-			// 2. Décrémenter les IDs supérieurs
+			// 2. Decrement higher IDs
 			for (int i = 0; i < list.Count; i++) {
 				if (list[i] > deletedPostId)
 					list[i]--;
@@ -92,7 +92,7 @@ public static class PostsManager {
 			updates.Add((postId, ConvertUtils.IntListToString(list)));
 		}
 
-		// Appliquer les mises à jour
+		// Apply updates
 		foreach (var u in updates) {
 			string updateSql = "UPDATE Posts SET related = @related WHERE id = @id";
 			using var updateCmd = new SQLiteCommand(updateSql, conn);
@@ -153,16 +153,16 @@ public static class PostsManager {
 
 		using var reader = cmd.ExecuteReader();
 
-		if (!reader.Read())
-			return null; // Aucun post trouvé
+		if (!reader.Read()) return null!;
+
 		return new(
 			Convert.ToInt32(reader["id"]),
-			reader["filename"].ToString(),
-			ConvertUtils.StringToIntList(reader["tags"].ToString()),
-			ConvertUtils.StringToStringList(reader["sources"].ToString()),
-			ConvertUtils.StringToIntList(reader["related"].ToString()),
-			reader["note"].ToString(),
-			reader["rating"].ToString()
+			reader["filename"].ToString() ?? "",
+			ConvertUtils.StringToIntList(reader["tags"].ToString()!),
+			ConvertUtils.StringToStringList(reader["sources"].ToString()!),
+			ConvertUtils.StringToIntList(reader["related"].ToString()!),
+			reader["note"].ToString() ?? "",
+			reader["rating"].ToString() ?? "none"
 			);
 	}
 
@@ -181,12 +181,12 @@ public static class PostsManager {
 		while (reader.Read()) {
 			list.Add(new(
 				Convert.ToInt32(reader["id"]),
-				reader["filename"].ToString(),
-				ConvertUtils.StringToIntList(reader["tags"].ToString()),
-				ConvertUtils.StringToStringList(reader["sources"].ToString()),
-				ConvertUtils.StringToIntList(reader["related"].ToString()),
-				reader["note"].ToString(),
-				reader["rating"].ToString()
+				reader["filename"].ToString() ?? "",
+				ConvertUtils.StringToIntList(reader["tags"].ToString()!),
+				ConvertUtils.StringToStringList(reader["sources"].ToString()!),
+				ConvertUtils.StringToIntList(reader["related"].ToString()!),
+				reader["note"].ToString() ?? "",
+				reader["rating"].ToString() ?? "none"
 			));
 		}
 
