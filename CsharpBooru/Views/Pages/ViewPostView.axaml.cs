@@ -6,7 +6,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.VisualTree;
 using CsharpBooru.Component.ViewsPost;
 using CsharpBooru.Setting;
 using CsharpBooru.SQL;
@@ -22,7 +21,7 @@ namespace CsharpBooru.Views.Pages;
 public partial class ViewPostView : UserControl {
 
 	private string path = "", infoFile = "";
-	private Post post;
+	private Post? post;
 
 	private const string Icons = "avares://CsharpBooru/Resources/Icons/tag/";
 
@@ -31,7 +30,7 @@ public partial class ViewPostView : UserControl {
 	public ViewPostView () {
 		InitializeComponent();
 
-		this.DataContextChanged += OnDataContextChanged;
+		DataContextChanged += OnDataContextChanged;
 	}
 
 	private void OnDataContextChanged (object? sender, EventArgs e) {
@@ -86,7 +85,7 @@ public partial class ViewPostView : UserControl {
 	#region Display
 
 	private void DisplayTag () {
-		TagStack.Children.Add(CreateTextBlock("ID : " + post.Id, true, Colors.Black));
+		TagStack.Children.Add(CreateTextBlock("ID : " + post!.Id, true, Colors.Black));
 
 		Dictionary<string, List<string>> groups = new() {
 			["Tag"] = [],
@@ -124,7 +123,7 @@ public partial class ViewPostView : UserControl {
 	}
 
 	private void DisplayNote () {
-		if (post.Note == null || post.Note == "") return;
+		if (post!.Note == null || post.Note == "") return;
 
 		NoteTextBlock.IsVisible = true;
 		NoteTextBlock.Inlines =
@@ -152,17 +151,11 @@ public partial class ViewPostView : UserControl {
 		CollectionName.Text = " " + Vm.Collection.Name + "    Pages : " + (Vm.Index + 1) + "/" + Vm.Collection.Posts.Count + " ";
 		CollectionPrevious.Content = " < ";
 		CollectionPrevious.Click += (_, _) => {
-			if (Vm.Index >= 1) {
-				var window = this.FindAncestorOfType<Window>();
-				MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index - 1]), Vm.Collection.Id, Vm.Index - 1);
-			}
+			if (Vm.Index >= 1) MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index - 1]), Vm.Collection.Id, Vm.Index - 1);
 		};
 		CollectionNext.Content = " > ";
 		CollectionNext.Click += (_, _) => {
-			if (Vm.Index < Vm.Collection.Posts.Count - 1) {
-				var window = this.FindAncestorOfType<Window>();
-				MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index + 1]), Vm.Collection.Id, Vm.Index + 1);
-			}
+			if (Vm.Index < Vm.Collection.Posts.Count - 1) MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(Vm.Collection.Posts[Vm.Index + 1]), Vm.Collection.Id, Vm.Index + 1);
 		};
 	}
 
