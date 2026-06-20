@@ -69,6 +69,7 @@ public partial class ViewPostView : UserControl {
 			case ".mp4" or ".avi" or ".webm" or ".mkv":
 				Video_Component VC = new();
 				Post.Children.Add(VC.Component(ref path));
+				Post.MinWidth = 380;
 				infoFile += VC.GetInfo(ref path);
 				DetachedFromVisualTree += (s, e) => VC.Dispose();
 			break;

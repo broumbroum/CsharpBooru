@@ -36,7 +36,7 @@ public class Video_Component : IDisposable {
 		AttachPlayPauseEvent();
 		AttachVolumeEvent();
 
-		StackPanel root = BuildRoot(BuildControls());
+		var root = BuildRoot(BuildControls());
 
 		return root;
 	}
@@ -63,18 +63,17 @@ public class Video_Component : IDisposable {
 
 	#region Controls Video UI
 	private VideoView? videoView;
-	private Button playPauseButton;
-	private Slider seekBar;
-	private Slider volumeBar;
-	private Image volumeIcon;
+	private Button? playPauseButton;
+	private Slider? seekBar;
+	private Slider? volumeBar;
+	private Image? volumeIcon;
 
 	private VideoView CreateVideoView () => videoView = new VideoView {
 		HorizontalAlignment = HorizontalAlignment.Center,
-		Width = MaxVideoSize,
-		Height = MaxVideoSize,
-		MaxWidth = MaxVideoSize,
+		MinWidth = 380, 
+		MinHeight = 380,
+		MaxWidth = MaxVideoSize, 
 		MaxHeight = MaxVideoSize,
-		Margin = new Thickness(0, 0, 10, 0),
 		MediaPlayer = mediaPlayer
 	};
 
@@ -88,7 +87,7 @@ public class Video_Component : IDisposable {
 		Minimum = 0,
 		Maximum = 1000,
 		Value = 0,
-		Width = 600,
+		Width = 320,
 		VerticalAlignment = VerticalAlignment.Center
 	};
 
@@ -106,18 +105,20 @@ public class Video_Component : IDisposable {
 		Margin = new Thickness(0, 0, 0, 10)
 	};
 
-	private StackPanel BuildControls () => new StackPanel {
-		//Background = new SolidColorBrush(new Color(128,128, 255,255)), //DEBUG
+	private WrapPanel BuildControls () => new () {
+		//Background = new Avalonia.Media.SolidColorBrush(new Avalonia.Media.Color(128,128, 255,255)), //DEBUG
 		Orientation = Orientation.Horizontal,
-		Spacing = 10,
+		ItemSpacing = 10,
 		HorizontalAlignment = HorizontalAlignment.Center,
-		Children = { playPauseButton, seekBar, volumeIcon, volumeBar }
+		Children = { playPauseButton!, seekBar!, volumeIcon!, volumeBar! }
 	};
 
-	private StackPanel BuildRoot (Control controls) => new StackPanel {
+	private StackPanel BuildRoot (Control controls) => new () {
 		Orientation = Orientation.Vertical,
+		MinWidth = 380,
 		Spacing = 10,
-		Children = { videoView, controls }
+		Margin = new Thickness(10),
+		Children = { videoView!, controls }
 	};
 	#endregion
 
@@ -144,12 +145,12 @@ public class Video_Component : IDisposable {
 		};
 	}
 
-	private void AttachVideoLoadedEvent () => videoView.Loaded += (_, _) => {
+	private void AttachVideoLoadedEvent () => videoView?.Loaded += (_, _) => {
 		if(mediaPlayer == null || media == null) return;
 
 		mediaPlayer.Play(media);
 		mediaPlayer.Mute = false;
-		playPauseButton.Content = Play(false);
+		playPauseButton?.Content = Play(false);
 
 		var timer = new Avalonia.Threading.DispatcherTimer {
 			Interval = TimeSpan.FromMilliseconds(500)
@@ -157,14 +158,14 @@ public class Video_Component : IDisposable {
 
 		timer.Tick += (_, _) => {
 			if (mediaPlayer?.Length > 0) {
-				seekBar.Value = mediaPlayer.Position * 1000;
+				seekBar?.Value = mediaPlayer.Position * 1000;
 			}
 		};
 
 		timer.Start();
 	};
 
-	private void AttachPlayPauseEvent () => playPauseButton.Click += (_, _) => {
+	private void AttachPlayPauseEvent () => playPauseButton?.Click += (_, _) => {
 		if (mediaPlayer == null) return;
 
 		if (mediaPlayer.IsPlaying) {
@@ -176,7 +177,7 @@ public class Video_Component : IDisposable {
 		}
 	};
 
-	private void AttachVolumeEvent () => volumeBar.PropertyChanged += (_, e) => {
+	private void AttachVolumeEvent () => volumeBar?.PropertyChanged += (_, e) => {
 		if(mediaPlayer == null) return;
 
 		if (e.Property == Slider.ValueProperty) {
