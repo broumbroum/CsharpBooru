@@ -13,6 +13,7 @@ public partial class AboutView : UserControl {
 	public void OpenLibVLC (object sender, RoutedEventArgs args) => _ = OpenWebPage(this, "https://www.videolan.org/");
 	public void OpenReactiveUI (object sender, RoutedEventArgs args) => _ = OpenWebPage(this, "https://reactiveui.net/");
 	public void OpenSkiaSharp (object sender, RoutedEventArgs args) => _ = OpenWebPage(this, "https://mono.github.io/SkiaSharp/");
+	public void OpenIcones8 (object sender, RoutedEventArgs args) => _ = OpenWebPage(this, "https://icones8.fr/");
 
 	private static async Task OpenWebPage (Control control, string url) {
 		var topLevel = TopLevel.GetTopLevel(control);

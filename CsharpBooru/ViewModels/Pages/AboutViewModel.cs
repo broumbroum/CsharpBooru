@@ -1,4 +1,3 @@
 ﻿
 namespace CsharpBooru.ViewModels.Pages;
-internal class AboutViewModel : ViewModelBase {
-}
+internal class AboutViewModel : ViewModelBase;
