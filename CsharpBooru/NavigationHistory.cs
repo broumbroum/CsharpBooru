@@ -12,8 +12,10 @@ public class NavigationHistory {
 	public void AddPage (string page) {
 		if (isNavigating) return;
 		if (currentIndex < history.Count - 1) {
-			history = history.Take(currentIndex + 1).ToList();
+			history = [.. history.Take(currentIndex + 1)];
 		}
+
+		if (history[^1] == page) return;
 
 		history.Add(page);
 		currentIndex++;
