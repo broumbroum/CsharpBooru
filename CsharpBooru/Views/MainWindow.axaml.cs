@@ -21,6 +21,8 @@ public partial class MainWindow : Window {
 			Start.IsVisible = true;
 
 			DataBase.path = Path.Combine(SettingValue.Path ?? "");
+
+			DataBase.DataBaseCheck();
 		}
 	}
 

@@ -62,6 +62,10 @@ public partial class MainWindowViewModel : ViewModelBase {
 		navigationHistory.AddPage("CollectionsWiew&" + id + "&" + currentPage);
 		CurrentPage = new ViewCollectionsViewModel(id, currentPage); 
 	}
+	public void Wiki (int currentTag) {
+		navigationHistory.AddPage("Wiki&" + currentTag);
+		CurrentPage = new WikiViewModel(currentTag);
+	}
 	public void Setting () { 
 		navigationHistory.AddPage("Setting");
 		CurrentPage = new SettingViewModel(); 
