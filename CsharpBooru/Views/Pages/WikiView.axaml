@@ -9,9 +9,9 @@
 
 	<ScrollViewer><WrapPanel Orientation="Horizontal" ItemSpacing="75" LineSpacing="20" Margin="10 10 10 12">
 		<StackPanel Orientation="Vertical" Spacing="10" MinWidth ="380" MaxWidth ="380">
-			<TextBlock x:Name="NameTextBlock" FontWeight="Bold" FontSize="25"/>
-			<TextBlock x:Name="SpecificTagsTextBlock" FontSize="15"/>
-			<TextBlock x:Name="DescriptionTextBlock"/>
+			<TextBlock x:Name="NameTextBlock" FontWeight="Bold" FontSize="25" TextWrapping="Wrap"/>
+			<TextBlock x:Name="SpecificTagsTextBlock" FontSize="15" TextWrapping="Wrap"/>
+			<TextBlock x:Name="DescriptionTextBlock" TextWrapping="Wrap"/>
 		</StackPanel>
 
 		<WrapPanel x:Name="ExamplePanel" Background="#efefef" LineSpacing="10" MaxWidth ="640"/>

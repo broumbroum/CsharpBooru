@@ -72,11 +72,8 @@ public partial class TagsListView : UserControl {
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					Content = tb
 				};
-				bt.Click += (_, _) => {
-					/*SearchSQL.querySearch = tag.Name;
-					MainWindowViewModel.Main?.PostGrid();*/
-					MainWindowViewModel.Main?.Wiki(tag.Id);
-				};
+				bt.Click += (_, _) => MainWindowViewModel.Main?.Wiki(tag.Id);
+				bt.ContextMenu = TagContextMenu(tag.Id);
 				return bt;
 			})
 		};
@@ -105,58 +102,11 @@ public partial class TagsListView : UserControl {
 			}),
 			SortMemberPath = "Count"
 		};
-
-		//Change Category
-		DataGridTemplateColumn changeCategoryColumu = new() {
-			Header = "Change Category",
-			CanUserResize = true,
-
-			CellTemplate = new FuncDataTemplate<Tag>((tag, _) => {
-
-				Button tagB = ButtonChangeCategory("Tag");
-				tagB.Click += (_, _) => {
-					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Tag", tag.Description));
-					MainWindowViewModel.Main?.TagPage();
-				};
-				Button artistB = ButtonChangeCategory("Artist");
-				artistB.Click += (_, _) => {
-					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Artist", tag.Description));
-					MainWindowViewModel.Main?.TagPage();
-				};
-				Button characterB = ButtonChangeCategory("Character");
-				characterB.Click += (_, _) => {
-					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Character", tag.Description));
-					MainWindowViewModel.Main?.TagPage();
-				};
-				Button copyrightB = ButtonChangeCategory("Copyright");
-				copyrightB.Click += (_, _) => {
-					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Copyright", tag.Description));
-					MainWindowViewModel.Main?.TagPage();
-				};
-				Button speciesB = ButtonChangeCategory("Species");
-				speciesB.Click += (_, _) => {
-					TagsManager.UpdateTag(new Tag(tag.Id, tag.Name, "Species", tag.Description));
-					MainWindowViewModel.Main?.TagPage();
-				};
-
-				StackPanel sp = new() {
-					Orientation = Orientation.Horizontal,
-				};
-
-				sp.Children.Add(tagB);
-				sp.Children.Add(artistB);
-				sp.Children.Add(characterB);
-				sp.Children.Add(copyrightB);
-				sp.Children.Add(speciesB);
-				return sp;
-			})
-		};
 		
 		DataGridControl.Columns.Add(idColumn);
 		DataGridControl.Columns.Add(nameColumn);
 		DataGridControl.Columns.Add(categoryColumn);
 		DataGridControl.Columns.Add(countColumn);
-		DataGridControl.Columns.Add(changeCategoryColumu);
 	}
 
 	private void LoadPage () {
@@ -219,15 +169,31 @@ public partial class TagsListView : UserControl {
 		_ => Brushes.Black,
 	};
 
-	private static Button ButtonChangeCategory (string text) {
-		Button bt = new() {
-			HorizontalAlignment = HorizontalAlignment.Stretch,
-			Content = new TextBlock() {
-				TextAlignment = TextAlignment.Center,
-				Text = text,
+	private static ContextMenu TagContextMenu (int id) {
+
+		var openWikiItem = new MenuItem {
+			Header = "Open Wiki"
+		}; openWikiItem.Click += (_, _) => MainWindowViewModel.Main?.Wiki(id);
+
+		var relatedPostsItem = new MenuItem {
+			Header = "Check out the related posts."
+		}; relatedPostsItem.Click += (_, _) => {
+			SearchSQL.querySearch = TagsManager.GetTag(id).Name;
+			MainWindowViewModel.Main?.PostGrid();
+		};
+		var editItem = new MenuItem {
+			Header = "Edit Tag"
+		}; editItem.Click += (_, _) => {
+			MainWindowViewModel.Main?.EditWiki(id);
+		};
+
+		return new ContextMenu {
+			Items = {
+				openWikiItem, relatedPostsItem,
+				new Separator(),
+				editItem,
 			}
 		};
-		return bt;
 	}
 	#endregion
 

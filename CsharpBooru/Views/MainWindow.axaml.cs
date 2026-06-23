@@ -47,6 +47,7 @@ public partial class MainWindow : Window {
 		}
 
 		SettingFile.Create(path);
+		DataBase.DataBaseCheck();
 
 		FirstStart.IsVisible = false;
 		Start.IsVisible = true;
