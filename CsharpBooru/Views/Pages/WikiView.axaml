@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+			 x:Class="CsharpBooru.Views.Pages.WikiView"
+			 x:DataType="vm:WikiViewModel">
+
+	<ScrollViewer><WrapPanel Orientation="Horizontal" ItemSpacing="75" LineSpacing="20" Margin="10 10 10 12">
+		<StackPanel Orientation="Vertical" Spacing="10" MinWidth ="380" MaxWidth ="380">
+			<TextBlock x:Name="NameTextBlock" FontWeight="Bold" FontSize="25" TextWrapping="Wrap"/>
+			<TextBlock x:Name="SpecificTagsTextBlock" FontSize="15" TextWrapping="Wrap"/>
+			<TextBlock x:Name="DescriptionTextBlock" TextWrapping="Wrap"/>
+		</StackPanel>
+
+		<WrapPanel x:Name="ExamplePanel" Background="#efefef" LineSpacing="10" MaxWidth ="640"/>
+
+	</WrapPanel></ScrollViewer>
+
+</UserControl>

@@ -21,6 +21,8 @@ public partial class MainWindow : Window {
 			Start.IsVisible = true;
 
 			DataBase.path = Path.Combine(SettingValue.Path ?? "");
+
+			DataBase.DataBaseCheck();
 		}
 	}
 
@@ -45,6 +47,7 @@ public partial class MainWindow : Window {
 		}
 
 		SettingFile.Create(path);
+		DataBase.DataBaseCheck();
 
 		FirstStart.IsVisible = false;
 		Start.IsVisible = true;

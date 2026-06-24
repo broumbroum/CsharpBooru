@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:CsharpBooru.ViewModels.Pages"
+			 x:Class="CsharpBooru.Views.Pages.EditWikiView"
+			 x:DataType="vm:WikiViewModel">
+
+	<ScrollViewer> <Panel HorizontalAlignment="Stretch">
+		<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+
+			<!-- Name -->
+			<TextBlock
+					Margin="25 10 10 0"
+					HorizontalAlignment="Stretch"
+					Foreground="Green"
+					FontWeight="Bold" FontSize="15" Text="Name Tag"/>
+			<TextBox x:Name="NameTagBox"
+				PlaceholderText= "Name tag"
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				Margin="25 10 10 0"
+				TextWrapping="Wrap"
+				/> <!--TextChanged="OnNameTagChanged"-->
+
+			<!-- Category -->
+			<TextBlock
+				Margin="25 10 10 0"
+				HorizontalAlignment="Stretch"
+				Foreground="Green"
+				FontWeight="Bold" FontSize="15" Text="Change Category"/>
+			<ComboBox x:Name="CategoryBox"
+				  SelectedIndex="0"
+				  HorizontalAlignment="Stretch"
+				  Margin="25 10 10 0">
+				<ComboBoxItem><TextBlock Text="Tag" Foreground="Blue" TextAlignment="Left" HorizontalAlignment="Left"/></ComboBoxItem>
+				<ComboBoxItem><TextBlock Text="Artist" Foreground="OrangeRed" TextAlignment="Left" HorizontalAlignment="Left"/></ComboBoxItem>
+				<ComboBoxItem><TextBlock Text="Character" Foreground="Green" TextAlignment="Left" HorizontalAlignment="Left"/></ComboBoxItem>
+				<ComboBoxItem><TextBlock Text="Copyright" Foreground="Magenta" TextAlignment="Left" HorizontalAlignment="Left"/></ComboBoxItem>
+				<ComboBoxItem><TextBlock Text="Species" Foreground="Red" TextAlignment="Left" HorizontalAlignment="Left"/></ComboBoxItem>
+			</ComboBox>
+
+			<!-- Description -->
+			<TextBlock
+				Margin="25 10 10 0"
+				HorizontalAlignment="Stretch"
+				Foreground="Green"
+				FontWeight="Bold" FontSize="15" Text="Description"/>
+			<TextBox x:Name="DescriptionBox"
+				AcceptsReturn="True" TextWrapping="Wrap"
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				Margin="25 10 10 0"
+				PlaceholderText= "Description"
+				/> <!--TextChanged="OnDescriptionChanged"-->
+
+			<Button
+				HorizontalAlignment="Stretch"
+				Margin="25 10 10 0"
+				Click="OnSavePostClick">
+				<TextBlock HorizontalAlignment="Center">Save</TextBlock>
+			</Button>
+			<TextBlock x:Name="Error" Margin="25 10 10 0" HorizontalAlignment="Stretch" Foreground="Red" FontWeight="Bold" FontSize="15"/>
+		
+		</StackPanel>
+
+	</Panel></ScrollViewer>
+
+</UserControl>

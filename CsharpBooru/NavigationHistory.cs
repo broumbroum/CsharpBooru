@@ -71,6 +71,12 @@ public class NavigationHistory {
 			case "About":
 			MainWindowViewModel.Main?.About();
 			break;
+			case "Wiki":
+			MainWindowViewModel.Main?.Wiki(Convert.ToInt32(parts[1]));
+			break;
+			case "EditWiki":
+			MainWindowViewModel.Main?.EditWiki(Convert.ToInt32(parts[1]));
+			break;
 			default:
 			MainWindowViewModel.Main?.HomePage();
 			break;

@@ -50,10 +50,10 @@ public static class PostsManager {
 
 		// 4. Reorder post IDs
 		string reorderSql = @"
-        UPDATE Posts
-        SET id = id - 1
-        WHERE id > @deletedId;
-    ";
+		UPDATE Posts
+		SET id = id - 1
+		WHERE id > @deletedId;
+	";
 
 		using (var reorderCmd = new SQLiteCommand(reorderSql, conn)) {
 			reorderCmd.Parameters.AddWithValue("@deletedId", id);
@@ -164,6 +164,48 @@ public static class PostsManager {
 			reader["note"].ToString() ?? "",
 			reader["rating"].ToString() ?? "none"
 			);
+	}
+
+	// 📖 Retrieve a message using a tag ID
+	public static List<Post> GetLastPostsByTag (int tagId, int limit = 6) {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		string sql = @"
+        SELECT * FROM Posts
+        WHERE 
+            REPLACE(tags, '  ', ' ') = @tagExact
+            OR REPLACE(tags, '  ', ' ') LIKE @tagStart
+            OR REPLACE(tags, '  ', ' ') LIKE @tagMiddle
+            OR REPLACE(tags, '  ', ' ') LIKE @tagEnd
+        ORDER BY id DESC
+        LIMIT @limit;
+    ";
+
+		using var cmd = new SQLiteCommand(sql, conn);
+
+		cmd.Parameters.AddWithValue("@tagExact", tagId.ToString());
+		cmd.Parameters.AddWithValue("@tagStart", tagId + " %");
+		cmd.Parameters.AddWithValue("@tagMiddle", "% " + tagId + " %");
+		cmd.Parameters.AddWithValue("@tagEnd", "% " + tagId);
+		cmd.Parameters.AddWithValue("@limit", limit);
+
+		var results = new List<Post>();
+
+		using var reader = cmd.ExecuteReader();
+		while (reader.Read()) {
+			results.Add(new Post(
+				Convert.ToInt32(reader["id"]),
+				reader["filename"].ToString() ?? "",
+				ConvertUtils.StringToIntList(reader["tags"].ToString()!),
+				ConvertUtils.StringToStringList(reader["sources"].ToString()!),
+				ConvertUtils.StringToIntList(reader["related"].ToString()!),
+				reader["note"].ToString() ?? "",
+				reader["rating"].ToString() ?? "none"
+			));
+		}
+
+		return results;
 	}
 
 	// 📖 Retrieve all posts

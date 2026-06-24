@@ -59,4 +59,42 @@ internal class DataBase {
         System.Diagnostics.Debug.WriteLine("Base de données SQLite créée avec succès !");
 	}
 
+	private static bool ColumnExists (string table, string column) {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		using var cmd = new SQLiteCommand($"PRAGMA table_info({table});", conn);
+		using var reader = cmd.ExecuteReader();
+
+		while (reader.Read()) {
+			string colName = reader["name"].ToString();
+			if (string.Equals(colName, column, StringComparison.OrdinalIgnoreCase))
+				return true;
+		}
+
+		return false;
+	}
+
+	private static void EnsureTagColumns () {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		// specificTags
+		if (!ColumnExists("Tags", "specificTags")) {
+			using var cmd = new SQLiteCommand(
+				"ALTER TABLE Tags ADD COLUMN specificTags TEXT DEFAULT 'Tag';", conn);
+			cmd.ExecuteNonQuery();
+		}
+
+		// description
+		if (!ColumnExists("Tags", "description")) {
+			using var cmd = new SQLiteCommand(
+				"ALTER TABLE Tags ADD COLUMN description TEXT DEFAULT NULL;", conn);
+			cmd.ExecuteNonQuery();
+		}
+	}
+
+	public static void DataBaseCheck () {
+		EnsureTagColumns();
+	}
 }

@@ -6,6 +6,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using CsharpBooru.Component;
 using CsharpBooru.Component.ViewsPost;
 using CsharpBooru.Setting;
 using CsharpBooru.SQL;
@@ -106,11 +107,20 @@ public partial class ViewPostView : UserControl {
 				groups[tag.SpecificTags].Add(tag.Name);
 		}
 
-		AddTagGroup("Artist", Colors.OrangeRed, groups["Artist"]);
-		AddTagGroup("Character", Colors.Green, groups["Character"]);
-		AddTagGroup("Copyright", Colors.Magenta, groups["Copyright"]);
-		AddTagGroup("Species", Colors.Red, groups["Species"]);
-		AddTagGroup("Tag", Colors.Blue, groups["Tag"]);
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Artist", true, Colors.OrangeRed), Icons + "icons8-paint-palette-100.png"));
+		AddTagGroup(groups["Artist"]);
+
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Character", true, Colors.Green), Icons + "icons8-customer-100.png"));
+		AddTagGroup(groups["Character"]);
+
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Copyright", true, Colors.Magenta), Icons + "icons8-c-100.png"));
+		AddTagGroup(groups["Copyright"]);
+
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Species", true, Colors.Red), Icons + "icons8-lapin-100.png"));
+		AddTagGroup(groups["Species"]);
+
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Tag", true, Colors.Blue), Icons + "icons8-tag-window-100.png"));
+		AddTagGroup(groups["Tag"]);
 
 
 		TagStack.Children.Add(PanelTitle(CreateTextBlock("Rating", true, Colors.Green), Icons + "icons8-law-100.png"));
@@ -175,17 +185,7 @@ public partial class ViewPostView : UserControl {
 		};
 	}
 
-	private void AddTagGroup (string title, Color color, List<string> items) {
-		string source = title switch {
-			"Artist" => Icons + "icons8-paint-palette-100.png",
-			"Character" => Icons + "icons8-customer-100.png",
-			"Copyright" => Icons + "icons8-c-100.png",
-			"Species" => Icons + "icons8-lapin-100.png",
-			"Tag" => Icons + "icons8-tag-window-100.png",
-			_ => Icons + "icons8-tag-window-100.png",
-		};
-		TagStack.Children.Add(PanelTitle(CreateTextBlock(title, true, color), source));
-
+	private void AddTagGroup (List<string> items) {
 		switch (SettingValue.OrderTag) {
 			case "Seizure Order": break;
 			case "Alphabetical Order (ignore upper and lower case letters)":
@@ -199,9 +199,11 @@ public partial class ViewPostView : UserControl {
 			break;
 		}
 
-		
-		foreach (var t in items)
-			TagStack.Children.Add(CreateButtonTag(t, color));
+
+		foreach (var t in items) {
+			Tag_Component tc = new(TagsManager.GetTagIdByName(t));
+			TagStack.Children.Add(tc.Component());
+		}
 	}
 
 	private static StackPanel PanelTitle (TextBlock textBlock, string image) {
@@ -247,39 +249,6 @@ public partial class ViewPostView : UserControl {
 		bt.Margin = new Thickness(5);
 
 		bt.Click += (s, e) => MainWindowViewModel.Main?.ViewImage(Convert.ToInt32(post.Id.ToString()));
-
-		return bt;
-	}
-
-	private static Button CreateButtonTag (string text, Color color = default) {
-		int count = 0;
-		int idTag = TagsManager.GetTagIdByName(text);
-		if (idTag != -1) count = TagsManager.CountTagUsage(idTag);
-
-		Button bt = new() {
-			MaxHeight = 20,
-			Height = 20,
-			MinHeight = 20,
-			Margin = new Thickness(0, 0, 0, 0),
-			Background = Brushes.Transparent
-		};
-
-		TextBlock tb = new() {
-			Inlines = [
-				new Run { Text = text + " " },
-				new Run { Text = "" + count, Foreground = new SolidColorBrush(Colors.Black) }
-			],
-			Foreground = new SolidColorBrush(color),
-			FontSize = 12,
-			ClipToBounds = false,
-			TextWrapping = TextWrapping.Wrap,
-		};
-		bt.Content = tb;
-
-		bt.Click += (s, e) => {
-			SearchSQL.querySearch = text;
-			MainWindowViewModel.Main?.PostGrid();	
-		};
 
 		return bt;
 	}

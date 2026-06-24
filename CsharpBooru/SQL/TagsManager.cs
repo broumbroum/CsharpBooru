@@ -11,13 +11,14 @@ public static class TagsManager {
 		conn.Open();
 
 		string sql = @"
-			INSERT INTO Tags (name, specificTags)
-			VALUES (@name, @specificTags);
+			INSERT INTO Tags (name, specificTags, description)
+			VALUES (@name, @specificTags, @description);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@specificTags", specificTags);
+		cmd.Parameters.AddWithValue("@description", DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 	}
@@ -41,13 +42,14 @@ public static class TagsManager {
 
 		// 2. The tag does not exist → create it with specificTags = "Tag"
 		string sql = @"
-			INSERT INTO Tags (name, specificTags)
-			VALUES (@name, @specificTags);
+			INSERT INTO Tags (name, specificTags, description)
+			VALUES (@name, @specificTags, @description);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@specificTags", "Tag");
+		cmd.Parameters.AddWithValue("@description", DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 
@@ -67,7 +69,8 @@ public static class TagsManager {
 		string sql = @"
 			UPDATE Tags
 			SET name = @name,
-				specificTags = @specificTags
+				specificTags = @specificTags,
+				description = @description
 			WHERE id = @id;
 		";
 
@@ -75,6 +78,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@id", tag.Id);
 		cmd.Parameters.AddWithValue("@name", tag.Name);
 		cmd.Parameters.AddWithValue("@specificTags", tag.SpecificTags);
+		cmd.Parameters.AddWithValue("@description", (object?)tag.Description ?? DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 	}
@@ -129,7 +133,12 @@ public static class TagsManager {
 
 		if (!reader.Read()) return null!;
 
-		return new Tag(id, reader["name"].ToString() ?? "Tag", reader["specificTags"].ToString() ?? "Tag");
+		return new Tag(
+			id, 
+			reader["name"].ToString() ?? "Tag", 
+			reader["specificTags"].ToString() ?? "Tag", 
+			reader["description"].ToString()
+			);
 	}
 
 	// 📖 Retrieve all tags
@@ -148,7 +157,8 @@ public static class TagsManager {
 			list.Add(new Tag (
 				Convert.ToInt32(reader["id"]), 
 				reader["name"].ToString() ?? "Tag", 
-				reader["specificTags"].ToString() ?? "Tag")
+				reader["specificTags"].ToString() ?? "Tag",
+				reader["description"].ToString())
 			);
 		}
 
@@ -173,10 +183,11 @@ public static class TagsManager {
 	}
 }
 
-public class Tag (int id, string name, string specificTags) {
+public class Tag (int id, string name, string specificTags, string? description) {
 	public int Id { get; set; } = id;
 	public string Name { get; set; } = name;
 	public string SpecificTags { get; set; } = specificTags;
+	public string? Description { get; set; } = description;
 
 	public int Count =>  TagsManager.CountTagUsage(Id);
 }
