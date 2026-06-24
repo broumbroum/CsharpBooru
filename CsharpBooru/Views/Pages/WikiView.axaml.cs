@@ -1,10 +1,11 @@
 using Avalonia.Controls;
-using CsharpBooru.SQL;
-using CsharpBooru.ViewModels.Pages;
+using Avalonia.Media;
 using CsharpBooru.Component;
+using CsharpBooru.SQL;
+using CsharpBooru.ViewModels;
+using CsharpBooru.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
-using CsharpBooru.ViewModels;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -23,8 +24,16 @@ public partial class WikiView : UserControl {
 		if (Vm == null) return;
 		tag = TagsManager.GetTag(Vm.CurrentID);
 
-		NameTextBlock.Text = tag.Name;
+		NameTextBlock.Text = tag.Name.Replace('_',' ');
 		SpecificTagsTextBlock.Text = "Category : " + tag.SpecificTags ?? "Tag";
+		SpecificTagsTextBlock.Foreground = tag.SpecificTags switch {
+			"Tag" => Brushes.Blue,
+			"Artist" => Brushes.OrangeRed,
+			"Character" => Brushes.Green,
+			"Copyright" => Brushes.Magenta,
+			"Species" => Brushes.Red,
+			_ => Brushes.Black,
+		};
 		DescriptionTextBlock.Text = tag.Description ?? "";
 		GetExample();
 	}
