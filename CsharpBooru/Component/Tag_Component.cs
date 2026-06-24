@@ -10,7 +10,7 @@ public class Tag_Component (int idTag) {
 
 	private readonly Tag? tag = TagsManager.GetTag(idTag);
 
-	private const int sizeHeight = 28;
+	private const int sizeHeight = 22;
 
 	public StackPanel Component () {
 		StackPanel sp = new() {
@@ -38,7 +38,8 @@ public class Tag_Component (int idTag) {
 				Foreground = Brushes.Blue,
 				TextAlignment = TextAlignment.Center,
 				TextWrapping = TextWrapping.Wrap,
-				},
+				ClipToBounds = false,
+			},
 		};
 
 		btn.Click += (_, _) => MainWindowViewModel.Main?.Wiki(tag.Id);
@@ -63,6 +64,7 @@ public class Tag_Component (int idTag) {
 					"Species" => Brushes.Red,
 					_ => Brushes.Black
 				},
+				ClipToBounds = false,
 			}
 		};
 
@@ -81,5 +83,6 @@ public class Tag_Component (int idTag) {
 		FontSize = 12,
 		TextWrapping = TextWrapping.Wrap,
 		Foreground = Brushes.Gray,
+		ClipToBounds = false,
 	};
 }
