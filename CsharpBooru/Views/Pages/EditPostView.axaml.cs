@@ -14,8 +14,7 @@ namespace CsharpBooru.Views.Pages;
 
 public partial class EditPostView : UserControl {
 
-	private string path = "",tag = "", rating = "none", note = "";
-	private List<string> sources = [];
+	private string path = "";
 	private List<int> relatedsID = [];
 
 	private EditPostViewModel? Vm => DataContext as EditPostViewModel;
@@ -24,11 +23,6 @@ public partial class EditPostView : UserControl {
 		InitializeComponent();
 
 		DataContextChanged += OnDataContextChanged;
-
-		RatingBox.SelectionChanged += (_, _) => {
-			var valeur = (RatingBox.SelectedItem as ComboBoxItem)?.Content;
-			rating = valeur?.ToString()?.ToLower() ?? "none";
-		};
 
 		Search_Component.Component(Serched).Click += (_,_) => {
 			LoadPagePost();
@@ -49,15 +43,16 @@ public partial class EditPostView : UserControl {
 			path = DataBase.FilesPath + post.Filename;
 			PathText.Text = path;
 
-			tag = " ";
+			//---- Tag ----//
+			string tag = " ";
 			for (int i = 0; i < post.Tags.Count; i++) {
 				Tag t = TagsManager.GetTag(post.Tags[i]);
 				tag +=  t.Name + " ";
 			}
 			TagBox.Text = tag;
 
-			rating = post.Rating;
-			RatingBox.SelectedIndex = rating switch {
+			//---- Rating ----//
+			RatingBox.SelectedIndex = post.Rating switch {
 				"none" => 0,
 				"safe" => 1,
 				"questionable" => 2,
@@ -66,16 +61,16 @@ public partial class EditPostView : UserControl {
 				_ => 0,
 			};
 
-			note = post.Note;
-			NoteText.Text = note;
+			NoteText.Text = post.Note;
 
-			sources = post.Sources;
+			//---- Sources ----//
 			string _source = "";
-			for (int i = 0; i < sources.Count; i++) {
-				_source = _source + sources[i] + "\n";
+			for (int i = 0; i < post.Sources.Count; i++) {
+				_source = _source + post.Sources[i] + "\n";
 			}
 			SourceBox.Text = _source;
 
+			//---- Relateds ----//
 			relatedsID = post.Related;
 			RelatedTextUpdate();
 		}
@@ -101,23 +96,6 @@ public partial class EditPostView : UserControl {
 
 	}
 
-	//Updates tag string when user edits the TagBox.
-	private void OnTagChanged (object? sender, TextChangedEventArgs e) {
-		if (sender is TextBox tb) tag = tb.Text ?? "";
-	}
-	
-	//Updates the list of sources when user edits the SourceBox.
-	//Each line becomes one source entry.
-	private void OnSourceChanged (object? sender, TextChangedEventArgs e) {
-		string s = SourceBox.Text ?? "";
-		sources = [.. s.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => l.Length > 0)];
-	}
-
-	//Updates the note string when user edits the NoteText.
-	private void OnNoteChanged (object? sender, TextChangedEventArgs e) {
-		if (sender is TextBox tb) note = tb.Text ?? "";
-	}
-
 	//Switches to the "related posts" selection grid
 	private void OnRelateClick (object? sender, RoutedEventArgs e) {
 		RelatedPost.IsVisible = true;
@@ -129,25 +107,41 @@ public partial class EditPostView : UserControl {
 	private void OnSavePostClick (object? sender, RoutedEventArgs e) {
 		if (Vm == null) return;
 
+		//---- Path ----//
 		if (path == null || path == "") {
 			Error.Text = "No file selected";
 			return; 
 		}
-		if (tag == null || tag == "") {
+
+		//---- Tag ----//
+		List<int> TagID = [];
+		foreach (string t in TagBox?.Text?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? []) {
+			TagID.Add(TagsManager.GetOrCreateTag(t));
+		}
+
+		if (TagID.Count <= 0) {
 			Error.Text = "No tag";
 			return;
 		}
 
-		List<int> TagID = [];
-		foreach (string t in tag.Split(' ', StringSplitOptions.RemoveEmptyEntries)) {
-			TagID.Add(TagsManager.GetOrCreateTag(t));
-		}
+		//---- Rating ----//
+		string rating = RatingBox.SelectedIndex switch {
+			0 => "none",
+			1 => "safe",
+			2 => "questionable",
+			3 => "explicit",
+			4 => "borderline",
+			_ => "none",
+		};
+
+		//---- Sources ----//
+		List<string> sources = [.. SourceBox.Text?.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => l.Length > 0)?? []];
 
 		if (Vm.EditMod == false) {
-			Post _post = new (0, FileManager.SaveFile(this.path), TagID, sources, relatedsID, note, rating);
+			Post _post = new (0, FileManager.SaveFile(this.path), TagID, sources, relatedsID, NoteText.Text ?? "", rating);
 			PostsManager.AddPost(_post);
 		} else {
-			Post _post = new(Vm.IdItem, FileManager.SaveFile(this.path), TagID, sources, relatedsID, note, rating);
+			Post _post = new(Vm.IdItem, FileManager.SaveFile(this.path), TagID, sources, relatedsID, NoteText.Text ?? "", rating);
 			PostsManager.UpdatePost(_post);
 		}
 
@@ -194,7 +188,7 @@ public partial class EditPostView : UserControl {
 		});
 	}
 
-	//L'arri�re-plan du bouton est mis � jour en fonction de l'�tat de s�lection
+	//The button background is updated based on the selection state.
 	private void ActionButton (int index, Button btn) {
 		btn.Background = new SolidColorBrush(Colors.Transparent);
 

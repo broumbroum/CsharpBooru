@@ -52,8 +52,7 @@
 				 HorizontalAlignment="Stretch"
 				 VerticalAlignment="Stretch"
 				 Margin="25 10 10 0"
-				 TextWrapping="Wrap"
-				 TextChanged="OnTagChanged"/>
+				 TextWrapping="Wrap"/>
 
 		<!-- Rating -->
 		<TextBlock
@@ -86,8 +85,7 @@
 			 HorizontalAlignment="Stretch"
 			 VerticalAlignment="Stretch"
 			 Margin="25 10 10 0"
-			 PlaceholderText= "Source 1&#x0a;Source 2"
-			 TextChanged="OnSourceChanged"/>
+			 PlaceholderText= "Source 1&#x0a;Source 2"/>
 
 		<!-- Related -->
 		<TextBlock
@@ -118,8 +116,7 @@
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch"
 			Margin="25 10 10 0"
-			PlaceholderText= "Note"
-			TextChanged="OnNoteChanged"/>
+			PlaceholderText= "Note"/>
 		
 
 
