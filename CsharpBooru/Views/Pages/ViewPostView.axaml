@@ -14,12 +14,12 @@
 			<StackPanel 
 				x:Name="TagStack" 
 				Orientation="Vertical" 
-				Margin="10"
+				Margin="10,10,0,10"
 				MaxWidth="400" MinWidth="400"
 				Background="#efefef"/>
 
 		<!--   Middle   -->
-			<StackPanel>
+			<StackPanel Margin="10">
 				<!-- Collection -->
 				<WrapPanel x:Name="Collection" 
 							IsVisible="False" 
