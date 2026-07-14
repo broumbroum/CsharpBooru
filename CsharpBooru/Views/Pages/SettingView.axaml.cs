@@ -74,6 +74,7 @@ public partial class SettingView : UserControl{
 		OrderTagBox.SelectionChanged += (_, _) => {
 			var valeur = (OrderTagBox.SelectedItem as ComboBoxItem)?.Content;
 			SettingValue.OrderTag = valeur?.ToString() ?? "Alphabetical Order";
+			SettingFile.Save();
 		};
 	}
 }

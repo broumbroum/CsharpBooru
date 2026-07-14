@@ -145,7 +145,7 @@ public partial class EditPostView : UserControl {
 			PostsManager.UpdatePost(_post);
 		}
 
-		MainWindowViewModel.Main?.HomePage();
+		MainWindowViewModel.Main?.navigationHistory.Back();
 	}
 
 	#region GridRelated
