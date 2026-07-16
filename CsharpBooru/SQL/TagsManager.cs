@@ -107,16 +107,38 @@ public static class TagsManager {
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
-	// 📏 Number of times a tag is used in posts
-	public static int CountTagUsage (int tagId) {
-		int count = 0;
+	// Dictionary to store the usage count of all tags
+	private static Dictionary<int, int>? DictionaryAllTagsUsage;
 
-		foreach (var post in PostsManager.GetAllPosts()) {
-			if (post.Tags.Contains(tagId))
-				count++;
+	// 📏 Count the usage of all tags in posts and store it in a dictionary
+	public static void CountTagsUsage () {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		string sql = "SELECT tags FROM Posts";
+		using var cmd = new SQLiteCommand(sql, conn);
+		using var reader = cmd.ExecuteReader();
+
+		var counts = new Dictionary<int, int>();
+
+		while (reader.Read()) {
+			var tags = ConvertUtils.StringToIntList(reader["tags"].ToString()!);
+
+			foreach (var tag in tags) {
+				if (counts.ContainsKey(tag))
+					counts[tag]++;
+				else
+					counts[tag] = 1;
+			}
 		}
 
-		return count;
+		DictionaryAllTagsUsage = counts;
+	}
+
+	// 📏 Number of times a tag is used in posts
+	public static int GetTagUsage (int tagId) {
+		if (DictionaryAllTagsUsage == null) CountTagsUsage();
+		return DictionaryAllTagsUsage?.TryGetValue(tagId, out int count) ?? false ? count : 0;
 	}
 
 	// 📖 Retrieve a tag by its ID
@@ -189,6 +211,6 @@ public class Tag (int id, string name, string specificTags, string? description)
 	public string SpecificTags { get; set; } = specificTags;
 	public string? Description { get; set; } = description;
 
-	public int Count =>  TagsManager.CountTagUsage(Id);
+	public int Count =>  TagsManager.GetTagUsage(Id);
 }
 

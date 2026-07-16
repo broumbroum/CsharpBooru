@@ -145,6 +145,7 @@ public partial class EditPostView : UserControl {
 			PostsManager.UpdatePost(_post);
 		}
 
+		TagsManager.CountTagsUsage();
 		MainWindowViewModel.Main?.navigationHistory.Back();
 	}
 
