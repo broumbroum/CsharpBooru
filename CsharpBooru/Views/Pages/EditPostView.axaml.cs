@@ -145,7 +145,10 @@ public partial class EditPostView : UserControl {
 			PostsManager.UpdatePost(_post);
 		}
 
+		//Reload Cache
 		TagsManager.CountTagsUsage();
+		TagsManager.LoadTagIdCache();
+
 		MainWindowViewModel.Main?.navigationHistory.Back();
 	}
 

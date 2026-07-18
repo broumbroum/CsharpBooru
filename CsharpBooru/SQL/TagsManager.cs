@@ -187,21 +187,29 @@ public static class TagsManager {
 		return list;
 	}
 
+	// Dictionary to cache tag IDs by their names for quick lookup
+	private static Dictionary<string, int>? _tagIdCache;
+
 	// 📖 Retrieve a tag's ID from its name
 	public static int GetTagIdByName (string name) {
+		if (_tagIdCache == null) LoadTagIdCache();
+		return _tagIdCache?.TryGetValue(name, out var id) ?? false ? id : -1;
+	}
+
+	// Load the tag ID cache from the database
+	public static void LoadTagIdCache () {
 		using var conn = DataBase.GetConnection();
 		conn.Open();
 
-		string sql = "SELECT id FROM Tags WHERE name = @name";
-
+		string sql = "SELECT id, name FROM Tags";
 		using var cmd = new SQLiteCommand(sql, conn);
-		cmd.Parameters.AddWithValue("@name", name);
+		using var reader = cmd.ExecuteReader();
 
-		var result = cmd.ExecuteScalar();
-		if (result == null)
-			return -1;
+		_tagIdCache = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-		return Convert.ToInt32(result);
+		while (reader.Read()) {
+			_tagIdCache[reader["name"].ToString()!] = Convert.ToInt32(reader["id"]);
+		}
 	}
 }
 
