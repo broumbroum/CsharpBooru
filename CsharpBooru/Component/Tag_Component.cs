@@ -73,6 +73,8 @@ public class Tag_Component (int idTag) {
 			MainWindowViewModel.Main?.PostGrid();
 		};
 
+		btn.ContextMenu = ContextMenu(tag!.Id);
+
 		return btn;
 	}
 
@@ -85,4 +87,31 @@ public class Tag_Component (int idTag) {
 		Foreground = Brushes.Gray,
 		ClipToBounds = false,
 	};
+
+	public static ContextMenu ContextMenu (int id) {
+
+		var openWikiItem = new MenuItem {
+			Header = "Open Wiki"
+		}; openWikiItem.Click += (_, _) => MainWindowViewModel.Main?.Wiki(id);
+
+		var relatedPostsItem = new MenuItem {
+			Header = "Check out the related posts."
+		}; relatedPostsItem.Click += (_, _) => {
+			SearchSQL.querySearch = TagsManager.GetTag(id).Name;
+			MainWindowViewModel.Main?.PostGrid();
+		};
+		var editItem = new MenuItem {
+			Header = "Edit Tag"
+		}; editItem.Click += (_, _) => {
+			MainWindowViewModel.Main?.EditWiki(id);
+		};
+
+		return new ContextMenu {
+			Items = {
+				openWikiItem, relatedPostsItem,
+				new Separator(),
+				editItem,
+			}
+		};
+	}
 }
