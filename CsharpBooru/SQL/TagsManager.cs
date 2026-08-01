@@ -205,7 +205,7 @@ public static class TagsManager {
 		using var cmd = new SQLiteCommand(sql, conn);
 		using var reader = cmd.ExecuteReader();
 
-		_tagIdCache = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+		_tagIdCache = [];
 
 		while (reader.Read()) {
 			_tagIdCache[reader["name"].ToString()!] = Convert.ToInt32(reader["id"]);
