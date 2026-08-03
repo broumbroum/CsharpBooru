@@ -61,6 +61,10 @@ public partial class EditWikiView : UserControl {
 		);
 
 		TagsManager.UpdateTag(_tag);
+
+		TagsManager.CountTagsUsage();
+		TagsManager.LoadTagIdCache();
+
 		MainWindowViewModel.Main?.navigationHistory.Back();
 	}
 }
