@@ -73,7 +73,7 @@ public partial class TagsListView : UserControl {
 					Content = tb
 				};
 				bt.Click += (_, _) => MainWindowViewModel.Main?.Wiki(tag.Id);
-				bt.ContextMenu = TagContextMenu(tag.Id);
+				bt.ContextMenu = Tag_Component.ContextMenu(tag.Id);
 				return bt;
 			})
 		};
@@ -168,33 +168,6 @@ public partial class TagsListView : UserControl {
 		"Species" => Brushes.Red,
 		_ => Brushes.Black,
 	};
-
-	private static ContextMenu TagContextMenu (int id) {
-
-		var openWikiItem = new MenuItem {
-			Header = "Open Wiki"
-		}; openWikiItem.Click += (_, _) => MainWindowViewModel.Main?.Wiki(id);
-
-		var relatedPostsItem = new MenuItem {
-			Header = "Check out the related posts."
-		}; relatedPostsItem.Click += (_, _) => {
-			SearchSQL.querySearch = TagsManager.GetTag(id).Name;
-			MainWindowViewModel.Main?.PostGrid();
-		};
-		var editItem = new MenuItem {
-			Header = "Edit Tag"
-		}; editItem.Click += (_, _) => {
-			MainWindowViewModel.Main?.EditWiki(id);
-		};
-
-		return new ContextMenu {
-			Items = {
-				openWikiItem, relatedPostsItem,
-				new Separator(),
-				editItem,
-			}
-		};
-	}
 	#endregion
 
 }

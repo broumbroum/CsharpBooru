@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace CsharpBooru.SQL;
 public static class TagsManager {
@@ -10,12 +11,27 @@ public static class TagsManager {
 		using var conn = DataBase.GetConnection();
 		conn.Open();
 
+		int nextId;
+
+		using (var cmd1 = new SQLiteCommand("SELECT id FROM Tags ORDER BY id ASC", conn))
+		using (var reader = cmd1.ExecuteReader()) {
+			var used = new HashSet<int>();
+
+			while (reader.Read())
+				used.Add(reader.GetInt32(0));
+
+			//Find the first missing ID (1, 2, 3, ...)
+			nextId = Enumerable.Range(1, used.Count + 1)
+							   .First(i => !used.Contains(i));
+		}
+
 		string sql = @"
-			INSERT INTO Tags (name, specificTags, description)
-			VALUES (@name, @specificTags, @description);
+			INSERT INTO Tags (id, name, specificTags, description)
+			VALUES (@id, @name, @specificTags, @description);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
+		cmd.Parameters.AddWithValue("id", nextId);
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@specificTags", specificTags);
 		cmd.Parameters.AddWithValue("@description", DBNull.Value);
@@ -40,25 +56,36 @@ public static class TagsManager {
 			}
 		}
 
-		// 2. The tag does not exist → create it with specificTags = "Tag"
+		// 2. Find the first free ID
+		int nextId;
+
+		using (var cmd1 = new SQLiteCommand("SELECT id FROM Tags ORDER BY id ASC", conn))
+		using (var reader = cmd1.ExecuteReader()) {
+			var used = new HashSet<int>();
+
+			while (reader.Read())
+				used.Add(reader.GetInt32(0));
+
+			nextId = Enumerable.Range(1, used.Count + 1)
+							   .First(i => !used.Contains(i));
+		}
+
+		// 3. The tag does not exist → create it with specificTags = "Tag"
 		string sql = @"
-			INSERT INTO Tags (name, specificTags, description)
-			VALUES (@name, @specificTags, @description);
+			INSERT INTO Tags (id, name, specificTags, description)
+			VALUES (@id, @name, @specificTags, @description);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
+		cmd.Parameters.AddWithValue("@id", nextId);
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@specificTags", "Tag");
 		cmd.Parameters.AddWithValue("@description", DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 
-		// 3. Retrieve the ID of the new tag
-		string idSql = "SELECT last_insert_rowid();";
-
-		using (var idCmd = new SQLiteCommand(idSql, conn)) {
-			return Convert.ToInt32(idCmd.ExecuteScalar());
-		}
+		// 4. Retrieve the ID of the new tag
+		return nextId;
 	}
 
 	// ✏️ Edit a tag

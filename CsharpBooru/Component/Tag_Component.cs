@@ -105,13 +105,27 @@ public class Tag_Component (int idTag) {
 		}; editItem.Click += (_, _) => {
 			MainWindowViewModel.Main?.EditWiki(id);
 		};
+		var deleteItem = new MenuItem {
+			Header = "Delete Tag",
+			Foreground = Brushes.Red
+		}; deleteItem.Click += (_, _) => {
+			TagsManager.RemoveTag(id);
+			MainWindowViewModel.Main?.TagPage();
+		};
 
-		return new ContextMenu {
+		ContextMenu cm = new() {
 			Items = {
 				openWikiItem, relatedPostsItem,
 				new Separator(),
 				editItem,
 			}
 		};
+
+		if (TagsManager.GetTagUsage(id) == 0) {
+			cm.Items.Add(new Separator());
+			cm.Items.Add(deleteItem);
+		}
+
+		return cm;
 	}
 }
