@@ -51,7 +51,20 @@
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				Margin="25 10 10 0"
 				PlaceholderText= "Description"
-				/> <!--TextChanged="OnDescriptionChanged"-->
+				/>
+			
+			<!-- Obsolete -->
+			<TextBlock
+				Margin="25 10 10 0"
+				HorizontalAlignment="Stretch"
+				Foreground="Green"
+				FontWeight="Bold" FontSize="15" Text="Obsolete"/>
+			<CheckBox x:Name="ObsoleteBox"
+				Content="Obsolete"
+				Margin="25 10 10 0"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				/>
 
 			<Button
 				HorizontalAlignment="Stretch"

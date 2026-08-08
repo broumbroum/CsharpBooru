@@ -92,6 +92,13 @@ internal class DataBase {
 				"ALTER TABLE Tags ADD COLUMN description TEXT DEFAULT NULL;", conn);
 			cmd.ExecuteNonQuery();
 		}
+
+		// obsolete
+		if (!ColumnExists("Tags", "obsolete")) {
+			using var cmd = new SQLiteCommand(
+				"ALTER TABLE Tags ADD COLUMN obsolete TEXT DEFAULT '0';", conn);
+			cmd.ExecuteNonQuery();
+		}
 	}
 
 	public static void DataBaseCheck () {

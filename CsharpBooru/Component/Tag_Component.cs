@@ -64,6 +64,7 @@ public class Tag_Component (int idTag) {
 					"Species" => Brushes.Red,
 					_ => Brushes.Black
 				},
+				TextDecorations = tag?.Obsolete == "1" ? TextDecorations.Strikethrough : null,
 				ClipToBounds = false,
 			}
 		};

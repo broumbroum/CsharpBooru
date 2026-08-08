@@ -66,7 +66,8 @@ public partial class TagsListView : UserControl {
 
 				TextBlock tb = new() {
 					Text = tag.Name,
-					Foreground = GetColorForName(tag.SpecificTags)
+					Foreground = GetColorForName(tag.SpecificTags),
+					TextDecorations = tag.Obsolete == "1" ? TextDecorations.Strikethrough : null,
 				};
 				Button bt = new() {
 					HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -102,11 +103,27 @@ public partial class TagsListView : UserControl {
 			}),
 			SortMemberPath = "Count"
 		};
-		
+
+		//Obsolete
+		DataGridTemplateColumn obsoleteColumn = new() {
+			Header = "Obsolete",
+			CanUserResize = true,
+			CellTemplate = new FuncDataTemplate<Tag>((tag, _) => {
+				TextBlock tb = new() {
+					Text = tag.Obsolete == "1" ? "True " : "False",
+					VerticalAlignment = VerticalAlignment.Center,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					Margin = new Thickness(5, 0, 10, 0)
+				};
+				return tb;
+			}),
+		};
+
 		DataGridControl.Columns.Add(idColumn);
 		DataGridControl.Columns.Add(nameColumn);
 		DataGridControl.Columns.Add(categoryColumn);
 		DataGridControl.Columns.Add(countColumn);
+		DataGridControl.Columns.Add(obsoleteColumn);
 	}
 
 	private void LoadPage () {

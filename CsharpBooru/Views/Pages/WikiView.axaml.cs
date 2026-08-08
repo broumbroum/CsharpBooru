@@ -25,6 +25,7 @@ public partial class WikiView : UserControl {
 		tag = TagsManager.GetTag(Vm.CurrentID);
 
 		NameTextBlock.Text = tag.Name.Replace('_',' ');
+		NameTextBlock.TextDecorations = tag.Obsolete == "1" ? TextDecorations.Strikethrough : null;
 		SpecificTagsTextBlock.Text = "Category : " + tag.SpecificTags ?? "Tag";
 		SpecificTagsTextBlock.Foreground = tag.SpecificTags switch {
 			"Tag" => Brushes.Blue,
@@ -34,6 +35,7 @@ public partial class WikiView : UserControl {
 			"Species" => Brushes.Red,
 			_ => Brushes.Black,
 		};
+		ObsoleteTextBlock.Text = "Obsolete : " + (tag.Obsolete == "1" ? "True" : "False");
 		DescriptionTextBlock.Text = tag.Description ?? "";
 		GetExample();
 	}

@@ -36,6 +36,7 @@ public partial class EditWikiView : UserControl {
 		};
 
 		DescriptionBox.Text = tag.Description ?? "";
+		ObsoleteBox.IsChecked = tag.Obsolete == "1";
 	}
 
 	public void OnSavePostClick (object? sender, RoutedEventArgs e) {
@@ -57,7 +58,8 @@ public partial class EditWikiView : UserControl {
 				_ => "Tag",
 			},
 			name: NameTagBox.Text.Replace(" ", "_"),
-			description: DescriptionBox.Text
+			description: DescriptionBox.Text,
+			obsolete: ObsoleteBox.IsChecked == true ? "1" : "0"
 		);
 
 		TagsManager.UpdateTag(_tag);

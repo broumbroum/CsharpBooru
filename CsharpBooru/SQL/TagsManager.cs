@@ -26,8 +26,8 @@ public static class TagsManager {
 		}
 
 		string sql = @"
-			INSERT INTO Tags (id, name, specificTags, description)
-			VALUES (@id, @name, @specificTags, @description);
+			INSERT INTO Tags (id, name, specificTags, description, obsolete)
+			VALUES (@id, @name, @specificTags, @description, @obsolete);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
@@ -35,6 +35,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@specificTags", specificTags);
 		cmd.Parameters.AddWithValue("@description", DBNull.Value);
+		cmd.Parameters.AddWithValue("@obsolete", "0");
 
 		cmd.ExecuteNonQuery();
 	}
@@ -72,8 +73,8 @@ public static class TagsManager {
 
 		// 3. The tag does not exist → create it with specificTags = "Tag"
 		string sql = @"
-			INSERT INTO Tags (id, name, specificTags, description)
-			VALUES (@id, @name, @specificTags, @description);
+			INSERT INTO Tags (id, name, specificTags, description, obsolete)
+			VALUES (@id, @name, @specificTags, @description, @obsolete);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
@@ -81,6 +82,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@specificTags", "Tag");
 		cmd.Parameters.AddWithValue("@description", DBNull.Value);
+		cmd.Parameters.AddWithValue("@obsolete", "0");
 
 		cmd.ExecuteNonQuery();
 
@@ -97,7 +99,8 @@ public static class TagsManager {
 			UPDATE Tags
 			SET name = @name,
 				specificTags = @specificTags,
-				description = @description
+				description = @description,
+				obsolete = @obsolete
 			WHERE id = @id;
 		";
 
@@ -106,6 +109,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@name", tag.Name);
 		cmd.Parameters.AddWithValue("@specificTags", tag.SpecificTags);
 		cmd.Parameters.AddWithValue("@description", (object?)tag.Description ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@obsolete", tag.Obsolete);
 
 		cmd.ExecuteNonQuery();
 	}
@@ -186,7 +190,8 @@ public static class TagsManager {
 			id, 
 			reader["name"].ToString() ?? "Tag", 
 			reader["specificTags"].ToString() ?? "Tag", 
-			reader["description"].ToString()
+			reader["description"].ToString(),
+			reader["obsolete"].ToString() ?? "0"
 			);
 	}
 
@@ -207,8 +212,9 @@ public static class TagsManager {
 				Convert.ToInt32(reader["id"]), 
 				reader["name"].ToString() ?? "Tag", 
 				reader["specificTags"].ToString() ?? "Tag",
-				reader["description"].ToString())
-			);
+				reader["description"].ToString(),
+				reader["obsolete"].ToString() ?? "0"
+			));
 		}
 
 		return list;
@@ -240,11 +246,12 @@ public static class TagsManager {
 	}
 }
 
-public class Tag (int id, string name, string specificTags, string? description) {
+public class Tag (int id, string name, string specificTags, string? description, string obsolete = "0") {
 	public int Id { get; set; } = id;
 	public string Name { get; set; } = name;
 	public string SpecificTags { get; set; } = specificTags;
 	public string? Description { get; set; } = description;
+	public string Obsolete { get; set; } = obsolete;
 
 	public int Count =>  TagsManager.GetTagUsage(Id);
 }
