@@ -127,6 +127,9 @@ public partial class ViewPostView : UserControl {
 		TagStack.Children.Add(PanelTitle(CreateTextBlock("Tag", true, Colors.Blue), Icons + "icons8-tag-window-100.png"));
 		AddTagGroup(groups["Tag"]);
 
+		TagStack.Children.Add(PanelTitle(CreateTextBlock("Auto Tag", true, Colors.YellowGreen), Icons + "icons8-robotic-arm-100.png"));
+		TagStack.Children.Add(CreateButtonAutoTag_Extension(Path.GetExtension(post.Filename).TrimStart('.').ToLower()));
+
 
 		TagStack.Children.Add(PanelTitle(CreateTextBlock("Rating", true, Colors.Green), Icons + "icons8-law-100.png"));
 		TagStack.Children.Add(CreateButtonRating(post.Rating));
@@ -321,6 +324,28 @@ public partial class ViewPostView : UserControl {
 		};
 
 		return bt;
+	}
+
+	private static Button CreateButtonAutoTag_Extension (string text) {
+		Button btn = new() {
+			Height = 22,
+			Margin = new Thickness(0, 0, 3, 0),
+			Background = Brushes.Transparent,
+			Content = new TextBlock() {
+				Text = "Extension:" + text,
+				FontSize = 12,
+				TextWrapping = TextWrapping.Wrap,
+				Foreground = Brushes.YellowGreen,
+				ClipToBounds = false,
+			}
+		};
+
+		btn.Click += (_, _) => {
+			SearchSQL.querySearch = "extension:" + text;
+			MainWindowViewModel.Main?.PostGrid();
+		};
+
+		return btn;
 	}
 
 	#endregion
