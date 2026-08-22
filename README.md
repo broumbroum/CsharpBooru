@@ -10,6 +10,7 @@ It is built with C# and Avalonia, and uses a SQLite embedded database to store p
 
 
 
+
 ### Targetted platforms
 
 
@@ -21,17 +22,6 @@ It is built with C# and Avalonia, and uses a SQLite embedded database to store p
 
 
 
-
-
-### Linux
-
-
-
-Linux ubuntu
-
-```sh
-sudo apt update
-sudo apt install vlc libvlc5 libvlccore9 libvlc-dev
-
-```
+**Linux Binary**
+*VLC and the .NET 9.0 SDK must be installed to use the application.*
 
