@@ -9,11 +9,14 @@ internal static class ThumbnailsManager {
 	// ➕ Create Thumbnails
 	public static void CreateThumbnails (string inputPath, string outputPath) {
 		switch (Path.GetExtension(inputPath).ToLower()) {
-			case ".png" or ".jpg" or ".jpeg" or ".gif" or ".ico" or ".webp" or ".tiff" or ".tif":
-			PictureThumbnails(inputPath, outputPath);
+			case ".png" or ".jpg" or ".jpeg" or ".gif" or ".ico" or ".webp":
+				PictureThumbnails(inputPath, outputPath);
+			break;
+			case ".tiff" or ".tif":
+				PictureTiffThumbnails(inputPath, outputPath);
 			break;
 			case ".mp4" or ".avi" or ".webm" or ".mkv":
-			_ = VideoThumbnails(inputPath, outputPath);
+				_ = VideoThumbnails(inputPath, outputPath);
 			break;
 		}
 	}
@@ -41,6 +44,35 @@ internal static class ThumbnailsManager {
 		if (bitmap == null)
 			return;
 
+		// Calculate new dimensions while maintaining aspect ratio
+		int
+			newWidth = bitmap.Width / 2, 
+			newHeight = bitmap.Height / 2;
+		var sampling = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
+
+		using var resized = bitmap.Resize(new SKImageInfo(newWidth, newHeight), sampling);
+
+		// Ensure the output directory exists
+		Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
+
+		// Encode the resized image to JPEG format with 80% quality
+		using var image = SKImage.FromBitmap(resized);
+		using var data = image.Encode(SKEncodedImageFormat.Jpeg, 80);
+
+		// Save the encoded image to the output path
+		using var output = File.OpenWrite(outputPath);
+		data.SaveTo(output);
+	}
+
+	// 📷 Picture .tiff Thumbnails
+	private static void PictureTiffThumbnails (string inputPath, string outputPath) {
+		var pages = TiffImage.LoadAllPages(inputPath);
+		if (pages.Count == 0)
+			return;
+		using var bitmap = SKBitmap.Decode(pages[0]);
+
+
+		var firstPage = pages[0];
 		// Calculate new dimensions while maintaining aspect ratio
 		int
 			newWidth = bitmap.Width / 2, 

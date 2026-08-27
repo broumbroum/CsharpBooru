@@ -62,10 +62,15 @@ public partial class ViewPostView : UserControl {
 		infoFile += path + "\n";
 
 		switch (Path.GetExtension(path).Replace("\\", "/")) {
-			case ".png" or ".jpg" or ".jpeg" or ".ico" or ".webp" or ".tiff" or ".tif":
+			case ".png" or ".jpg" or ".jpeg" or ".ico" or ".webp":
 				Image_Component IC = new();
 				Post.Children.Add(IC.Component(ref path));
 				infoFile += IC.GetInfo(ref path);
+			break;
+			case ".tiff" or ".tif":
+				Tiff_Component ITC = new();
+				Post.Children.Add(ITC.Component(ref path));
+				infoFile += ITC.GetInfo(ref path);
 			break;
 			case ".gif":
 				GIF_Component GC = new();
