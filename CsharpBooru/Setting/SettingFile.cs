@@ -6,7 +6,7 @@ using System.Linq;
 namespace CsharpBooru.Setting;
 internal static class SettingFile {
 
-	private static readonly string configPath = Path.Combine(AppContext.BaseDirectory, "setting.config");
+	public static string configPath = Path.Combine(AppContext.BaseDirectory, "setting.config");
 
 	internal static readonly Dictionary<string, string> _values = new();
 
