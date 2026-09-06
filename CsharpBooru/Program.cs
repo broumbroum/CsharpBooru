@@ -11,10 +11,10 @@ internal sealed class Program{
 	// yet and stuff might break.
 	[STAThread]
 	public static void Main (string[] args) {
-
+		
 		foreach (var arg in args) {
 			if (arg.StartsWith("-setting=")) {
-				string path = arg["-setting=".Length..];
+				string path = arg.Substring("-setting=".Length).Trim('"');
 				SettingFile.configPath = Path.Combine(path, "setting.config");
 			}
 		}

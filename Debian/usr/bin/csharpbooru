@@ -1,0 +1,3 @@
+#!/bin/sh
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/csharpbooru"
+exec /opt/csharpbooru/CsharpBooru -setting="${XDG_CONFIG_HOME:-$HOME/.config}/csharpbooru" "$@"

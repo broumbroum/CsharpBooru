@@ -1,5 +1,5 @@
 # --- .NET / C# ---
-bin/
+CsharpBooru/bin/
 obj/
 [Bb]uild/
 [Ll]og/
