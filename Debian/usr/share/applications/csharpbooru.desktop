@@ -1,9 +1,9 @@
 [Desktop Entry]
-Version=6.0
+Version=1.5
 Type=Application
 Name=CsharpBooru
 Comment=C#Booru is a lightweight, cross‑platform image management application inspired by the structure and workflow of traditional boorus. It is built with C# and Avalonia, and uses a SQLite embedded database to store posts, tags, and collections efficiently.
 Exec=/usr/bin/csharpbooru
 Terminal=false
-Icon=csharpBooru
+Icon=csharpbooru
 Categories=Utility;
