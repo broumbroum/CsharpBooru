@@ -1,0 +1,39 @@
+#!/bin/sh
+set -eu
+
+APPDIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+
+# Make the bundled app usable from inside the AppImage
+export PATH="$APPDIR/usr/bin:${PATH:-}"
+export XDG_DATA_DIRS="${XDG_DATA_DIRS:-}:$APPDIR/usr/share"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+# .NET / Avalonia runtime paths
+export LD_LIBRARY_PATH="$APPDIR/usr/lib/csharpbooru${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+# VLC runtime paths if present in the bundle
+VLC_LIB_DIR=""
+for d in \
+  "$APPDIR/usr/lib" \
+  "$APPDIR/usr/lib/x86_64-linux-gnu" \
+  "$APPDIR/lib" \
+  "$APPDIR/usr/lib/csharpbooru"; do
+  if [ -f "$d/libvlc.so" ] || [ -f "$d/libvlc.so.5" ] || [ -f "$d/libvlc.so.9" ]; then
+    VLC_LIB_DIR="$d"
+    break
+  fi
+done
+
+if [ -n "$VLC_LIB_DIR" ]; then
+  export LD_LIBRARY_PATH="$VLC_LIB_DIR:${LD_LIBRARY_PATH:-}"
+fi
+
+if [ -d "$APPDIR/usr/lib/vlc/plugins" ]; then
+  export VLC_PLUGIN_PATH="$APPDIR/usr/lib/vlc/plugins${VLC_PLUGIN_PATH:+:$VLC_PLUGIN_PATH}"
+fi
+
+mkdir -p "$XDG_CONFIG_HOME/csharpbooru"
+
+exec "$APPDIR/usr/lib/csharpbooru/CsharpBooru" -setting="$XDG_CONFIG_HOME/csharpbooru" "$@"
+
+

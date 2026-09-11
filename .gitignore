@@ -63,3 +63,8 @@ artifacts/
 # --- Debian ---
 Debian/opt/
 *.deb
+
+# --- AppImage ---
+*.AppImage
+AppImage/usr/lib/
+*.DirIcon

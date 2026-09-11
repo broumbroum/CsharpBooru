@@ -1,0 +1,11 @@
+#!/bin/sh
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/csharpbooru"
+
+# Détermine le dossier où se trouve ce script (usr/bin)
+HERE="$(dirname "$(readlink -f "$0")")"
+# Indique à VLC d'utiliser les codecs embarqués dans l'AppImage
+export VLC_PLUGIN_PATH="$HERE/../lib/vlc/plugins"
+# Indique à .NET où trouver les bibliothèques C++ de VLC et de l'app
+export LD_LIBRARY_PATH="$HERE/../lib:$LD_LIBRARY_PATH"
+
+exec "$HERE/../lib/csharpbooru/CsharpBooru" -setting="${XDG_CONFIG_HOME:-$HOME/.config}/csharpbooru" "$@"
