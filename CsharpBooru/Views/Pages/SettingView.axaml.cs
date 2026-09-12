@@ -40,13 +40,13 @@ public partial class SettingView : UserControl{
 
 	private void PaginationLimit () {
 		paginationLimit = SettingValue.PaginationLimit;
-		PaginationLimitText.Text = "Post : " + paginationLimit;
+		PaginationLimitText.Text = "Page : " + paginationLimit;
 
 		PaginationLimitScroll.Background = SolidColorBrush.Parse("#C8BFE7");
 		PaginationLimitScroll.Value = (double)paginationLimit;
 		PaginationLimitScroll.ValueChanged += (source, args) => {
 			paginationLimit = (int)args.NewValue;
-			PaginationLimitText.Text = "Post : " + paginationLimit;
+			PaginationLimitText.Text = "Page : " + paginationLimit;
 			SettingValue.PaginationLimit = paginationLimit;
 			SettingFile.Save();
 		};
