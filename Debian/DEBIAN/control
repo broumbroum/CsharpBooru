@@ -3,7 +3,7 @@ Version: 6.0
 Section: utils
 Priority: optional
 Architecture: amd64
-Depends: libvlc5, libvlccore9, libvlc-bin, libvlc-dev, dotnet-runtime-9.0, aspnetcore-runtime-9.0
+Depends: libvlc5, libvlccore9, libvlc-bin, libvlc-dev, vlc-plugin-base, vlc-plugin-video-splitter, dotnet-runtime-9.0, aspnetcore-runtime-9.0
 Maintainer: https://github.com/broumbroum/CsharpBooru
 Description: C#Booru is a lightweight, cross‑platform image management application inspired by the structure and workflow of traditional boorus. It is built with C# and Avalonia, and uses a SQLite embedded database to store posts, tags, and collections efficiently.
 

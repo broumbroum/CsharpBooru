@@ -2,6 +2,7 @@
 cd ..
 
 # Build CsharpBooru
+rm -rf CsharpBooru/bin/Release/net9.0/linux-x64/publish
 dotnet publish -c Release -r linux-x64 --self-contained true
 rm -rf /AppImage/usr/lib/csharpbooru
 cp -r CsharpBooru/bin/Release/net9.0/linux-x64/publish/ AppImage/usr/lib/csharpbooru
