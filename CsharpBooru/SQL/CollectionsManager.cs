@@ -145,6 +145,29 @@ public static class CollectionsManager {
 			);
 	}
 
+	// 🔍 Search collections by name
+	public static List<Collection> SearchCollections (string query) {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		string sql = "SELECT * FROM Collections WHERE name LIKE @query ORDER BY id ASC";
+
+		using var cmd = new SQLiteCommand(sql, conn);
+		cmd.Parameters.AddWithValue("@query", $"%{query}%");
+		using var reader = cmd.ExecuteReader();
+
+		var list = new List<Collection>();
+		while (reader.Read()) {
+			list.Add(new Collection(
+				Convert.ToInt32(reader["id"]),
+				reader["name"].ToString() ?? "Collection",
+				ConvertUtils.StringToIntList(reader["posts"].ToString()!)
+			));
+		}
+
+		return list;
+	}
+
 	// 📖 Retrieve all collections
 	public static List<Collection> GetAllCollections () {
 		using var conn = DataBase.GetConnection();

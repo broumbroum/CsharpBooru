@@ -20,6 +20,7 @@ public partial class CollectionsListView : UserControl {
 
 	public int currentPage = 0,totalPages = 0;
 	private readonly List<int> CollectionIds = [];
+	private string currentSearch = string.Empty;
 
 	private CollectionsListViewModel? Vm => DataContext as CollectionsListViewModel;
 
@@ -32,22 +33,35 @@ public partial class CollectionsListView : UserControl {
 
 	//Initializes the page by rebuilding the collection list and loading the first page
 	private void InitializePage (int pageIndex = 0) {
-		CollectionIds.Clear();
-		for (int i = 1; i < CollectionsManager.GetCount() +1; i++) {
-			CollectionIds.Add(i);
-		}
+		currentSearch = string.Empty;
+		SearchBox.Text = string.Empty;
 		currentPage = pageIndex;
-
+		ReloadCollectionIds();
 		LoadCurrentPage();
+	}
+
+	private void ReloadCollectionIds () {
+		CollectionIds.Clear();
+
+		var collections = string.IsNullOrWhiteSpace(currentSearch)
+			? CollectionsManager.GetAllCollections()
+			: CollectionsManager.SearchCollections(currentSearch);
+
+		foreach (var collection in collections) {
+			CollectionIds.Add(collection.Id);
+		}
 	}
 
 	// Loads the current page: clears UI, builds buttons, and sets up pagination
 	private void LoadCurrentPage () {
 		CollectionsPanel.Children.Clear();
+		ReloadCollectionIds();
 
 		GridList_Component gridList = new (CollectionsPanel);
 		gridList.OnCreateButton += id => CreateCollectionButton(CollectionIds[id]);
-		gridList.Ascending(ref currentPage, ref totalPages, CollectionsManager.GetCount());
+		gridList.Ascending(ref currentPage, ref totalPages, CollectionIds.Count);
+
+		if (totalPages <= 0) totalPages = 1;
 
 		BuildPagination_Component.Component([PaginationTopPanel, PaginationBottomPanel], currentPage, totalPages, page => {
 			currentPage = page;
@@ -66,6 +80,14 @@ public partial class CollectionsListView : UserControl {
 		InitializePage(currentPage);
 
 	}
+
+	#region Search
+	private void OnSearchClicked (object? sender, RoutedEventArgs e) {
+		currentSearch = SearchBox?.Text?.Trim() ?? string.Empty;
+		currentPage = 0;
+		LoadCurrentPage();
+	}
+	#endregion
 
 	#region Create UI
 	// Creates a button representing a collection entry

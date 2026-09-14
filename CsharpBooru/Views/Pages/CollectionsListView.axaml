@@ -8,10 +8,7 @@
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Orientation="Vertical">
 
-			<WrapPanel x:Name="PaginationTopPanel" 
-						HorizontalAlignment="Center"
-						Orientation="Horizontal"/>
-
+			<!-- Add Collection -->
 			<Grid ColumnDefinitions="100, *" ColumnSpacing="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,0,20,0">
 				<Button Grid.Column="0" Width="100" Click="OnAddCollectionClicked">
 					<TextBlock Text="Add" HorizontalAlignment="Center"/>
@@ -19,8 +16,22 @@
 				<TextBox x:Name="NewCollectionTextBox" Grid.Column="1" PlaceholderText="Name new collection" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 			</Grid>
 
+			<!-- Search bar -->
+			<Grid ColumnDefinitions ="*, Auto" ColumnSpacing="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,10,20,0">
+				<TextBox x:Name="SearchBox" PlaceholderText="Search..." VerticalAlignment="Stretch"/>	
+				<Button x:Name="SearchButton" Grid.Column="1" Width="100" Content="Search" Click="OnSearchClicked" HorizontalAlignment="Center">
+					<TextBlock Text="Search" HorizontalAlignment="Center"/>
+				</Button>
+			</Grid>
+
+			<!-- Pagination Top -->
+			<WrapPanel x:Name="PaginationTopPanel" 
+						HorizontalAlignment="Center"
+						Orientation="Horizontal"/>
+
 			<StackPanel x:Name="CollectionsPanel"/>
 
+			<!-- Pagination Bottom -->
 			<WrapPanel x:Name="PaginationBottomPanel" 
 						HorizontalAlignment="Center"
 						Orientation="Horizontal"/>
