@@ -111,10 +111,10 @@ public partial class ViewPostView : UserControl {
 			var tag = TagsManager.GetTag(tagId);
 			if (tag == null) continue;
 
-			if (!groups.ContainsKey(tag.SpecificTags))
+			if (!groups.TryGetValue(tag.SpecificTags, out List<string>? value))
 				groups["Tag"].Add(tag.Name);
 			else
-				groups[tag.SpecificTags].Add(tag.Name);
+				value.Add(tag.Name);
 		}
 
 		TagStack.Children.Add(PanelTitle(CreateTextBlock("Artist", true, Colors.OrangeRed), Icons + "icons8-paint-palette-100.png"));

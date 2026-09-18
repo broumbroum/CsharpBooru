@@ -156,8 +156,8 @@ public static class TagsManager {
 			var tags = ConvertUtils.StringToIntList(reader["tags"].ToString()!);
 
 			foreach (var tag in tags) {
-				if (counts.ContainsKey(tag))
-					counts[tag]++;
+				if (counts.TryGetValue(tag, out int value))
+					counts[tag] = ++value;
 				else
 					counts[tag] = 1;
 			}

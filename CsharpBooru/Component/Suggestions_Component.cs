@@ -18,7 +18,7 @@ public class Suggestions_Component {
 		container.Children.Add(suggestions);
 	}
 
-	private static Popup Suggestions_Popup (TextBox tb) => new Popup {
+	private static Popup Suggestions_Popup (TextBox tb) => new() {
 		PlacementTarget = tb,
 		HorizontalOffset = 0,
 		VerticalOffset = 2,
@@ -56,6 +56,7 @@ public class Suggestions_Component {
 			TextBlock nameTextBlock = new() {
 				Text = tag.Name,
 				HorizontalAlignment = HorizontalAlignment.Stretch,
+				TextDecorations = tag.Obsolete == "1" ? TextDecorations.Strikethrough : null,
 				Foreground = tag.SpecificTags switch {
 					"Tag" => Brushes.Blue,
 					"Artist" => Brushes.OrangeRed,

@@ -5,7 +5,6 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.VisualTree;
 using CsharpBooru.Component;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;

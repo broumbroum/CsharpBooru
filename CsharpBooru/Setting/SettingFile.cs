@@ -8,7 +8,7 @@ internal static class SettingFile {
 
 	public static string configPath = Path.Combine(AppContext.BaseDirectory, "setting.config");
 
-	internal static readonly Dictionary<string, string> _values = new();
+	internal static readonly Dictionary<string, string> _values = [];
 
 	public static bool Load () {
 		if (File.Exists(configPath) == false) {
