@@ -23,6 +23,7 @@ public partial class EditPostView : UserControl {
 		InitializeComponent();
 
 		DataContextChanged += OnDataContextChanged;
+		Suggestions_Component.AddSuggestions(TagBox, Main);
 
 		Search_Component.Component(Serched).Click += (_,_) => {
 			LoadPagePost();
