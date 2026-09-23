@@ -21,6 +21,7 @@ ln -s libvlccore.so.9 libvlccore.so
 cd ../../..
 
 # Icons
+cp CsharpBooru/Resources/Logo/'Logo 256x256.png' AppImage/csharpbooru.png
 mkdir -p AppImage/usr/share/icons/hicolor/48x48/apps/
 cp CsharpBooru/Resources/Logo/'Logo 48x48.png' AppImage/usr/share/icons/hicolor/48x48/apps/csharpbooru.png
 mkdir -p AppImage/usr/share/icons/hicolor/128x128/apps/
@@ -29,6 +30,11 @@ mkdir -p AppImage/usr/share/icons/hicolor/256x256/apps/
 cp CsharpBooru/Resources/Logo/'Logo 256x256.png' AppImage/usr/share/icons/hicolor/256x256/apps/csharpbooru.png
 mkdir -p AppImage/usr/share/icons/hicolor/512x512/apps/
 cp CsharpBooru/Resources/Logo/'Logo 512x512.png' AppImage/usr/share/icons/hicolor/512x512/apps/csharpbooru.png
+
+# Desktop
+mkdir -p AppImage/usr/share/applications/
+cp csharpbooru.desktop AppImage/usr/share/applications/csharpbooru.desktop
+cp csharpbooru.desktop AppImage/csharpbooru.desktop
 
 rm CsharpBooru.AppImage
 ./appimagetool-x86_64.AppImage AppImage CsharpBooru.AppImage

@@ -16,6 +16,10 @@ cp CsharpBooru/Resources/Logo/'Logo 256x256.png' Debian/usr/share/icons/hicolor/
 mkdir -p Debian/usr/share/icons/hicolor/512x512/apps/
 cp CsharpBooru/Resources/Logo/'Logo 512x512.png' Debian/usr/share/icons/hicolor/512x512/apps/csharpbooru.png
 
+# Desktop
+mkdir -p Debian/usr/share/applications/
+cp csharpbooru.desktop Debian/usr/share/applications/csharpbooru.desktop
+
 rm CsharpBooru.deb
 dpkg-deb --build Debian
 mv Debian.deb CsharpBooru.deb
