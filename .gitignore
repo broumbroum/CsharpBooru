@@ -62,11 +62,11 @@ artifacts/
 
 # --- Debian ---
 Debian/opt/
-Debian/usr/share/icons
+Debian/usr/share/
 *.deb
 
 # --- AppImage ---
 *.AppImage
 AppImage/usr/lib/
-AppImage/usr/share/icons
+AppImage/usr/share/
 *.DirIcon
