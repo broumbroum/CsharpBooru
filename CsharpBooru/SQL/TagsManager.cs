@@ -26,8 +26,8 @@ public static class TagsManager {
 		}
 
 		string sql = @"
-			INSERT INTO Tags (id, name, specificTags, description, obsolete)
-			VALUES (@id, @name, @specificTags, @description, @obsolete);
+			INSERT INTO Tags (id, name, specificTags, description, obsolete, aliases)
+			VALUES (@id, @name, @specificTags, @description, @obsolete, @aliases);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
@@ -36,6 +36,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@specificTags", specificTags);
 		cmd.Parameters.AddWithValue("@description", DBNull.Value);
 		cmd.Parameters.AddWithValue("@obsolete", "0");
+		cmd.Parameters.AddWithValue("@aliases", DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 	}
@@ -73,8 +74,8 @@ public static class TagsManager {
 
 		// 3. The tag does not exist → create it with specificTags = "Tag"
 		string sql = @"
-			INSERT INTO Tags (id, name, specificTags, description, obsolete)
-			VALUES (@id, @name, @specificTags, @description, @obsolete);
+			INSERT INTO Tags (id, name, specificTags, description, obsolete, aliases)
+			VALUES (@id, @name, @specificTags, @description, @obsolete, @aliases);
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
@@ -83,6 +84,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@specificTags", "Tag");
 		cmd.Parameters.AddWithValue("@description", DBNull.Value);
 		cmd.Parameters.AddWithValue("@obsolete", "0");
+		cmd.Parameters.AddWithValue("@aliases", DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 
@@ -94,24 +96,96 @@ public static class TagsManager {
 	public static void UpdateTag (Tag tag) {
 		using var conn = DataBase.GetConnection();
 		conn.Open();
+		using var transaction = conn.BeginTransaction();
 
 		string sql = @"
 			UPDATE Tags
 			SET name = @name,
 				specificTags = @specificTags,
 				description = @description,
-				obsolete = @obsolete
+				obsolete = @obsolete,
+				aliases = @aliases
 			WHERE id = @id;
 		";
 
 		using var cmd = new SQLiteCommand(sql, conn);
+		cmd.Transaction = transaction;
 		cmd.Parameters.AddWithValue("@id", tag.Id);
 		cmd.Parameters.AddWithValue("@name", tag.Name);
 		cmd.Parameters.AddWithValue("@specificTags", tag.SpecificTags);
 		cmd.Parameters.AddWithValue("@description", (object?)tag.Description ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@obsolete", tag.Obsolete);
+		cmd.Parameters.AddWithValue("@aliases", SerializeAliasIds(
+			ParseAliasIds(tag.Aliases).Where(id => id != tag.Id)));
 
 		cmd.ExecuteNonQuery();
+
+		HashSet<int> aliases = ParseAliasIds(tag.Aliases);
+		aliases.Remove(tag.Id);
+
+		using var readTags = new SQLiteCommand("SELECT id, aliases FROM Tags WHERE id <> @id", conn, transaction);
+		readTags.Parameters.AddWithValue("@id", tag.Id);
+		using var reader = readTags.ExecuteReader();
+		var aliasMap = new Dictionary<int, HashSet<int>> {
+			[tag.Id] = aliases,
+		};
+
+		while (reader.Read()) {
+			int otherId = Convert.ToInt32(reader["id"]);
+			HashSet<int> otherAliases = ParseAliasIds(
+				reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString());
+			bool shouldContainCurrentTag = aliases.Contains(otherId);
+
+			if (shouldContainCurrentTag)
+				otherAliases.Add(tag.Id);
+			else
+				otherAliases.Remove(tag.Id);
+
+			aliasMap[otherId] = otherAliases;
+		}
+
+		reader.Close();
+
+		var connections = aliasMap.Keys.ToDictionary(id => id, _ => new HashSet<int>());
+		foreach ((int id, HashSet<int> relatedIds) in aliasMap) {
+			foreach (int relatedId in relatedIds) {
+				if (!connections.ContainsKey(relatedId)) continue;
+				connections[id].Add(relatedId);
+				connections[relatedId].Add(id);
+			}
+		}
+
+		var aliasGroup = new HashSet<int> { tag.Id };
+		var pending = new Queue<int>();
+		pending.Enqueue(tag.Id);
+		while (pending.Count > 0) {
+			int id = pending.Dequeue();
+			foreach (int relatedId in connections[id]) {
+				if (aliasGroup.Add(relatedId))
+					pending.Enqueue(relatedId);
+			}
+		}
+
+		using var updateReciprocal = new SQLiteCommand(
+			"UPDATE Tags SET aliases = @aliases WHERE id = @id", conn, transaction);
+		var aliasesParameter = updateReciprocal.Parameters.Add("@aliases", System.Data.DbType.String);
+		var idParameter = updateReciprocal.Parameters.Add("@id", System.Data.DbType.Int32);
+
+		foreach (int id in aliasGroup) {
+			aliasesParameter.Value = SerializeAliasIds(aliasGroup.Where(relatedId => relatedId != id));
+			idParameter.Value = id;
+			updateReciprocal.ExecuteNonQuery();
+		}
+
+		transaction.Commit();
+	}
+
+	private static HashSet<int> ParseAliasIds (string? aliases)
+		=> [.. ConvertUtils.StringToIntList(aliases ?? "")];
+
+	private static object SerializeAliasIds (IEnumerable<int> aliases) {
+		List<int> ids = aliases.Where(id => id > 0).Distinct().OrderBy(id => id).ToList();
+		return ids.Count == 0 ? DBNull.Value : string.Join(" ", ids);
 	}
 
 	// ➖ Remove a tag
@@ -191,7 +265,8 @@ public static class TagsManager {
 			reader["name"].ToString() ?? "Tag", 
 			reader["specificTags"].ToString() ?? "Tag", 
 			reader["description"].ToString(),
-			reader["obsolete"].ToString() ?? "0"
+			reader["obsolete"].ToString() ?? "0",
+			reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString()
 			);
 	}
 
@@ -213,7 +288,8 @@ public static class TagsManager {
 				reader["name"].ToString() ?? "Tag", 
 				reader["specificTags"].ToString() ?? "Tag",
 				reader["description"].ToString(),
-				reader["obsolete"].ToString() ?? "0"
+				reader["obsolete"].ToString() ?? "0",
+				reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString()
 			));
 		}
 
@@ -246,12 +322,13 @@ public static class TagsManager {
 	}
 }
 
-public class Tag (int id, string name, string specificTags, string? description, string obsolete = "0") {
+public class Tag (int id, string name, string specificTags, string? description, string obsolete = "0", string? aliases = null) {
 	public int Id { get; set; } = id;
 	public string Name { get; set; } = name;
 	public string SpecificTags { get; set; } = specificTags;
 	public string? Description { get; set; } = description;
 	public string Obsolete { get; set; } = obsolete;
+	public string? Aliases { get; set; } = aliases;
 
 	public int Count =>  TagsManager.GetTagUsage(Id);
 }

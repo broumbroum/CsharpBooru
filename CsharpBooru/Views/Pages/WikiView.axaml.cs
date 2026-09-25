@@ -6,6 +6,7 @@ using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -36,6 +37,18 @@ public partial class WikiView : UserControl {
 			_ => Brushes.Black,
 		};
 		ObsoleteTextBlock.Text = "Obsolete : " + (tag.Obsolete == "1" ? "True" : "False");
+		AliasesPanel.Children.Clear();
+		foreach (int aliasId in ConvertUtils.StringToIntList(tag.Aliases ?? "")) {
+			Tag? alias = TagsManager.GetTag(aliasId);
+			if (alias == null) continue;
+
+			Button aliasButton = new() {
+				Content = alias.Name.Replace('_', ' '),
+				Margin = new Avalonia.Thickness(0, 0, 5, 0),
+			};
+			aliasButton.Click += (_, _) => MainWindowViewModel.Main?.Wiki(alias.Id);
+			AliasesPanel.Children.Add(aliasButton);
+		}
 		DescriptionTextBlock.Text = tag.Description ?? "";
 		GetExample();
 	}

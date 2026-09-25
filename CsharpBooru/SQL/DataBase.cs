@@ -40,7 +40,8 @@ internal class DataBase {
     CREATE TABLE IF NOT EXISTS Tags (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        specificTags TEXT
+		specificTags TEXT,
+		aliases TEXT DEFAULT NULL
     );
 
     CREATE TABLE IF NOT EXISTS Collections (
@@ -97,6 +98,12 @@ internal class DataBase {
 		if (!ColumnExists("Tags", "obsolete")) {
 			using var cmd = new SQLiteCommand(
 				"ALTER TABLE Tags ADD COLUMN obsolete TEXT DEFAULT '0';", conn);
+			cmd.ExecuteNonQuery();
+		}
+
+		if (!ColumnExists("Tags", "aliases")) {
+			using var cmd = new SQLiteCommand(
+				"ALTER TABLE Tags ADD COLUMN aliases TEXT DEFAULT NULL;", conn);
 			cmd.ExecuteNonQuery();
 		}
 	}

@@ -4,6 +4,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
+using System.Linq;
 
 namespace CsharpBooru.Component;
 public class Tag_Component (int idTag) {
@@ -22,9 +23,55 @@ public class Tag_Component (int idTag) {
 		if(btnDescription != null) sp.Children.Add(btnDescription);
 
 		sp.Children.Add(Name());
+
+		foreach (int aliasId in ConvertUtils.StringToIntList(tag?.Aliases ?? "")) {
+			Tag? alias = TagsManager.GetTag(aliasId);
+			if (alias == null) continue;
+
+			sp.Children.Add(new TextBlock {
+				Height = sizeHeight,
+				Margin = new Thickness(2, 0, 2, 0),
+				Text = "↔",
+				VerticalAlignment = VerticalAlignment.Center,
+				Foreground = Brushes.Gray,
+			});
+			sp.Children.Add(AliasName(alias));
+		}
+
 		sp.Children.Add(Count());
 
 		return sp;
+	}
+
+	private static Button AliasName (Tag alias) {
+		Button btn = new() {
+			Height = sizeHeight,
+			Margin = new Thickness(0, 0, 3, 0),
+			Background = Brushes.Transparent,
+			Content = new TextBlock {
+				Text = alias.Name.Replace('_', ' '),
+				FontSize = 12,
+				TextWrapping = TextWrapping.Wrap,
+				Foreground = alias.SpecificTags switch {
+					"Tag" => Brushes.Blue,
+					"Artist" => Brushes.OrangeRed,
+					"Character" => Brushes.Green,
+					"Copyright" => Brushes.Magenta,
+					"Species" => Brushes.Red,
+					_ => Brushes.Black
+				},
+				TextDecorations = alias.Obsolete == "1" ? TextDecorations.Strikethrough : null,
+				ClipToBounds = false,
+			}
+		};
+
+		btn.Click += (_, _) => {
+			SearchSQL.querySearch = alias.Name;
+			MainWindowViewModel.Main?.PostGrid();
+		};
+		btn.ContextMenu = ContextMenu(alias.Id);
+
+		return btn;
 	}
 
 	private Button? Description () {
@@ -82,7 +129,8 @@ public class Tag_Component (int idTag) {
 	public TextBlock Count () => new() {
 		Height = sizeHeight,
 		Margin = new Thickness(0, 10, 3, 0),
-		Text = tag?.Count + "",
+		Text = ((tag?.Count ?? 0) + ConvertUtils.StringToIntList(tag?.Aliases ?? "")
+			.Sum(TagsManager.GetTagUsage)).ToString(),
 		FontSize = 12,
 		TextWrapping = TextWrapping.Wrap,
 		Foreground = Brushes.Gray,
@@ -122,7 +170,8 @@ public class Tag_Component (int idTag) {
 			}
 		};
 
-		if (TagsManager.GetTagUsage(id) == 0) {
+		bool hasAliases = ConvertUtils.StringToIntList(TagsManager.GetTag(id)?.Aliases ?? "").Count > 0;
+		if (TagsManager.GetTagUsage(id) == 0 && !hasAliases) {
 			cm.Items.Add(new Separator());
 			cm.Items.Add(deleteItem);
 		}

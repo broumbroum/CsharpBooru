@@ -1,9 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using CsharpBooru.Component;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
 using CsharpBooru.ViewModels.Pages;
 using System;
+using System.Linq;
 
 namespace CsharpBooru.Views.Pages;
 
@@ -15,6 +17,7 @@ public partial class EditWikiView : UserControl {
 
 	public EditWikiView (){
 		InitializeComponent();
+		Suggestions_Component.AddSuggestions(AliasesBox, MainPanel);
 		DataContextChanged += OnDataContextChanged;
 	}
 
@@ -36,6 +39,12 @@ public partial class EditWikiView : UserControl {
 		};
 
 		DescriptionBox.Text = tag.Description ?? "";
+		AliasesBox.Text = string.Join(" ", (tag.Aliases ?? "")
+			.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+			.Select(int.Parse)
+			.Select(TagsManager.GetTag)
+			.Where(alias => alias != null)
+			.Select(alias => alias!.Name));
 		ObsoleteBox.IsChecked = tag.Obsolete == "1";
 	}
 
@@ -59,7 +68,14 @@ public partial class EditWikiView : UserControl {
 			},
 			name: NameTagBox.Text.Replace(" ", "_"),
 			description: DescriptionBox.Text,
-			obsolete: ObsoleteBox.IsChecked == true ? "1" : "0"
+			obsolete: ObsoleteBox.IsChecked == true ? "1" : "0",
+			aliases: string.Join(" ", (AliasesBox.Text ?? "")
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+				.Select(TagsManager.GetTagIdByName)
+				.Where(id => id >= 0)
+				.Select(TagsManager.GetTag)
+				.Where(alias => alias != null)
+				.Select(alias => alias!.Id.ToString()))
 		);
 
 		TagsManager.UpdateTag(_tag);

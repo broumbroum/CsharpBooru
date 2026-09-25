@@ -104,6 +104,20 @@ public partial class TagsListView : UserControl {
 			SortMemberPath = "Count"
 		};
 
+		//Aliases
+		DataGridTemplateColumn aliasesColumn = new() {
+			Header = "Aliases",
+			CanUserResize = true,
+			CellTemplate = new FuncDataTemplate<Tag>((tag, _) => new TextBlock {
+				Text = string.Join(" ↔ ", ConvertUtils.StringToIntList(tag.Aliases ?? "")
+					.Select(TagsManager.GetTag)
+					.Where(alias => alias != null)
+					.Select(alias => alias!.Name)),
+				VerticalAlignment = VerticalAlignment.Center,
+				Margin = new Thickness(5, 0, 10, 0),
+			}),
+		};
+
 		//Obsolete
 		DataGridTemplateColumn obsoleteColumn = new() {
 			Header = "Obsolete",
@@ -123,6 +137,7 @@ public partial class TagsListView : UserControl {
 		DataGridControl.Columns.Add(nameColumn);
 		DataGridControl.Columns.Add(categoryColumn);
 		DataGridControl.Columns.Add(countColumn);
+		DataGridControl.Columns.Add(aliasesColumn);
 		DataGridControl.Columns.Add(obsoleteColumn);
 	}
 

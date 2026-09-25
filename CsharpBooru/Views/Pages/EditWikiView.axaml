@@ -8,7 +8,7 @@
 			 x:DataType="vm:WikiViewModel">
 
 	<ScrollViewer> <Panel HorizontalAlignment="Stretch">
-		<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+		<StackPanel x:Name="MainPanel" Orientation="Vertical" HorizontalAlignment="Stretch">
 
 			<!-- Name -->
 			<TextBlock
@@ -51,6 +51,18 @@
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				Margin="25 10 10 0"
 				PlaceholderText= "Description"
+				/>
+
+			<!-- Aliases -->
+			<TextBlock
+				Margin="25 10 10 0"
+				HorizontalAlignment="Stretch"
+				Foreground="Green"
+				FontWeight="Bold" FontSize="15" Text="Aliases"/>
+			<TextBox x:Name="AliasesBox"
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				Margin="25 10 10 0"
+				PlaceholderText="tag_name another_tag"
 				/>
 			
 			<!-- Obsolete -->
