@@ -41,11 +41,25 @@ internal class SearchSQL {
 
 
 		var includeIds = includeNames
-			.Select(n => TagsManager.GetTagIdByName(n))
+			.Select(name => {
+				int id = TagsManager.GetTagIdByName(name);
+				if (id < 0) return [];
+
+				Tag tag = TagsManager.GetTag(id);
+				HashSet<int> ids = [id, .. ConvertUtils.StringToIntList(tag.Aliases ?? "")];
+				return ids;
+			})
 			.ToList();
 
 		var excludeIds = excludeNames
-			.Select(n => TagsManager.GetTagIdByName(n))
+			.Select(name => {
+				int id = TagsManager.GetTagIdByName(name);
+				if (id < 0) return [];
+
+				Tag tag = TagsManager.GetTag(id);
+				HashSet<int> ids = [id, .. ConvertUtils.StringToIntList(tag.Aliases ?? "")];
+				return ids;
+			})
 			.ToList();
 
 		var results = new List<int>();
@@ -61,21 +75,13 @@ internal class SearchSQL {
 					goto NextPost;
 			}
 
-			foreach (var includeId in includeIds) {
-				if (includeId == -1)
-					goto NextPost;
-				else if (post.Tags.Contains(includeId))
-					continue;
-				else
+			foreach (var matchingIds in includeIds) {
+				if (!matchingIds.Any(post.Tags.Contains))
 					goto NextPost;
 			}
 
-			foreach (var excludeId in excludeIds) {
-				if(excludeId == -1)
-					goto NextPost;
-				else if (!post.Tags.Contains(excludeId))
-					continue;
-				else
+			foreach (var matchingIds in excludeIds) {
+				if (matchingIds.Any(post.Tags.Contains))
 					goto NextPost;
 			}
 
