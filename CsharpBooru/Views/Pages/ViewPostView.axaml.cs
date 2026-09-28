@@ -107,7 +107,10 @@ public partial class ViewPostView : UserControl {
 			["Species"] = []
 		};
 
+		HashSet<int> displayedTagIds = [];
 		foreach (int tagId in post.Tags) {
+			if (!displayedTagIds.Add(tagId)) continue;
+
 			var tag = TagsManager.GetTag(tagId);
 			if (tag == null) continue;
 

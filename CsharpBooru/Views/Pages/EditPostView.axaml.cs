@@ -119,6 +119,7 @@ public partial class EditPostView : UserControl {
 		foreach (string t in TagBox?.Text?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? []) {
 			TagID.Add(TagsManager.GetOrCreateTag(t));
 		}
+		TagID = [.. TagID.Distinct()];
 
 		if (TagID.Count <= 0) {
 			Error.Text = "No tag";
