@@ -11,15 +11,15 @@ using System;
 using System.IO;
 
 namespace CsharpBooru.Component.ViewsPost;
-public class Video_Component : IDisposable {
+public class Video_Component : ResizableMedia_Component, IDisposable {
 
 	private static readonly LibVLC libVLC = new();
 	private MediaPlayer? mediaPlayer;
 	private Media? media;
+	private Button? resizeButton;
 
-	private const int 
-		MaxVideoSize = 600, 
-		SizeIconButton = 50;
+	private double videoWidth, videoHeight;
+	private const int SizeIconButton = 50;
 
 	public Control Component (ref string path) {
 		mediaPlayer = new MediaPlayer(libVLC);
@@ -30,6 +30,7 @@ public class Video_Component : IDisposable {
 		CreateSeekBar();
 		CreateVolumeBar();
 		CreateVolumeIcon();
+		CreateSizeButton();
 
 		AttachSeekEvents();
 		AttachVideoLoadedEvent();
@@ -67,13 +68,22 @@ public class Video_Component : IDisposable {
 	private Slider? seekBar;
 	private Slider? volumeBar;
 	private Image? volumeIcon;
+	
+	private Button CreateSizeButton () => resizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
+		if (videoView == null) return;
+
+		videoView.Width = showFullSize ? width : double.NaN;
+		videoView.Height = showFullSize ? height : double.NaN;
+		videoView.MaxWidth = showFullSize ? width : size_max;
+		videoView.MaxHeight = showFullSize ? height : size_max;
+	});
 
 	private VideoView CreateVideoView () => videoView = new VideoView {
 		HorizontalAlignment = HorizontalAlignment.Center,
 		MinWidth = 380, 
 		MinHeight = 380,
-		MaxWidth = MaxVideoSize, 
-		MaxHeight = MaxVideoSize,
+		MaxWidth = size_max, 
+		MaxHeight = size_max,
 		MediaPlayer = mediaPlayer
 	};
 
@@ -118,7 +128,7 @@ public class Video_Component : IDisposable {
 		MinWidth = 380,
 		Spacing = 10,
 		Margin = new Thickness(10),
-		Children = { videoView!, controls }
+		Children = { resizeButton!, videoView!, controls }
 	};
 	#endregion
 
@@ -151,12 +161,16 @@ public class Video_Component : IDisposable {
 		mediaPlayer.Play(media);
 		mediaPlayer.Mute = false;
 		playPauseButton?.Content = Play(false);
+		UpdateVideoResolution();
 
 		var timer = new Avalonia.Threading.DispatcherTimer {
 			Interval = TimeSpan.FromMilliseconds(500)
 		};
 
 		timer.Tick += (_, _) => {
+			if (videoWidth == 0 || videoHeight == 0)
+				UpdateVideoResolution();
+
 			if (mediaPlayer?.Length > 0) {
 				seekBar?.Value = mediaPlayer.Position * 1000;
 			}
@@ -164,6 +178,22 @@ public class Video_Component : IDisposable {
 
 		timer.Start();
 	};
+
+	private void UpdateVideoResolution () {
+		if (media == null) return;
+
+		foreach (MediaTrack track in media.Tracks) {
+			if (track.TrackType != TrackType.Video) continue;
+
+			videoWidth = track.Data.Video.Width;
+			videoHeight = track.Data.Video.Height;
+			break;
+		}
+
+		if (videoWidth > 0 && videoHeight > 0) {
+			SetMediaResolution(videoWidth, videoHeight);
+		}
+	}
 
 	private void AttachPlayPauseEvent () => playPauseButton?.Click += (_, _) => {
 		if (mediaPlayer == null) return;

@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace CsharpBooru.Component.ViewsPost;
-public class Tiff_Component {
+public class Tiff_Component : ResizableMedia_Component {
 
 	private int currentPage = 0;
 	private List<FileStream>? pages;
+	private TextBlock? pageIndicator;
 
 	public StackPanel Component (ref string path) {
 		pages = TiffImage.LoadAllPages(path);
@@ -30,9 +31,14 @@ public class Tiff_Component {
 			return root;
 		}
 
+		Button sizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
+			imageControl.MaxHeight = showFullSize ? height : size_max;
+			imageControl.MaxWidth = showFullSize ? width : size_max;
+		});
+		root.Children.Add(sizeButton);
+
 		//Image
-		pages[currentPage].Position = 0;
-		imageControl.Source = new Bitmap(pages[currentPage]);
+		DisplayCurrentPage();
 		root.Children.Add(imageControl);
 
 		//Navigation
@@ -76,18 +82,20 @@ public class Tiff_Component {
 		btnPrev.Click += (_, __) => {
 			if (currentPage > 0) {
 				currentPage--;
-				imageControl.Source = new Bitmap(pages[currentPage]);
+				ResetMediaSize();
+				DisplayCurrentPage();
 			}
 		};
 
 		btnNext.Click += (_, __) => {
 			if (currentPage < pages.Count - 1) {
 				currentPage++;
-				imageControl.Source = new Bitmap(pages[currentPage]);
+				ResetMediaSize();
+				DisplayCurrentPage();
 			}
 		};
 
-		TextBlock pageIndicator = new() {
+		pageIndicator = new TextBlock() {
 			Text = $"Page {currentPage + 1} / {pages.Count}",
 			VerticalAlignment = VerticalAlignment.Center,
 			Margin = new Thickness(10, 0, 10, 0)
@@ -100,10 +108,22 @@ public class Tiff_Component {
 		return navPanel;
 	}
 
+	private void DisplayCurrentPage () {
+		if (pages == null || currentPage >= pages.Count) return;
+
+		pages[currentPage].Position = 0;
+		Bitmap currentBitmap = new(pages[currentPage]);
+		imageControl.Source = currentBitmap;
+		SetMediaResolution(currentBitmap.PixelSize.Width, currentBitmap.PixelSize.Height);
+
+		if (pageIndicator != null)
+			pageIndicator.Text = $"Page {currentPage + 1} / {pages.Count}";
+	}
+
 	private readonly Image imageControl = new() {
 		Stretch = Stretch.Uniform,
-		MaxWidth = 700,
-		MaxHeight = 700
+		MaxWidth = size_max,
+		MaxHeight = size_max
 	};
 
 	private static Button CreateButton (string txt) => new() {

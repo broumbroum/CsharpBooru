@@ -4,11 +4,11 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 
 namespace CsharpBooru.Component.ViewsPost;
-public class Image_Component {
+public class Image_Component : ResizableMedia_Component {
 
-	 private Bitmap? bmp;
+	private Bitmap? bmp;
 
-	public Image Component (ref string path) {
+	public StackPanel Component (ref string path) {
 		bmp = new Bitmap(path);
 
 		Image image = new() {
@@ -16,12 +16,21 @@ public class Image_Component {
 
 			HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
 
-			MaxHeight = 700,
-			MaxWidth = 700,
+			MaxHeight = size_max,
+			MaxWidth = size_max,
 			Margin = new Thickness(0, 0, 10, 0)
 		};
 
-		return image;
+		StackPanel content = new();
+		Button sizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
+			image.MaxHeight = showFullSize ? height : size_max;
+			image.MaxWidth = showFullSize ? width : size_max;
+		});
+		SetMediaResolution(bmp.PixelSize.Width, bmp.PixelSize.Height);
+		content.Children.Add(sizeButton);
+		content.Children.Add(image);
+
+		return content;
 	}
 
 	public string GetInfo (ref string path) {
