@@ -19,7 +19,8 @@ It is built with C# and Avalonia, and uses a SQLite embedded database to store p
 |-|-|
 |Windows X64|✅|
 |Linux Binary X64|✅|
-
+|Linux Deb X64|✅|
+|Linux AppImage X64|✅|
 
 
 **Linux Binary**
