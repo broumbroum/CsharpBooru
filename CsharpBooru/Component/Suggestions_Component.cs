@@ -9,6 +9,27 @@ using System.Linq;
 
 namespace CsharpBooru.Component;
 public class Suggestions_Component {
+	private static readonly string[] RatingSuggestions = [
+		"rating:none",
+		"rating:safe",
+		"rating:questionable",
+		"rating:explicit",
+		"rating:borderline",
+	];
+	private static readonly string[] ExtensionSuggestions = [
+		"extension:png",
+		"extension:jpg",
+		"extension:jpeg",
+		"extension:ico",
+		"extension:webp",
+		"extension:tiff",
+		"extension:tif",
+		"extension:gif",
+		"extension:mp4",
+		"extension:avi",
+		"extension:webm",
+		"extension:mkv",
+	];
 
 	public static void AddSuggestions (TextBox tb, Panel container) {
 		Popup suggestions = Suggestions_Popup(tb);
@@ -45,6 +66,35 @@ public class Suggestions_Component {
 
 		popup.IsOpen = false;
 		list.Children.Clear();
+		string[]? commandSuggestions = null;
+		if ("rating".StartsWith(currentTag, StringComparison.OrdinalIgnoreCase) ||
+			currentTag.StartsWith("rating:", StringComparison.OrdinalIgnoreCase)) {
+			commandSuggestions = RatingSuggestions;
+		} else if ("extension".StartsWith(currentTag, StringComparison.OrdinalIgnoreCase) ||
+			currentTag.StartsWith("extension:", StringComparison.OrdinalIgnoreCase)) {
+			commandSuggestions = ExtensionSuggestions;
+		}
+
+		if (commandSuggestions != null) {
+			var commandMatches = commandSuggestions
+				.Where(command => command.StartsWith(currentTag, StringComparison.OrdinalIgnoreCase))
+				.ToList();
+
+			foreach (string command in commandMatches) {
+				Button suggestion = new() {
+					HorizontalContentAlignment = HorizontalAlignment.Left,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					Background = Brushes.Transparent,
+					Content = command
+				};
+
+				suggestion.Click += (_, _) => OnSuggestionSelected(tb, popup, command);
+				list.Children.Add(suggestion);
+			}
+
+			popup.IsOpen = commandMatches.Count > 0;
+			return;
+		}
 
 		var matches = TagsManager.GetAllTags()
 			.Where(tag => tag.Name.StartsWith(currentTag, StringComparison.OrdinalIgnoreCase))
@@ -92,7 +142,7 @@ public class Suggestions_Component {
 				Content = grid
 			};
 
-			suggestion.Click += (_, _) => OnSuggestionSelected(tb, popup, tag);
+			suggestion.Click += (_, _) => OnSuggestionSelected(tb, popup, tag.Name);
 
 			list.Children.Add(suggestion);
 		}
@@ -100,10 +150,10 @@ public class Suggestions_Component {
 		popup.IsOpen = matches.Count > 0;
 	}
 
-	private static void OnSuggestionSelected (TextBox tb, Popup popup, Tag tag) {
+	private static void OnSuggestionSelected (TextBox tb, Popup popup, string value) {
 		string currentText = tb.Text ?? "";
 		int prefixLength = currentText.LastIndexOf(' ') + 1;
-		tb.Text = currentText[..prefixLength] + tag.Name + " ";
+		tb.Text = currentText[..prefixLength] + value + " ";
 		tb.CaretIndex = tb.Text.Length;
 		popup.IsOpen = false;
 	}
