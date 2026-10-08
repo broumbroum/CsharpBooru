@@ -40,6 +40,17 @@
 				<ComboBoxItem><TextBlock Text="Species" Foreground="Red" TextAlignment="Left" HorizontalAlignment="Left"/></ComboBoxItem>
 			</ComboBox>
 
+			<!-- Parent tag -->
+			<TextBlock
+				Margin="25 10 10 0"
+				HorizontalAlignment="Stretch"
+				Foreground="Green"
+				FontWeight="Bold" FontSize="15" Text="Parent tag"/>
+			<TextBox x:Name="ParentNameBox"
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				Margin="25 10 10 0"
+				PlaceholderText="Nom du tag parent (facultatif)"/>
+
 			<!-- Description -->
 			<TextBlock
 				Margin="25 10 10 0"

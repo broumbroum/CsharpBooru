@@ -37,6 +37,18 @@ public partial class WikiView : UserControl {
 			_ => Brushes.Black,
 		};
 		ObsoleteTextBlock.Text = "Obsolete : " + (tag.Obsolete == "1" ? "True" : "False");
+		ParentPanel.Children.Clear();
+		if (tag.ParentId is int parentId) {
+			Tag? parent = TagsManager.GetTag(parentId);
+			if (parent != null) {
+				Button parentButton = new() {
+					Content = parent.Name.Replace('_', ' '),
+					Margin = new Avalonia.Thickness(0, 0, 5, 0),
+				};
+				parentButton.Click += (_, _) => MainWindowViewModel.Main?.Wiki(parent.Id);
+				ParentPanel.Children.Add(parentButton);
+			}
+		}
 		AliasesPanel.Children.Clear();
 		foreach (int aliasId in ConvertUtils.StringToIntList(tag.Aliases ?? "")) {
 			Tag? alias = TagsManager.GetTag(aliasId);

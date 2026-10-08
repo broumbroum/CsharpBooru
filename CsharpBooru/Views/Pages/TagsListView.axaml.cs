@@ -118,6 +118,19 @@ public partial class TagsListView : UserControl {
 			}),
 		};
 
+		//Parent
+		DataGridTemplateColumn parentColumn = new() {
+			Header = "Parent",
+			CanUserResize = true,
+			CellTemplate = new FuncDataTemplate<Tag>((tag, _) => new TextBlock {
+				Text = tag.ParentId is int parentId
+					? AllTags.FirstOrDefault(parent => parent.Id == parentId)?.Name ?? ""
+					: "",
+				VerticalAlignment = VerticalAlignment.Center,
+				Margin = new Thickness(5, 0, 10, 0),
+			}),
+		};
+
 		//Obsolete
 		DataGridTemplateColumn obsoleteColumn = new() {
 			Header = "Obsolete",
@@ -138,6 +151,7 @@ public partial class TagsListView : UserControl {
 		DataGridControl.Columns.Add(categoryColumn);
 		DataGridControl.Columns.Add(countColumn);
 		DataGridControl.Columns.Add(aliasesColumn);
+		DataGridControl.Columns.Add(parentColumn);
 		DataGridControl.Columns.Add(obsoleteColumn);
 	}
 

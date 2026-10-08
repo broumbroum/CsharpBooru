@@ -99,7 +99,7 @@ public partial class ViewPostView : UserControl {
 	private void DisplayTag () {
 		TagStack.Children.Add(CreateTextBlock("ID : " + post!.Id, true, Colors.Black));
 
-		Dictionary<string, List<string>> groups = new() {
+		Dictionary<string, List<Tag>> groups = new() {
 			["Tag"] = [],
 			["Artist"] = [],
 			["Character"] = [],
@@ -108,16 +108,21 @@ public partial class ViewPostView : UserControl {
 		};
 
 		HashSet<int> displayedTagIds = [];
-		foreach (int tagId in post.Tags) {
+		Queue<int> pendingTagIds = new(post.Tags);
+		while (pendingTagIds.Count > 0) {
+			int tagId = pendingTagIds.Dequeue();
 			if (!displayedTagIds.Add(tagId)) continue;
 
-			var tag = TagsManager.GetTag(tagId);
+			Tag? tag = TagsManager.GetTag(tagId);
 			if (tag == null) continue;
 
-			if (!groups.TryGetValue(tag.SpecificTags, out List<string>? value))
-				groups["Tag"].Add(tag.Name);
+			if (!groups.ContainsKey(tag.SpecificTags))
+				groups["Tag"].Add(tag);
 			else
-				value.Add(tag.Name);
+				groups[tag.SpecificTags].Add(tag);
+
+			if (tag.ParentId is int parentId)
+				pendingTagIds.Enqueue(parentId);
 		}
 
 		TagStack.Children.Add(PanelTitle(CreateTextBlock("Artist", true, Colors.OrangeRed), Icons + "icons8-paint-palette-100.png"));
@@ -201,25 +206,50 @@ public partial class ViewPostView : UserControl {
 		};
 	}
 
-	private void AddTagGroup (List<string> items) {
-		switch (SettingValue.OrderTag) {
-			case "Seizure Order": break;
-			case "Alphabetical Order (ignore upper and lower case letters)":
-				items.Sort(StringComparer.OrdinalIgnoreCase);
-			break;
-			case "Alphabetical Order":
-				items.Sort(StringComparer.Ordinal);
-			break;
-			default:
-				items.Sort(StringComparer.Ordinal);
-			break;
+	private void AddTagGroup (List<Tag> items) {
+		Comparison<Tag>? comparison = SettingValue.OrderTag switch {
+			"Alphabetical Order (ignore upper and lower case letters)" =>
+				(first, second) => StringComparer.OrdinalIgnoreCase.Compare(first.Name, second.Name),
+			"Alphabetical Order" =>
+				(first, second) => StringComparer.Ordinal.Compare(first.Name, second.Name),
+			_ => null,
+		};
+		if (comparison != null) items.Sort(comparison);
+
+		Dictionary<int, Tag> tagsById = [];
+		foreach (Tag tag in items)
+			tagsById[tag.Id] = tag;
+
+		Dictionary<int, List<Tag>> childrenByParent = [];
+		List<Tag> roots = [];
+		foreach (Tag tag in items) {
+			if (tag.ParentId is int parentId && tagsById.ContainsKey(parentId)) {
+				if (!childrenByParent.TryGetValue(parentId, out List<Tag>? children)) {
+					children = [];
+					childrenByParent[parentId] = children;
+				}
+				children.Add(tag);
+			} else {
+				roots.Add(tag);
+			}
 		}
 
+		HashSet<int> displayedTagIds = [];
+		void AddSubtree (Tag tag) {
+			if (!displayedTagIds.Add(tag.Id)) return;
 
-		foreach (var t in items) {
-			Tag_Component tc = new(TagsManager.GetTagIdByName(t));
-			TagStack.Children.Add(tc.Component());
+			TagStack.Children.Add(new Tag_Component(tag.Id).Component());
+			if (childrenByParent.TryGetValue(tag.Id, out List<Tag>? children)) {
+				foreach (Tag child in children)
+					AddSubtree(child);
+			}
 		}
+
+		foreach (Tag root in roots)
+			AddSubtree(root);
+
+		foreach (Tag tag in items)
+			AddSubtree(tag);
 	}
 
 	private static StackPanel PanelTitle (TextBlock textBlock, string image) {

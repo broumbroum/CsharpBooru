@@ -104,7 +104,8 @@ public static class TagsManager {
 				specificTags = @specificTags,
 				description = @description,
 				obsolete = @obsolete,
-				aliases = @aliases
+				aliases = @aliases,
+				parentId = @parentId
 			WHERE id = @id;
 		";
 
@@ -117,6 +118,7 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@obsolete", tag.Obsolete);
 		cmd.Parameters.AddWithValue("@aliases", SerializeAliasIds(
 			ParseAliasIds(tag.Aliases).Where(id => id != tag.Id)));
+		cmd.Parameters.AddWithValue("@parentId", (object?)tag.ParentId ?? DBNull.Value);
 
 		cmd.ExecuteNonQuery();
 
@@ -170,11 +172,28 @@ public static class TagsManager {
 			"UPDATE Tags SET aliases = @aliases WHERE id = @id", conn, transaction);
 		var aliasesParameter = updateReciprocal.Parameters.Add("@aliases", System.Data.DbType.String);
 		var idParameter = updateReciprocal.Parameters.Add("@id", System.Data.DbType.Int32);
+		HashSet<int> retainedAliasGroup = aliases
+			.Where(connections.ContainsKey)
+			.Append(tag.Id)
+			.ToHashSet();
 
 		foreach (int id in aliasGroup) {
-			aliasesParameter.Value = SerializeAliasIds(aliasGroup.Where(relatedId => relatedId != id));
+			aliasesParameter.Value = SerializeAliasIds(
+				retainedAliasGroup.Contains(id)
+					? retainedAliasGroup.Where(relatedId => relatedId != id)
+					: []);
 			idParameter.Value = id;
 			updateReciprocal.ExecuteNonQuery();
+		}
+
+		using var updateParent = new SQLiteCommand(
+			"UPDATE Tags SET parentId = @parentId WHERE id = @id", conn, transaction);
+		var parentIdParameter = updateParent.Parameters.Add("@parentId", System.Data.DbType.Int32);
+		idParameter = updateParent.Parameters.Add("@id", System.Data.DbType.Int32);
+		foreach (int id in retainedAliasGroup) {
+			parentIdParameter.Value = (object?)tag.ParentId ?? DBNull.Value;
+			idParameter.Value = id;
+			updateParent.ExecuteNonQuery();
 		}
 
 		transaction.Commit();
@@ -199,6 +218,16 @@ public static class TagsManager {
 		cmd.Parameters.AddWithValue("@id", id);
 
 		cmd.ExecuteNonQuery();
+	}
+
+	public static bool HasChildTags (int id) {
+		using var conn = DataBase.GetConnection();
+		conn.Open();
+
+		using var cmd = new SQLiteCommand(
+			"SELECT EXISTS (SELECT 1 FROM Tags WHERE parentId = @id)", conn);
+		cmd.Parameters.AddWithValue("@id", id);
+		return Convert.ToInt32(cmd.ExecuteScalar()) != 0;
 	}
 
 	// 📏 Total number of tags
@@ -266,7 +295,8 @@ public static class TagsManager {
 			reader["specificTags"].ToString() ?? "Tag", 
 			reader["description"].ToString(),
 			reader["obsolete"].ToString() ?? "0",
-			reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString()
+			reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString(),
+			parentId: reader["parentId"] == DBNull.Value ? null : Convert.ToInt32(reader["parentId"])
 			);
 	}
 
@@ -289,7 +319,8 @@ public static class TagsManager {
 				reader["specificTags"].ToString() ?? "Tag",
 				reader["description"].ToString(),
 				reader["obsolete"].ToString() ?? "0",
-				reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString()
+				reader["aliases"] == DBNull.Value ? null : reader["aliases"].ToString(),
+				parentId: reader["parentId"] == DBNull.Value ? null : Convert.ToInt32(reader["parentId"])
 			));
 		}
 
@@ -322,13 +353,14 @@ public static class TagsManager {
 	}
 }
 
-public class Tag (int id, string name, string specificTags, string? description, string obsolete = "0", string? aliases = null) {
+public class Tag (int id, string name, string specificTags, string? description, string obsolete = "0", string? aliases = null, int? parentId = null) {
 	public int Id { get; set; } = id;
 	public string Name { get; set; } = name;
 	public string SpecificTags { get; set; } = specificTags;
 	public string? Description { get; set; } = description;
 	public string Obsolete { get; set; } = obsolete;
 	public string? Aliases { get; set; } = aliases;
+	public int? ParentId { get; set; } = parentId;
 
 	public int Count =>  TagsManager.GetTagUsage(Id);
 }

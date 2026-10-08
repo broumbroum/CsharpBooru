@@ -41,6 +41,7 @@ internal class DataBase {
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
 		specificTags TEXT,
+		parentId INTEGER DEFAULT NULL,
 		aliases TEXT DEFAULT NULL
     );
 
@@ -104,6 +105,12 @@ internal class DataBase {
 		if (!ColumnExists("Tags", "aliases")) {
 			using var cmd = new SQLiteCommand(
 				"ALTER TABLE Tags ADD COLUMN aliases TEXT DEFAULT NULL;", conn);
+			cmd.ExecuteNonQuery();
+		}
+
+		if (!ColumnExists("Tags", "parentId")) {
+			using var cmd = new SQLiteCommand(
+				"ALTER TABLE Tags ADD COLUMN parentId INTEGER DEFAULT NULL;", conn);
 			cmd.ExecuteNonQuery();
 		}
 	}

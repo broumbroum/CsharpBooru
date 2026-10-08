@@ -4,6 +4,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using CsharpBooru.SQL;
 using CsharpBooru.ViewModels;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CsharpBooru.Component;
@@ -18,6 +19,24 @@ public class Tag_Component (int idTag) {
 			Orientation = Orientation.Horizontal,
 			Height = sizeHeight,
 		};
+
+		int depth = 0;
+		HashSet<int> visitedParentIds = [idTag];
+		Tag? parent = tag?.ParentId is int parentId ? TagsManager.GetTag(parentId) : null;
+		while (parent is { } currentParent && visitedParentIds.Add(currentParent.Id)) {
+			depth++;
+			parent = currentParent.ParentId is int nextParentId ? TagsManager.GetTag(nextParentId) : null;
+		}
+
+		if (depth > 0) {
+			sp.Children.Add(new TextBlock {
+				Height = sizeHeight,
+				Margin = new Thickness(2 + (depth - 1) * 12, 0, 2, 0),
+				Text = " ↳",
+				VerticalAlignment = VerticalAlignment.Center,
+				Foreground = Brushes.Gray,
+			});
+		}
 
 		Button btnDescription = Description()!;
 		if(btnDescription != null) sp.Children.Add(btnDescription);
@@ -82,7 +101,7 @@ public class Tag_Component (int idTag) {
 			Content = new TextBlock {
 				Text = "?",
 				FontSize = 12,
-				Foreground = Brushes.Blue,
+				Foreground = Brushes.Black,
 				TextAlignment = TextAlignment.Center,
 				TextWrapping = TextWrapping.Wrap,
 				ClipToBounds = false,
@@ -170,8 +189,11 @@ public class Tag_Component (int idTag) {
 			}
 		};
 
-		bool hasAliases = ConvertUtils.StringToIntList(TagsManager.GetTag(id)?.Aliases ?? "").Count > 0;
-		if (TagsManager.GetTagUsage(id) == 0 && !hasAliases) {
+		Tag? currentTag = TagsManager.GetTag(id);
+		bool hasAliases = ConvertUtils.StringToIntList(currentTag?.Aliases ?? "").Count > 0;
+		bool hasParent = currentTag?.ParentId != null;
+		bool hasChildren = TagsManager.HasChildTags(id);
+		if (TagsManager.GetTagUsage(id) == 0 && !hasAliases && !hasParent && !hasChildren) {
 			cm.Items.Add(new Separator());
 			cm.Items.Add(deleteItem);
 		}

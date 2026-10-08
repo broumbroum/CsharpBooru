@@ -18,6 +18,7 @@ public partial class EditWikiView : UserControl {
 	public EditWikiView (){
 		InitializeComponent();
 		Suggestions_Component.AddSuggestions(AliasesBox, MainPanel);
+		Suggestions_Component.AddSuggestions(ParentNameBox, MainPanel);
 		DataContextChanged += OnDataContextChanged;
 	}
 
@@ -39,6 +40,9 @@ public partial class EditWikiView : UserControl {
 		};
 
 		DescriptionBox.Text = tag.Description ?? "";
+		ParentNameBox.Text = tag.ParentId is int parentId
+			? TagsManager.GetTag(parentId)?.Name ?? ""
+			: "";
 		AliasesBox.Text = string.Join(" ", (tag.Aliases ?? "")
 			.Split(' ', StringSplitOptions.RemoveEmptyEntries)
 			.Select(int.Parse)
@@ -56,6 +60,31 @@ public partial class EditWikiView : UserControl {
 			return; 
 		}
 
+		int? parentId = null;
+		if (!string.IsNullOrWhiteSpace(ParentNameBox.Text)) {
+			string parentName = ParentNameBox.Text.Trim().Replace(" ", "_");
+			int parsedParentId = TagsManager.GetTagIdByName(parentName);
+			if (parsedParentId < 0) {
+				Error.Text = "Parent tag does not exist";
+				return;
+			}
+			if (parsedParentId == tag.Id) {
+				Error.Text = "A tag cannot be its own parent";
+				return;
+			}
+			parentId = parsedParentId;
+		}
+
+		int[] aliasIds = (AliasesBox.Text ?? "")
+			.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+			.Select(TagsManager.GetTagIdByName)
+			.Where(id => id >= 0)
+			.ToArray();
+		if (parentId.HasValue && aliasIds.Contains(parentId.Value)) {
+			Error.Text = "A tag cannot be both a parent and an alias";
+			return;
+		}
+
 		Tag _tag = new(
 			id: tag.Id,
 			specificTags: CategoryBox.SelectedIndex switch {
@@ -69,13 +98,8 @@ public partial class EditWikiView : UserControl {
 			name: NameTagBox.Text.Replace(" ", "_"),
 			description: DescriptionBox.Text,
 			obsolete: ObsoleteBox.IsChecked == true ? "1" : "0",
-			aliases: string.Join(" ", (AliasesBox.Text ?? "")
-				.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-				.Select(TagsManager.GetTagIdByName)
-				.Where(id => id >= 0)
-				.Select(TagsManager.GetTag)
-				.Where(alias => alias != null)
-				.Select(alias => alias!.Id.ToString()))
+			aliases: string.Join(" ", aliasIds.Distinct()),
+			parentId: parentId
 		);
 
 		TagsManager.UpdateTag(_tag);
