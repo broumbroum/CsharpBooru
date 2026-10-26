@@ -19,6 +19,7 @@ public abstract class ResizableMedia_Component {
 	private int sizeLimit;
 	private double fullWidth, fullHeight;
 	private bool showFullSize;
+	private TopLevel? topLevel;
 
 	public const int size_max = 600;
 
@@ -38,6 +39,16 @@ public abstract class ResizableMedia_Component {
 		sizeButton.Click += (_, _) => {
 			showFullSize = !showFullSize;
 			ApplySize();
+		};
+		sizeButton.AttachedToVisualTree += (_, _) => {
+			topLevel = TopLevel.GetTopLevel(sizeButton);
+			if (topLevel != null)
+				topLevel.PropertyChanged += OnTopLevelPropertyChanged;
+		};
+		sizeButton.DetachedFromVisualTree += (_, _) => {
+			if (topLevel != null)
+				topLevel.PropertyChanged -= OnTopLevelPropertyChanged;
+			topLevel = null;
 		};
 
 		return sizeButton;
@@ -63,10 +74,24 @@ public abstract class ResizableMedia_Component {
 	}
 
 	private void ApplySize () {
-		applySize?.Invoke(showFullSize, fullWidth, fullHeight);
+		double width = fullWidth;
+		double height = fullHeight;
+
+		if (showFullSize && topLevel != null && topLevel.ClientSize.Width > 0 && topLevel.ClientSize.Height > 0) {
+			double scale = Math.Min(topLevel.ClientSize.Width / fullWidth, topLevel.ClientSize.Height / fullHeight);
+			width *= scale;
+			height *= scale;
+		}
+
+		applySize?.Invoke(showFullSize, width, height);
 		if (sizeButton == null) return;
 
 		sizeButton.Content = CreateIcon(showFullSize ? reduceIcon : enlargeIcon);
+	}
+
+	private void OnTopLevelPropertyChanged (object? sender, AvaloniaPropertyChangedEventArgs e) {
+		if (e.Property == TopLevel.ClientSizeProperty && showFullSize)
+			ApplySize();
 	}
 
 	private static Image CreateIcon (Bitmap icon) => new() {

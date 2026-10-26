@@ -22,6 +22,8 @@ public class GIF_Component : ResizableMedia_Component {
 
 		StackPanel content = new();
 		Button sizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
+			gif.Width = showFullSize ? width : double.NaN;
+			gif.Height = showFullSize ? height : double.NaN;
 			gif.MaxHeight = showFullSize ? height : size_max;
 			gif.MaxWidth = showFullSize ? width : size_max;
 		});

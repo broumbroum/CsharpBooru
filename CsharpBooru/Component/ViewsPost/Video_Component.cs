@@ -72,6 +72,8 @@ public class Video_Component : ResizableMedia_Component, IDisposable {
 	private Button CreateSizeButton () => resizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
 		if (videoView == null) return;
 
+		videoView.MinWidth = showFullSize ? 0 : 380;
+		videoView.MinHeight = showFullSize ? 0 : 380;
 		videoView.Width = showFullSize ? width : double.NaN;
 		videoView.Height = showFullSize ? height : double.NaN;
 		videoView.MaxWidth = showFullSize ? width : size_max;

@@ -32,6 +32,8 @@ public class Tiff_Component : ResizableMedia_Component {
 		}
 
 		Button sizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
+			imageControl.Width = showFullSize ? width : double.NaN;
+			imageControl.Height = showFullSize ? height : double.NaN;
 			imageControl.MaxHeight = showFullSize ? height : size_max;
 			imageControl.MaxWidth = showFullSize ? width : size_max;
 		});

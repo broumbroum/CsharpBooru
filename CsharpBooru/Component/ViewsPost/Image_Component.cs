@@ -23,6 +23,8 @@ public class Image_Component : ResizableMedia_Component {
 
 		StackPanel content = new();
 		Button sizeButton = CreateResizeButton(size_max, (showFullSize, width, height) => {
+			image.Width = showFullSize ? width : double.NaN;
+			image.Height = showFullSize ? height : double.NaN;
 			image.MaxHeight = showFullSize ? height : size_max;
 			image.MaxWidth = showFullSize ? width : size_max;
 		});
