@@ -30,6 +30,10 @@ public class Suggestions_Component {
 		"extension:webm",
 		"extension:mkv",
 	];
+	private static readonly string[] NoteSuggestions = [
+		"note:true",
+		"note:false",
+	];
 
 	public static void AddSuggestions (TextBox tb, Panel container) {
 		Popup suggestions = Suggestions_Popup(tb);
@@ -73,6 +77,9 @@ public class Suggestions_Component {
 		} else if ("extension".StartsWith(currentTag, StringComparison.OrdinalIgnoreCase) ||
 			currentTag.StartsWith("extension:", StringComparison.OrdinalIgnoreCase)) {
 			commandSuggestions = ExtensionSuggestions;
+		} else if ("note".StartsWith(currentTag, StringComparison.OrdinalIgnoreCase) ||
+			currentTag.StartsWith("note:", StringComparison.OrdinalIgnoreCase)) {
+			commandSuggestions = NoteSuggestions;
 		}
 
 		if (commandSuggestions != null) {

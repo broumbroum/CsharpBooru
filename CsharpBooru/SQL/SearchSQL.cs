@@ -8,12 +8,13 @@ internal class SearchSQL {
 
 	public static string querySearch = "";
 
-	public static (List<string> include, List<string> exclude, List<string> ratings, List<string> extension) ParseSearch (string input) {
+	public static (List<string> include, List<string> exclude, List<string> ratings, List<string> extension, List<bool> note) ParseSearch (string input) {
 		List<string>?
 			include = [],
 			exclude = [],
 			ratings = [],
 			extension = [];
+		List<bool> note = [];
 
 		var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
@@ -26,18 +27,22 @@ internal class SearchSQL {
 				var r = p["extension:".Length..].Trim();
 				if (!string.IsNullOrEmpty(r))
 					extension.Add(r);
+			}else if (p.StartsWith("note:", StringComparison.OrdinalIgnoreCase)) {
+				var value = p["note:".Length..].Trim();
+				if (bool.TryParse(value, out bool hasNote))
+					note.Add(hasNote);
 			}else if (p.StartsWith('-'))
 				exclude.Add(p[1..]);
 			else
 				include.Add(p);
 		}
 
-		return (include, exclude, ratings, extension);
+		return (include, exclude, ratings, extension, note);
 	}
 
 	public static List<int> SearchPosts (string query) {
 		if (query == null || query == "") return [.. PostsManager.GetAllPosts().Select(p => p.Id)];
-		var (includeNames, excludeNames, ratingFilters, extensionFilters) = ParseSearch(query);
+		var (includeNames, excludeNames, ratingFilters, extensionFilters, noteFilters) = ParseSearch(query);
 
 
 		var includeIds = includeNames
@@ -74,6 +79,9 @@ internal class SearchSQL {
 				else
 					goto NextPost;
 			}
+
+			if (noteFilters.Count > 0 && !noteFilters.Any(hasNote => hasNote == !string.IsNullOrEmpty(post.Note)))
+				goto NextPost;
 
 			foreach (var matchingIds in includeIds) {
 				if (!matchingIds.Any(post.Tags.Contains))
