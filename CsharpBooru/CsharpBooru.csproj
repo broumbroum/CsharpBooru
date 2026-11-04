@@ -48,6 +48,9 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+	
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="ModelContextProtocol" Version="2.3.0" />
     
   </ItemGroup>
 

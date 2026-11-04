@@ -209,6 +209,9 @@ public static class TagsManager {
 
 	// ➖ Remove a tag
 	public static void RemoveTag (int id) {
+		CountTagsUsage();
+		if(GetTagUsage(id) > 0) return; // Don't remove tags that are in use
+
 		using var conn = DataBase.GetConnection();
 		conn.Open();
 
@@ -242,7 +245,7 @@ public static class TagsManager {
 	}
 
 	// Dictionary to store the usage count of all tags
-	private static Dictionary<int, int>? DictionaryAllTagsUsage;
+	public static Dictionary<int, int>? DictionaryAllTagsUsage {get; private set;}
 
 	// 📏 Count the usage of all tags in posts and store it in a dictionary
 	public static void CountTagsUsage () {
@@ -328,7 +331,7 @@ public static class TagsManager {
 	}
 
 	// Dictionary to cache tag IDs by their names for quick lookup
-	private static Dictionary<string, int>? _tagIdCache;
+	public static Dictionary<string, int>? _tagIdCache {get; private set;}
 
 	// 📖 Retrieve a tag's ID from its name
 	public static int GetTagIdByName (string name) {
