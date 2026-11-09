@@ -20,14 +20,17 @@ internal sealed class PostsTools {
 		[Description("Optional source URLs or text.")] string[]? sources = null,
 		[Description("Optional IDs of existing related posts.")] int[]? related = null) {
 
+		//File path
 		if (string.IsNullOrWhiteSpace(filePath)) throw new ArgumentException("A file path is required.", nameof(filePath));
 
 		string fullPath = Path.GetFullPath(filePath);
 		if (!File.Exists(fullPath)) throw new FileNotFoundException("The source file was not found.", fullPath);
+		
+		//Tags
 		if (tags == null) throw new ArgumentNullException(nameof(tags));
-
 		string[] normalizedTags = NormalizeTags(tags);
 
+		//Rating
 		if (string.IsNullOrWhiteSpace(rating)) rating = "none";
 		string normalizedRating = rating.Trim().ToLowerInvariant();
 		if (normalizedRating is not ("none" or "safe" or "questionable" or "explicit" or "borderline"))
@@ -62,12 +65,11 @@ internal sealed class PostsTools {
 		[Description("ID of the post to retrieve.")] int id) {
 
 		if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "Post ID must be positive.");
-		Post post = PostsManager.GetPost(id);
-		if (post == null) throw new ArgumentException($"No post exists with ID {id}.", nameof(id));
-
+		Post post = PostsManager.GetPost(id) ?? throw new ArgumentException($"No post exists with ID {id}.", nameof(id));
+		
 		return SerializePost(post);
 	}
-
+	
 	[McpServerTool, Description("Edit the tags or metadata of an existing C#Booru post. Omitted fields are left unchanged; the file is preserved.")]
 	public static string Post_Edit (
 		[Description("ID of the post to edit.")] int id,
@@ -77,15 +79,19 @@ internal sealed class PostsTools {
 		[Description("Replacement source URLs or text. Omit to keep the current sources.")] string[]? sources = null,
 		[Description("Replacement IDs of related posts. Omit to keep the current related posts; pass an empty array to clear them.")] int[]? related = null) {
 
+		//ID
 		if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "Post ID must be positive.");
-		Post post = PostsManager.GetPost(id);
-		if (post == null) throw new ArgumentException($"No post exists with ID {id}.", nameof(id));
 
+		//Post
+		Post post = PostsManager.GetPost(id) ?? throw new ArgumentException($"No post exists with ID {id}.", nameof(id));
+
+		//Tags
 		if (tags != null) {
 			string[] normalizedTags = NormalizeTags(tags);
 			post.Tags = normalizedTags.Select(TagsManager.GetOrCreateTag).ToList();
 		}
 
+		//Rating
 		if (rating != null) {
 			if (string.IsNullOrWhiteSpace(rating)) throw new ArgumentException("Rating cannot be empty.", nameof(rating));
 
@@ -95,9 +101,11 @@ internal sealed class PostsTools {
 
 			post.Rating = normalizedRating;
 		}
-
+		
+		//Note
 		if (note != null) post.Note = note;
 
+		//Sources
 		if (sources != null) {
 			post.Sources = sources
 				.Select(source => source?.Trim() ?? "")
@@ -105,6 +113,7 @@ internal sealed class PostsTools {
 				.ToList();
 		}
 
+		//Related
 		List<int>? normalizedRelated = related == null ? null : NormalizeRelatedPosts(related, id);
 		if (normalizedRelated != null) post.Related = normalizedRelated;
 

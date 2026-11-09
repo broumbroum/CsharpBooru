@@ -210,7 +210,11 @@ public static class TagsManager {
 	// ➖ Remove a tag
 	public static void RemoveTag (int id) {
 		CountTagsUsage();
-		if(GetTagUsage(id) > 0) return; // Don't remove tags that are in use
+
+		Tag tag = GetTag(id);
+		if(tag.Count > 0) return; // Don't remove tags that are in use
+		if(tag.ParentId != null && tag.ParentId > 0) return; // Don't remove tags that have a parent
+		if(tag.Aliases != null && tag.Aliases.Length > 0) return; // Don't remove tags that have aliases
 
 		using var conn = DataBase.GetConnection();
 		conn.Open();

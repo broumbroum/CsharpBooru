@@ -16,7 +16,8 @@ internal static class McpServer {
 			.WithStdioServerTransport()
 			.WithTools<PostsTools>()
 			.WithTools<CollectionsTools>()
-			.WithTools<TagsTools>();
+			.WithTools<TagsTools>()
+			.WithTools<SearchTool>();
 
 		return builder.Build().RunAsync();
 	}
